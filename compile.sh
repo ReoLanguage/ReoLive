@@ -41,14 +41,12 @@ cd ../../
 
 # warning
 echo "--------------------------------------------------------------"
-echo "- Run snapshot/update.sh if you want to update the JS and CS -"
-echo "-   before publishing the snapshot. Not needed by the server.-"
 echo "- Compiling everything - the first time may take a while.    -"
 echo "--------------------------------------------------------------"
 
 # Compile all JavaScript (JS), both in localJS and in remoteJS
-sbt fastOptJS server/compile
-# sbt fullOptJS server/compile
+# sbt fastOptJS server/compile
+sbt fullOptJS server/compile
 
 echo ""
 echo "Compilation done."
