@@ -36,7 +36,7 @@ class LinceActor(out: ActorRef) extends Actor{
     val cleanMsg = msg.replace("\\\\", "\\")
       .replace("\\n", "\n")
 
-    callSage(cleanMsg,"/home/jose/Applications/SageMath")
+    callSage(cleanMsg,"/home/vhaslab/Applications/SageMath")
 
 //    if (cleanMsg.startsWith("§redraw ")) {
 //      cleanMsg.drop(8).split(",", 3) match {
