@@ -1,44 +1,56 @@
 #!/bin/sh
 
+# stop if something fails
+set -e
+
+# reference directory is where the script runs - the root of the project
+cd ${BASH_SOURCE%/*}
+
 # clean files that will be overridden by symbolic links
-cd localJS/src/main/resources/js/
-rm local_js-fastopt.js local_js-fastopt.js.map local_js-opt.js \
-   local_js-opt.js.map remote_js-opt.js remote_js-opt.js.map
-cd ../../../../../server/public
+echo "Creating symbolic links to the site content"
+mkdir -p site/js/gen
+mkdir -p site/content
+cd site/
+echo "- linking generated JavaScript files"
+cd js/gen/
+ln -sf ../../../localJS/target/scala-2.12/local_js-fastopt.js     
+ln -sf ../../../localJS/target/scala-2.12/local_js-fastopt.js.map 
+ln -sf ../../../localJS/target/scala-2.12/local_js-opt.js         
+ln -sf ../../../localJS/target/scala-2.12/local_js-opt.js.map     
+ln -sf ../../../remoteJS/target/scala-2.12/remote_js-fastopt.js     
+ln -sf ../../../remoteJS/target/scala-2.12/remote_js-fastopt.js.map 
+ln -sf ../../../remoteJS/target/scala-2.12/remote_js-opt.js         
+ln -sf ../../../remoteJS/target/scala-2.12/remote_js-opt.js.map     
+cd ../../../
+echo "Updating links at the server"
+mkdir -p server/public
+cd server/public
+echo "- removing old static content in the server"
 rm -rf *
+echo "- linking content from the site, ignoring index.html"
+# ln -s ../../snapshot/content # use for optimised JS
+ln -sf ../../site/content  # use for fast JS
+ln -sf ../../site/css
+ln -sf ../../site/favicon.ico
+ln -sf ../../site/favicon.svg
+ln -sf ../../site/fonts
+ln -sf ../../site/js
+ln -sf ../../site/index.html
 cd ../../
 
-# create symbolic links
-## to have the JS at the localJS resources (html)
-cd localJS/src/main/resources/js/
-ln -s ../../../../target/scala-2.12/local_js-fastopt.js     # used by local index
-ln -s ../../../../target/scala-2.12/local_js-fastopt.js.map # used by local index
-ln -s ../../../../target/scala-2.12/local_js-opt.js         # used by server
-ln -s ../../../../target/scala-2.12/local_js-opt.js.map     # used by server
-ln -s ../../../../../remoteJS/target/scala-2.12/remote_js-opt.js     # used by server
-ln -s ../../../../../remoteJS/target/scala-2.12/remote_js-opt.js.map # used by server
-
-## to run the html provided by the play-server
-cd ../../../../../server/public
-ln -s ../../snapshot/content
-ln -s ../../snapshot/css
-ln -s ../../snapshot/favicon.ico
-ln -s ../../snapshot/favicon.svg
-ln -s ../../snapshot/fonts
-ln -s ../../snapshot/index.html
-ln -s ../../localJS/src/main/resources/js  # JS directly from  
-cd ../../
 
 # warning
 echo "--------------------------------------------------------------"
 echo "- Run snapshot/update.sh if you want to update the JS and CS -"
-echo "-   before publishing. Not needed by the server.             -"
+echo "-   before publishing the snapshot. Not needed by the server.-"
 echo "- Compiling everything - the first time may take a while.    -"
 echo "--------------------------------------------------------------"
 
-# Compile all JavaScript (JS), both in localJS and in RemoteJS
-sbt localJS/fastOptJS fullOptJS server/compile
+# Compile all JavaScript (JS), both in localJS and in remoteJS
+sbt fastOptJS server/compile
+# sbt fullOptJS server/compile
 
 echo ""
-echo "- Static version: open 'localJS/src/main/resources/index.html'"
-echo "- Dynamic version: run the server using 'sbt server/run', and access it via http://localhost:9000."
+echo "Compilation done."
+echo "- Open 'site/index.html'"
+echo "- Run the server using 'sbt server/run' to access the 'online' tabs of the site."

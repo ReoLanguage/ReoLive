@@ -14,7 +14,7 @@
     display: none;
 }
 
-.activeTab {
+.active{
     display: block;
 }
 

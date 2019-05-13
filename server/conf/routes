@@ -6,6 +6,8 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
+# GET     /                           controllers.Assets.versioned(path="/public", file="index.html")
+
 # GET     /about                      controllers.HomeController.about
 
 # GET     /remote                     controllers.HomeController.remote
