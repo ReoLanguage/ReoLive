@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'"> -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'https://github.io'"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="Online Tools by the ARCA research group using JavaScript">
-    <meta name="author" content="">
-
+    <meta name="author" content=""> 
 
     <title>Online Tools by the ARCA research group</title>
 
@@ -15,10 +16,10 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link rel="mask-icon" href="favicon.svg" color="#34569c">
     <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
-    <link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 
 
     <!-- Custom styles for this template -->
@@ -40,7 +41,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="index.html">
         <!-- <img id="reolivelogo" src="....png" alt="ReoLive logo"> -->
       ArcaTools
     </a>
@@ -54,10 +55,10 @@
         <!-- <li><a href="#lince" data-toggle="tab" aria-expanded="false">Hybrid Programs</a></li> -->
         <!-- <li><a href="#about" data-toggle="tab" aria-expanded="false">About</a></li> -->
         <li><a href="#webReo" data-toggle="tab" onclick='load_home("webReo")'>Reo</a>
-        <!-- <li><a href="#remote" data-toggle="tab" onclick='load_WS("remote")'>Online Reo (old)</a> -->
         <li><a href="#onlineReo" data-toggle="tab" onclick='load_WS("onlineReo")'>Online Reo</a>
+        <li style="display:none;"><a href="#onlineReo2" data-toggle="tab" onclick='load_WS("onlineReo2")'>Online Reo2</a>
         <li><a href="#lince" data-toggle="tab" onclick='load_home("lince")'>Lince</a>
-        <li><a href="#onlineLince" data-toggle="tab" onclick='load_WS("onlineLince")'>Online Reo</a>
+        <li><a href="#onlineLince" data-toggle="tab" onclick='load_WS("onlineLince")'>Online Lince</a>
         <li><a href="#virtuoso" data-toggle="tab" onclick='load_home("virtuoso")'>VirtuosoNext</a>
         <li><a href="#about" data-toggle="tab" onclick='load_home("about")'>About</a></li>
         <!--~~~~~~~~~~~~~~-->
@@ -100,8 +101,8 @@
   </style>
 
 
-  <script type="text/javascript" src="assets/js/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/static/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="js/static/bootstrap.min.js"></script>
 
 
   <script>
@@ -122,13 +123,22 @@
 
   <script type="text/javascript">
     function load_home(file) {
-     document.getElementById("content").innerHTML='<object type="text/html" data="assets/content/'+file+'.html" class="full"></object>';
+     document.getElementById("content").innerHTML='<object type="text/html" data="content/'+file+'.html" class="full"></object>';
      window.location.hash = file
     }
     function load_WS(service) {
+      // $.ajax('http://localhost:9000/'+service)
+      //   .done(function(response) {
+      //       document.getElementById('content').innerHTML='<h4> Contacting host http://localhost:9001/'+service+'</h4> <h4>...</h4>'
+      //     }).fail(function(err){
+      //       document.getElementById('content').innerHTML='<h4> failed '+err.message+'</h4>'
+      //     })
+
+    // document.getElementById('content').innerHTML='<h4> Contacting host http://localhost:9001/'+service+'</h4>'
     var url = 'http://localhost:9000/'+service
     document.getElementById("content").innerHTML='<object type="text/html" data="'+url+'" class="full"><h4 style="padding:15px;">"'+url+'" not found. Check if the server is running.</object>';
     window.location.hash = service
+        // document.getElementById('content').innerHTML='<h4> Contacting host http://localhost:9001/'+service+'</h4> <h4>'+err.message+'</h4>'
     }
   </script>
 
