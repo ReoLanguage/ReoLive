@@ -3,7 +3,7 @@ package reolive
 import java.net.URLDecoder
 
 import common.widgets._
-import common.widgets.Ifta.{IFTABox, IftaInfoBox}
+import common.widgets.Ifta.{IFTABox, IftaInfoBox, IftaMcrl2Box}
 import common.widgets.virtuoso.VirtuosoAutomataBox
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
@@ -27,6 +27,7 @@ object WebReo extends{
   var svgAut: AutomataBox = _
   var hubAut: VirtuosoAutomataBox = _
   var mcrl2Box: Mcrl2Box = _
+  var mcrl2IftaBox: IftaMcrl2Box = _
   var outputLogic: OutputArea = _
   var ifta: IFTABox =_
   var iftaInfo:IftaInfoBox = _
@@ -79,6 +80,7 @@ object WebReo extends{
     svgAut       = new AutomataBox(instanceInfo, errors)
     hubAut       = new VirtuosoAutomataBox(instanceInfo,errors)
     mcrl2Box     = new Mcrl2Box(instanceInfo,errors)
+    mcrl2IftaBox     = new IftaMcrl2Box(instanceInfo,errors)
 
     ifta = new IFTABox(instanceInfo,errors)
     iftaInfo = new IftaInfoBox(instanceInfo,errors)
@@ -99,6 +101,7 @@ object WebReo extends{
     hubAut.init(rightside,visible = false)
     ifta.init(rightside,visible = false)
     mcrl2Box.init(rightside,visible = false)
+    mcrl2IftaBox.init(rightside,visible = false)
 
     // default button
     if (args.isEmpty && !buttonsDiv.loadButton("dupl;lossy*fifo")) {
@@ -128,6 +131,7 @@ object WebReo extends{
     svgAut.update()
     hubAut.update()
     mcrl2Box.update()
+    mcrl2IftaBox.update()
 
     iftaInfo.update()
     ifta.update()

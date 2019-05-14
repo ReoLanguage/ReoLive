@@ -1,47 +1,49 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
+import ifta.analyse.IftaModel
 import org.scalajs.dom
+import org.scalajs.dom.{MouseEvent, html}
 import org.scalajs.dom.raw.XMLHttpRequest
-import org.scalajs.dom.{EventTarget, MouseEvent, html}
 import preo.ast.CoreConnector
-import preo.frontend.mcrl2.{Model, ReoModel}
+import preo.frontend.mcrl2.{Model}
 
-import scala.scalajs.js.UndefOr
+/**
+  * Created by guillecledou on 2019-05-13
+  */
 
 
-
-class RemoteModelBox(connector: Box[CoreConnector], errorBox: OutputArea)
-    extends Box[Model]("mCRL2 of the instance", List(connector)){
+class RemoteMcrl2IftaBox(connector: Box[CoreConnector], errorBox: OutputArea)
+  extends Box[Model]("mCRL2 of the IFTA instance", List(connector)){
 
   var id: Long = 0
   private var box: Block = _
-  private var model: Model = _
+  private var model: IftaModel = _
 
   override def get: Model = model
 
   override def init(div: Block, visible: Boolean): Unit = {
     box = panelBox(div, visible, List("padding-right"->"90pt"),
       buttons=List(Left("&dArr;")-> (()=>download(s"/model/$id"),"Download mCRL2 specification")
-                  ,Left("LPS")   -> (()=>download(s"/lps/$id"),"Download mCRL2 lps specification")
-                  ,Left("LTS")   -> (()=>download(s"/lts/$id"),"Download mCRL2 lts specification")
-//                  ,Left("MA")   -> (()=> debugNames)
-                  ))
+        ,Left("LPS")   -> (()=>download(s"/lps/$id"),"Download mCRL2 lps specification")
+        ,Left("LTS")   -> (()=>download(s"/lts/$id"),"Download mCRL2 lts specification")
+        //                  ,Left("MA")   -> (()=> debugNames)
+      ))
       .append("div")
-      .attr("id", "mcrl2Box")
+      .attr("id", "mcrl2iftaBox")
       .style("white-space","pre-wrap")
 
 
-    dom.document.getElementById("mCRL2 of the instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+    dom.document.getElementById("mCRL2 of the IFTA instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = { e: MouseEvent => if (!isVisible) produceMcrl2() else deleteMcrl2()}
   }
 
-//  private def debugNames(): Unit = {
-//    errorBox.clear()
-//    errorBox.warning(model.getMultiActionsMap
-//      .map(kv => kv._1+":"+kv._2.map("\n - "+_).mkString(""))
-//      .mkString("\n"))
-//  }
+  //  private def debugNames(): Unit = {
+  //    errorBox.clear()
+  //    errorBox.warning(model.getMultiActionsMap
+  //      .map(kv => kv._1+":"+kv._2.map("\n - "+_).mkString(""))
+  //      .mkString("\n"))
+  //  }
 
   private def download(url: String): Unit = {
     val x = new XMLHttpRequest()
@@ -71,12 +73,12 @@ class RemoteModelBox(connector: Box[CoreConnector], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) produceMcrl2()
 
   private def produceMcrl2(): Unit = {
-    val reoModel = Model[ReoModel](connector.get)
-    model = reoModel
-    box.html(reoModel.toString)
+    model = Model[IftaModel](connector.get)
+    box.html(model.toString)
   }
 
   private def deleteMcrl2(): Unit = {
     box.html("")
   }
 }
+
