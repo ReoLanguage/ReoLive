@@ -3,8 +3,8 @@ echo "Modify the session key 'play.http.secret.key'."
 echo ""
 echo "## Removing previous standalone"
 rm -rf server/target/universal/server-1.0*
-echo "## Building standalone - assuming 'compile.sh' was executed beforehand."
-sbt dist
+echo "## Building standalone - assuming 'compile.sh' was executed at least once to generate links."
+sbt fullOptJS server/compile dist
 echo "## Unzipping standalone"
 cd server/target/universal
 unzip server-1.0.zip
