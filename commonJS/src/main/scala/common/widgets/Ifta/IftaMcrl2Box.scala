@@ -3,7 +3,7 @@ package common.widgets.Ifta
 import java.util.Base64
 
 import common.widgets.{Box, OutputArea}
-import ifta.analyse.IftaModel
+import ifta.analyse.mcrl2.IftaModel
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 import preo.ast.CoreConnector

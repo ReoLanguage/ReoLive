@@ -2,7 +2,6 @@ package common.widgets
 
 import java.util.Base64
 
-import ifta.analyse.IftaModel
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 import preo.ast.CoreConnector
@@ -60,12 +59,8 @@ class Mcrl2Box(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) produceMcrl2()
 
   private def produceMcrl2(): Unit = try {
-    val reoModel:ReoModel = Model[ReoModel](dependency.get)
-    model = reoModel
-    val iftaModel:IftaModel = Model[IftaModel](dependency.get)
-//    println("iftaModelnext")
-//    println("iftaModel: \n" )//+ iftaModel)
-    box.html(reoModel.toString)
+    model = Model[ReoModel](dependency.get)
+    box.html(model.toString)
   }
   catch Box.checkExceptions(errorBox,"mCRL2-code")
 

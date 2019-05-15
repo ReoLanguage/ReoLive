@@ -1,7 +1,7 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
-import ifta.analyse.IftaModel
+import ifta.analyse.mcrl2.IftaModel
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
 import org.scalajs.dom.raw.XMLHttpRequest
