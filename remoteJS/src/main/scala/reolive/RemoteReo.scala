@@ -32,6 +32,7 @@ object RemoteReo extends{
   private var svg: GraphBox = _
   private var svgAut: AutomataBox = _
   private var mcrl2Box: RemoteModelBox = _
+  private var mcrl2IftaBox: RemoteMcrl2IftaBox = _
   private var ifta: RemoteIFTABox = _
   private var iftaAut: IFTABox =_
   private var uppaalAut:RemoteUppaalAutBox = _
@@ -88,6 +89,8 @@ object RemoteReo extends{
       new AutomataBox(typeInstanceInfo, errors)
     mcrl2Box =
       new RemoteModelBox(typeInstanceInfo, errors)
+    mcrl2IftaBox =
+      new RemoteMcrl2IftaBox(typeInstanceInfo, errors)
     outputBox = new OutputArea()
     // must be after inputbox and mcrl2box
     modalBox = new RemoteLogicBox(inputBox, form, typeInstanceInfo, outputBox)
@@ -114,6 +117,7 @@ object RemoteReo extends{
     svg.init(rightside,true)
     svgAut.init(rightside,false)
     mcrl2Box.init(rightside,false)
+    mcrl2IftaBox.init(rightside,false)
     iftaAut.init(rightside,visible=false)
     uppaalAut.init(rightside,visible = false)
     uppaalNet.init(rightside,visible = false)
@@ -154,6 +158,7 @@ object RemoteReo extends{
     svg.update
     svgAut.update
     mcrl2Box.update
+    mcrl2IftaBox.update
     ifta.update
     iftaAut.update
     uppaalAut.update

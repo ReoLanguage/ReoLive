@@ -1,32 +1,39 @@
-package common.widgets
+package common.widgets.Ifta
 
 import java.util.Base64
 
+import common.widgets.{Box, OutputArea}
+import ifta.analyse.mcrl2.IftaModel
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 import preo.ast.CoreConnector
 import preo.frontend.mcrl2.{Model, ReoModel}
 
-class Mcrl2Box(dependency: Box[CoreConnector], errorBox: OutputArea)
-    extends Box[Model]("mCRL2 of the instance", List(dependency))  {
-  private var box: Block = _
-  private var model: Model = _
+/**
+  * Created by guillerminacledou on 2019-05-14
+  */
 
-  override def get: Model = model
+
+class IftaMcrl2Box(dependency: Box[CoreConnector], errorBox: OutputArea)
+  extends Box[IftaModel]("mCRL2 of the IFTA instance", List(dependency))  {
+  private var box: Block = _
+  private var model: IftaModel = _
+
+  override def get: IftaModel = model
 
   override def init(div: Block, visible: Boolean): Unit = {
     box = panelBox(div, visible,buttons=List(Left("&dArr;")-> (()=>download(), "Download mCRL2 specification")))
       .append("div")
-      .attr("id", "mcrl2Box")
+      .attr("id", "mcrl2IftaBox")
       .style("white-space","pre-wrap")
 
 
-    dom.document.getElementById("mCRL2 of the instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+    dom.document.getElementById("mCRL2 of the IFTA instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = { _: MouseEvent => if (!isVisible) produceMcrl2() else deleteMcrl2()}
   }
 
   private def download(): Unit = {
-//    <a href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA">text file</a>
+    //    <a href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA">text file</a>
     val enc = Base64.getEncoder.encode(get.toString.getBytes()).map(_.toChar).mkString
     val filename = "model.mcrl2"
     val url= "data:application/octet-stream;charset=utf-16le;base64,"+enc
@@ -59,7 +66,8 @@ class Mcrl2Box(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) produceMcrl2()
 
   private def produceMcrl2(): Unit = try {
-    model = Model[ReoModel](dependency.get)
+    deleteMcrl2()
+    model = Model[IftaModel](dependency.get)
     box.html(model.toString)
   }
   catch Box.checkExceptions(errorBox,"mCRL2-code")
@@ -69,3 +77,4 @@ class Mcrl2Box(dependency: Box[CoreConnector], errorBox: OutputArea)
   }
 
 }
+

@@ -5,7 +5,7 @@ import org.scalajs.dom
 import org.scalajs.dom.raw.XMLHttpRequest
 import org.scalajs.dom.{EventTarget, MouseEvent, html}
 import preo.ast.CoreConnector
-import preo.frontend.mcrl2.Model
+import preo.frontend.mcrl2.{Model, ReoModel}
 
 import scala.scalajs.js.UndefOr
 
@@ -29,6 +29,7 @@ class RemoteModelBox(connector: Box[CoreConnector], errorBox: OutputArea)
                   ))
       .append("div")
       .attr("id", "mcrl2Box")
+      .style("white-space","pre-wrap")
 
 
     dom.document.getElementById("mCRL2 of the instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
@@ -70,8 +71,9 @@ class RemoteModelBox(connector: Box[CoreConnector], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) produceMcrl2()
 
   private def produceMcrl2(): Unit = {
-    model = Model(connector.get)
-    box.html(model.webString)
+    val reoModel = Model[ReoModel](connector.get)
+    model = reoModel
+    box.html(reoModel.toString)
   }
 
   private def deleteMcrl2(): Unit = {
