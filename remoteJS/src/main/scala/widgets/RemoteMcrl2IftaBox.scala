@@ -1,12 +1,15 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
+import ifta.{DSL, FExp}
 import ifta.analyse.mcrl2.IftaModel
+import ifta.backend.Show
+import org.sat4j.specs.TimeoutException
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
 import org.scalajs.dom.raw.XMLHttpRequest
 import preo.ast.CoreConnector
-import preo.frontend.mcrl2.{Model}
+import preo.frontend.mcrl2.Model
 
 /**
   * Created by guillecledou on 2019-05-13
@@ -73,12 +76,30 @@ class RemoteMcrl2IftaBox(connector: Box[CoreConnector], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) produceMcrl2()
 
   private def produceMcrl2(): Unit = {
-    model = Model[IftaModel](connector.get)
-    box.html(model.toString)
+    try {
+      deleteMcrl2()
+      model = Model[IftaModel](connector.get)
+      var fmInfo =
+        s"""{ "fm":     "${Show(model.fm)}", """ +
+        s"""  "feats":  "${model.feats.mkString("(",",",")")}" }"""
+
+      RemoteBox.remoteCall("ifta", fmInfo, produceMcrl2WithSols)
+      //      box.html(model.toString)
+    } catch {
+      case e:Throwable =>
+        errorBox.error(e.getMessage)
+    }
   }
 
   private def deleteMcrl2(): Unit = {
     box.html("")
   }
+
+  private def produceMcrl2WithSols(data:String):Unit ={
+    val solutions:Set[Set[String]] = DSL.parseProducts(data)
+    box.html(model.show(solutions))
+  }
+
+
 }
 
