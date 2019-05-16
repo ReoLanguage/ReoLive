@@ -89,13 +89,13 @@ object Lince extends{
     errors.clear()
     inputBox.update()
 //    information.update()
-    deviation.update()
+    // deviation.update()
     graphics.update()
   }
 
   private def reloadGraphics(): Unit = {
     errors.clear()
-    deviation.update()
+    // deviation.update()
     graphics.update()
   }
 
