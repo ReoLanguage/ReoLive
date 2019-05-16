@@ -56,7 +56,7 @@ class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
         }
       //      println("a")
       //      val (traj,_) = hprog.ast.Trajectory.hprogToTraj(Map(),prog)
-      val prog = hprog.frontend.Semantics.syntaxToValuationTaylor(syntax,eps=epsVal)
+      val prog = hprog.frontend.Semantics.syntaxToValuationTaylor(syntax)
 
       // tests: to feed to Sage
       val eqs = Solver.getDiffEqs(syntax)

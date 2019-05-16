@@ -4,7 +4,7 @@ import akka.actor._
 import hprog.backend.TrajToJS
 import hprog.common.ParserException
 import hprog.frontend.Semantics.Valuation
-import hprog.frontend.{SageSolver, Solver, Traj}
+import hprog.frontend.{Distance, SageSolver, Solver, Traj}
 
 import sys.process._
 
@@ -50,17 +50,38 @@ class LinceActor(out: ActorRef) extends Actor{
 //    }
   }
 
-  private def callSage(prog: String, sagePath:String): String = try {
+  private def callSage(progAndEps: String, sagePath:String): String = try {
+    // first part is the epsilon
+    val splitted = progAndEps.split(" ",2)
+    val eps = splitted(0).toDouble
+    val prog = splitted(1)
+
     val syntax = hprog.DSL.parse(prog)
     val eqs = hprog.frontend.Utils.getDiffEqs(syntax)
-    val replySage = hprog.frontend.SageSolver.callSageSolver(eqs,sagePath,timeout=10)
-    replySage.mkString("§")
+    val replySage = hprog.frontend.SageSolver.callSageSolver(eqs,sagePath,timeout=20)
+
+    // re-evaluating trajectory to get warnings
+    val solver = new hprog.frontend.SageSolverStatic(eqs,replySage)
+    val traj = hprog.frontend.Semantics.syntaxToValuation(syntax,solver,new Distance(eps)).traj(Map())
+    val warnings = traj.warnings(hprog.ast.BVal(true))
+
+    replySage.mkString("§") ++
+    "§§§" ++
+    buildWarinings(warnings)
   }
   catch {
     case p:ParserException =>
       //println("failed parsing: "+p.toString)
-      s"Error: When parsing ${prog} - ${p.toString}"
+      s"Error: When parsing $progAndEps - ${p.toString}"
     case e:Throwable => "Error "+e.toString
+  }
+
+  private def buildWarinings(warns: Map[Double, Set[String]]): String = {
+    // "double" space "strings splitted by §"
+    // all splitted by §§
+    val s = warns.map(kv => s"${kv._1} ${kv._2.mkString("§")}").mkString("§§")
+    //println(s"warnings: $s")
+    s
   }
 
 //  private def draw(msg: String, range: Option[(Double,Double)]): String =
