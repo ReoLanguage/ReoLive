@@ -48,12 +48,13 @@ class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
       //println(s"building trajectory from  ${program.get}")
       //println(s"building trajectory using ${eps.get}")
       val syntax = hprog.DSL.parse(program.get)
-      val epsVal: Double = try {eps.get.toDouble}
-        catch {
-          case e:Throwable =>
-            errorBox.error(e.getMessage)
-            0
-        }
+//      val epsVal: Double = try {eps.get.toDouble}
+//        catch {
+//          case e:Throwable =>
+//            errorBox.error(e.getMessage)
+//            0
+//        }
+
       //      println("a")
       //      val (traj,_) = hprog.ast.Trajectory.hprogToTraj(Map(),prog)
       val prog = hprog.frontend.Semantics.syntaxToValuationTaylor(syntax)
