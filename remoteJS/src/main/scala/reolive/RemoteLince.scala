@@ -19,7 +19,7 @@ object RemoteLince {
     var graphic: RemoteGraphicBox = _
     var errors: OutputArea = _
     var descr: OutputArea = _
-    var deviation: InputBox = _
+    var perturbation: InputBox = _
 
 
     @JSExportTopLevel("reolive.RemoteLince.main")
@@ -56,16 +56,16 @@ object RemoteLince {
       inputBox = new LinceBox(reload(), "",errors)
       examples = new LinceExamplesBox(softReload(),inputBox,descr)
       //information = new LinceInfoBox(inputBox, errors)
-      deviation = new InputBox(reloadGraphics(),"0.1","deviation",1,
+      perturbation = new InputBox(softReload(),"2","perturbation",1,
         title = "Perturbation warnings",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some value > 0. Set to 0 to ignore these warnings.")
-      graphic= new RemoteGraphicBox(inputBox, deviation, errors)
+      graphic= new RemoteGraphicBox(inputBox, perturbation, errors)
 
       inputBox.init(leftColumn,true)
       errors.init(leftColumn)
       examples.init(leftColumn,true)
       descr.init(leftColumn)
-      deviation.init(leftColumn,visible = false)
+      perturbation.init(leftColumn,visible = false)
       //information.init(rightColumn,true)
       graphic.init(rightColumn,true)
 
@@ -94,13 +94,13 @@ object RemoteLince {
       errors.clear()
       inputBox.update()
       //information.update()
-      deviation.update()
+      perturbation.update()
       graphic.update()
     }
 
     private def reloadGraphics(): Unit = {
       errors.clear()
-      deviation.update()
+      perturbation.update()
       graphic.resample(hideCont = true)
     }
 
