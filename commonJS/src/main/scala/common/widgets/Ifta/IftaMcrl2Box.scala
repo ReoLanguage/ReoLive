@@ -66,6 +66,7 @@ class IftaMcrl2Box(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) produceMcrl2()
 
   private def produceMcrl2(): Unit = try {
+    deleteMcrl2()
     model = Model[IftaModel](dependency.get)
     box.html(model.toString)
   }

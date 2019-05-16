@@ -1,6 +1,7 @@
 package services
 
 import akka.actor.{Actor, ActorRef, Props}
+import ifta.backend.Show
 import ifta.common.ParseException
 import ifta.{DSL, FExp, Feat}
 import play.api.libs.json.{JsDefined, JsString, JsValue, Json}
@@ -24,7 +25,7 @@ class IftaActor(out:ActorRef) extends Actor {
   private def process(msg:String):String = {
     val (fmS,featsS) = parseMsg(msg)
     try {
-      var fm:FExp = DSL.parseFexp(fmS)
+      var fm:FExp = DSL.parseEfficientFexp(fmS)
       var feats:Set[String] = DSL.parserFeats(featsS)
       fm.products(feats).map(p => p.mkString("(",",",")")).mkString("(",",",")")
     } catch {

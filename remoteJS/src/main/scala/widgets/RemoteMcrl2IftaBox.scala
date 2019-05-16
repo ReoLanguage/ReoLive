@@ -80,7 +80,7 @@ class RemoteMcrl2IftaBox(connector: Box[CoreConnector], errorBox: OutputArea)
       deleteMcrl2()
       model = Model[IftaModel](connector.get)
       var fmInfo =
-        s"""{ "fm":     "${Show(model.fm)}", """ +
+        s"""{ "fm":     "${model.fm}", """ +
         s"""  "feats":  "${model.feats.mkString("(",",",")")}" }"""
 
       RemoteBox.remoteCall("ifta", fmInfo, produceMcrl2WithSols)
