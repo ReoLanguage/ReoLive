@@ -56,7 +56,7 @@ class RemoteUppaalAutBox(connector:Box[CoreConnector], errorBox:OutputArea)
 
 //    var nifta:NIFTA = NIFTA(iftaAut.nifta)
     var nifta = iftaAut.getRenamedNifta
-    var fmInfo =  s"""{ "fm":     "${Show(nifta.fm)}", """ +
+    var fmInfo =  s"""{ "fm":     "${nifta.fm}", """ +
       s"""  "feats":  "${nifta.iFTAs.flatMap(i => i.feats).mkString("(",",",")")}" }"""
 
     RemoteBox.remoteCall("ifta", fmInfo, showModel)
