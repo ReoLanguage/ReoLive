@@ -59,7 +59,7 @@ class RemoteIFTABox(dependency:Box[CoreConnector], iftaAutBox:IFTABox,circuitBox
       iftaAut = Automata[IftaAutomata](dependency.get,mirrors)
 
       var nifta:NIFTA = NIFTA(iftaAut.nifta)
-      var fmInfo =  s"""{ "fm":     "${Show(nifta.fm)}", """ +
+      var fmInfo =  s"""{ "fm":     "${nifta.fm}", """ +
                     s"""  "feats":  "${nifta.iFTAs.flatMap(i => i.feats).mkString("(",",",")")}" }"""
 
       RemoteBox.remoteCall("ifta", fmInfo, showProducts)
