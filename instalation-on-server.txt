@@ -1,0 +1,50 @@
+# Instalation on Server
+# --------------------
+# This script contains instructions that can be used to help
+# installing the server in a debian-based Linux machine.
+
+# reroute 80 port
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 9000
+
+# check routing tables
+#sudo iptables -t nat --line-numbers -n -L
+
+# delete a re-routing field
+#sudo iptables -t nat -D PREROUTING 2 (where 2 is the number of the rule)
+
+
+# upgrade everything
+sudo apt-get update
+sudo apt-get upgrade
+
+# install jdk
+sudo apt-get install openjdk-8-jdk
+
+# install sbt
+echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+sudo apt-get update
+sudo apt-get install sbt
+
+# clone ReoLive
+mkdir projects
+cd projects
+git clone ...
+cd ReoLive
+git submodule update --init
+# [some tweaking of url's and symbolic links may be needed]
+
+# install mCRL2
+sudo apt-get install mcrl2
+
+# compile ReoLive
+# sbt fastOptJS   # or fullOptJS
+sh ./compile.sh
+
+# run a simple webserver
+cd projects/ReoLive/snapshot
+python3 -m http.server
+
+# run the play server
+# sbt -mem 2048 server/run
+sh ./production.sh
