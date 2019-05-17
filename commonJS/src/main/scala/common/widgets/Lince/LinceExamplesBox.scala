@@ -52,6 +52,18 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         "it to know when to flash: when the clock reaches a threshold the firefly " +
         "flashes and the clock’s value is reset to zero. The flash of a firefly " +
         "increases the internal clock’s value of all other fireflies nearby.")
+    ,"Approximation error"->
+      """// The approximation error gives a
+        |// wrong evaluation of the if-condition
+        |x := 1;
+        |x' = -x & 40;
+        |x' =  x & 40;
+        |if x == 1 then x:= 2
+        |          else x:= 3""".stripMargin ->
+      ("(Example requires the online version.) " +
+        "The approximation error at point 80 makes the value of x slightly different " +
+        "from 1 in practice, yielding a final value of 3 instead of 2. This possibility is reported " +
+        "by our warning system that checks if perturbations could affect the output of conditions.")
     ,"Dependent variables"->
       """// Solution not naively computed (precise solution involves sin/cos)
         |// Use the online version to use the precise solution.

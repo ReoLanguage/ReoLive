@@ -12,6 +12,11 @@ server/app/assets/javascripts/local_js-opt.js
 server/app/assets/javascripts/remote_js-opt.js
 server/app/assets/javascripts/local_js-fastopt.js.map
 server/app/assets/javascripts/remote_js-fastopt.js.map
+logs/
+server/logs/
+
+*-old
+
 
 site/js/gen/
 server/public/
