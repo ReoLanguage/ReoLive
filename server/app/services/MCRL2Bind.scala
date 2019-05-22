@@ -8,8 +8,8 @@ import sys.process._
 
 
 object MCRL2Bind {
-  private val mcrl2path = "/Applications/mCRL2.app/Contents/bin/"
-//  private val mcrl2path = "/usr/bin/"
+//  private val mcrl2path = "/Applications/mCRL2.app/Contents/bin/"
+  private val mcrl2path = "/usr/bin/"
   private val timeout = "timeout 10"
 
   def savepbes(): (Int, String) = {
