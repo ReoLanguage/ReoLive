@@ -12,11 +12,13 @@ GET     /                           controllers.HomeController.index
 
 # GET     /remote                     controllers.HomeController.remote
 
-GET     /onlineReo                  controllers.HomeController.onlineReo
+GET     /reo                  controllers.HomeController.onlineReo
 
-GET     /onlineReo2                  controllers.HomeController.onlineReo2
+GET     /reo2                  controllers.HomeController.onlineReo2
 
-GET     /onlineLince                      controllers.HomeController.onlineLince
+GET     /lince                      controllers.HomeController.onlineLince
+
+GET     /treo                      controllers.HomeController.onlineTreo
 
 
 # Map static resources from the /public folder to the /assets URL path
@@ -33,5 +35,7 @@ GET     /lps/:id                    controllers.HomeController.lps(id:Long)
 GET     /modal                      controllers.ModalController.socket
 
 GET     /linceWS                    controllers.LinceController.socket
+
+GET     /treoWS                    controllers.TreoController.socket
 
 GET     /ifta                       controllers.IFTAController.socket

@@ -24,8 +24,11 @@ lazy val common_settings = Seq(
     "com.github.vagmcs" %% "optimus" % "3.1.2",
     "com.github.vagmcs" %% "optimus-solver-oj" % "3.1.2"
   )
+  ,
+  unmanagedJars in Compile ++= Seq(
+    baseDirectory.value / "../lib/reo-1.0b.jar"
+  )
 )
-
 
 lazy val server = (project in file("server"))
   .dependsOn(localJS, remoteJS)
@@ -48,7 +51,7 @@ lazy val server = (project in file("server"))
       // "com.typesafe.play" %% "play-json" % "2.6.9",
       jdbc , ehcache , ws , specs2 % Test , guice
     ),
-    //    unmanagedResourceDirectories in Test +=  Seq(baseDirectory ( _ /"target/web/public/test" )),
+    // unmanagedResourceDirectories in Test +=  Seq(baseDirectory ( _ /"target/web/public/test" )),
     unmanagedSourceDirectories in Compile ++= Seq(
       baseDirectory.value / "../lib/preo/src/main/scala",
       baseDirectory.value / "../lib/hprog/src/main/scala",
@@ -72,7 +75,8 @@ lazy val javascript_settings = Seq(
     "io.circe" %% "circe-core" % circeVersion, // json parser
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion
-  ),
+  )
+  ,
   unmanagedSourceDirectories in Compile ++= Seq(
     baseDirectory.value / "../lib/preo/src/main/scala",
     baseDirectory.value / "../lib/hprog/src/main/scala",
@@ -118,7 +122,6 @@ lazy val remoteJS= (project in file("remoteJS"))
       "com.typesafe.play" %% "play-json" % "2.6.9"
     )
   )
-
 
 
 // todo: add here a task for, when compiling the server, copying the content into the app/...
