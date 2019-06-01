@@ -4,6 +4,9 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.21")
 
 addSbtPlugin("com.lihaoyi" % "workbench" % "0.4.1")
 
+// using maven in treo sub-module
+//addSbtPlugin("com.github.shivawu" % "sbt-maven-plugin" % "0.1.2")
+
 logLevel := Level.Warn
 
 resolvers += Resolver.sbtPluginRepo("releases")
