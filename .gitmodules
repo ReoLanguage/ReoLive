@@ -10,3 +10,6 @@
 [submodule "lib/virtuoso"]
 	path = lib/virtuoso
 	url = https://github.com/arcalab/hubAutomata.git
+[submodule "lib/reactiveDsl"]
+	path = lib/reactiveDsl
+	url = https://github.com/arcalab/reactiveDsl.git
