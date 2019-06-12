@@ -17,7 +17,7 @@ class DslBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
       Right("glyphicon glyphicon-refresh") -> (() => reload, "Load the program (shift-enter)")
     )
 
-  override protected val codemirror: String = "newDsl"
+  override protected val codemirror: String = "dsl"
 
   override def reload(): Unit = {
     update()
