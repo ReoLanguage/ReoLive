@@ -76,8 +76,8 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |data Unit = U
         |
         |x = Cons(Zero,Nil)
-        |List = Cons(Zero,x)
-        |z = Cons(Succ(Succ(Zero)),List)
+        |y = Cons(Zero,x)
+        |z = Cons(Succ(Succ(Zero)),y)
         |w = True""".stripMargin::""::Nil,
     "Nil case 1"::
       """data List<a> = Nil | Cons(a,List<a>)
