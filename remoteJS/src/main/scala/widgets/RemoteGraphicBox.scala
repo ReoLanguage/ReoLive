@@ -3,6 +3,8 @@ package widgets
 import common.widgets.{Box, OutputArea}
 import hprog.ast.Syntax
 import hprog.backend.TrajToJS
+import hprog.frontend.Semantics.Warnings
+import hprog.frontend.solver.{StaticSageSolver, Solver}
 import hprog.frontend.{Deviator, Distance, Solver}
 
 class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
@@ -10,7 +12,7 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
   var box : Block = _
   private var lastSolver:Option[Solver] = None
   private var lastSyntax:Option[Syntax] = None
-  private var lastWarnings:Option[Map[Double,Set[String]]] = None
+  private var lastWarnings:Option[Warnings] = None
 
   override def get: Unit = {}
 
@@ -60,7 +62,7 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
       val warnings = parseWarnings(splitted(1))
       lastWarnings = Some(warnings)
 
-      val solver = new hprog.frontend.SageSolverStatic(eqs,sageReply)
+      val solver = new StaticSageSolver(eqs,sageReply)
       //println("got static solver")
       lastSolver = Some(solver)
       redraw(None,hideCont = true)
@@ -85,14 +87,15 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
 //    }
   }
 
-  private def parseWarnings(str: String): Map[Double,Set[String]] = {
+  private def parseWarnings(str: String): Warnings = {
     val entries = str.split("§§")
-    entries.filter(_!="").map(entry => {
+    val msgs = entries.filter(_!="").map(entry => {
       val esplit = entry.split(" ",2)
       val dbl = esplit(0).toDouble
       val set = esplit(1).split("§").toSet
       dbl -> set
     }).toMap
+    msgs.mapValues(ms => (ms,Set()))
   }
 
 
