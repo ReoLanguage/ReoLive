@@ -97,7 +97,42 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |x = Nil
         |z = Cons(True,x)
         |w = Cons(Zero,x)""".stripMargin::
-        """fails because <strong>x</strong> was consider of type <strong>List&lt;Bool&gt; first</strong>""".stripMargin::Nil//,
+      """fails because <strong>x</strong> was consider of type <strong>List&lt;Bool&gt; first</strong>""".stripMargin::Nil,
+    "Conn Def"::
+      """data List<a> = Nil | Cons(a,List<a>)
+        |data Bool = True | False
+        |data Nat = Zero | Succ(Nat)
+        |
+        |def conn = {
+        |	dupl;fifo*lossy
+        |}
+        |
+        |def alt = {
+        |	alt {
+        | alt(i1?,i2?,o!) =
+        |   in1(i1,a) in2(i2,b) drain(a, b)
+        |   sync(a, c) fifo(b, c) out(c,o)
+        |  }
+        |}
+        |
+        |x = True
+        |y = conn
+        |w = alt
+        |
+        |//
+        |// Some discussed ideas
+        |//
+        |// 1) where o1 and o2 serve as variables,
+        |// don't need to be specified before
+        |// if they are actual params for outputs:
+        |// z = conn(x,o1,o2)
+        |// 2) unspecified could mean some kind of Unit type -
+        |// no data is sent or don't care about data:
+        |// z = conn
+        |// 3) outputs are declared on the lhs,
+        |// inputs on the rhs
+        |// (o1,o2) = conn(x)""".stripMargin::
+      """Ideas for connectors expressions""".stripMargin::Nil,
 //    "Virtuoso Data"::
 //      """
 //        |data Unit = U
