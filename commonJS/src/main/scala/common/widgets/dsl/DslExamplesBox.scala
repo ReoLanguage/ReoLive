@@ -133,6 +133,41 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |// inputs on the rhs
         |// (o1,o2) = conn(x)""".stripMargin::
       """Ideas for connectors expressions""".stripMargin::Nil,
+    "Conn Infer"::
+      """data List<a> = Nil | Cons(a,List<a>)
+        |data Bool = True | False
+        |data Nat = Zero | Succ(Nat)
+        |
+        |def conn = {
+        |	dupl;fifo*lossy
+        |}
+        |
+        |def alt = {
+        |	alt {
+        | alt(i1?,i2?,o!) =
+        |   in1(i1,a) in2(i2,b) drain(a, b)
+        |   sync(a, c) fifo(b, c) out(c,o)
+        |  }
+        |}
+        |
+        |
+        |def noOutput = {
+        |	(\x.fifo^x) ;
+        |    (\n.drain^n)
+        |}
+        |
+        |def closed = {
+        |	writer^8 ; merger! ;
+        |	merger! ; reader!
+        |}
+        |
+        |true = True
+        |zero = Zero
+        |nil = Nil
+        |x = conn
+        |y = conn(true)
+        |w = alt(true,zero)""".stripMargin::
+      """Checking some connectors expression""".stripMargin::Nil
 //    "Virtuoso Data"::
 //      """
 //        |data Unit = U
