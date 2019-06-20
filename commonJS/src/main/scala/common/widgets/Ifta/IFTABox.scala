@@ -1,6 +1,5 @@
 package common.widgets.Ifta
 
-import common.backend.CCToFamily
 import common.frontend.{AutomataToJS, IFTAToJS}
 import common.widgets.{Box, GraphBox, OutputArea}
 import ifta.IFTA

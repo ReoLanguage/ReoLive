@@ -8,7 +8,6 @@ import nl.cwi.reo.semantics.predicates._
 import nl.cwi.reo.templates.{Protocol, Transition}
 
 import scala.collection.JavaConverters._
-import scala.sys.process._
 
 object TreoActor {
   def props(out: ActorRef) = Props(new TreoActor(out))
@@ -36,56 +35,6 @@ class TreoActor(out: ActorRef) extends Actor{
     val cleanMsg = msg.replace("\\\\", "\\")
       .replace("\\n", "\n")
 //
-
-    var writer: java.io.PrintWriter = null
-    var out: Stream[String] = Stream()
-    val calcCommand = "bc"
-    // strings are implicitly converted to ProcessBuilder
-    // via scala.sys.process.ProcessImplicits.stringToProcess(_)
-    val calcProc = calcCommand.run(new ProcessIO(
-      // Handle subprocess's stdin
-      // (which we write via an OutputStream)
-      in => {
-        writer = new java.io.PrintWriter(in)
-        writer.println("1 + 2")
-        writer.flush()
-        writer.println("3 + 4")
-        writer.flush()
-      },
-      // Handle subprocess's stdout
-      // (which we read via an InputStream)
-      out => {
-//        var is = Stream.continually(out.read)
-//        while(is.nonEmpty)
-//          is.headOption match {
-//            case Some(value) => println("next answer: "+value)
-//            case None => println("end of stream")
-//          }
-        val src = scala.io.Source.fromInputStream(out)
-        for (line <- src.getLines()) {
-          println("Answer: " + line)
-        }
-        src.close()
-      },
-      // We don't want to use stderr, so just close it.
-      _.close()
-    ))
-    writer.println(" 7 + 7")
-    writer.close()
-
-//    new ProcessIO(
-//      (in: java.io.OutputStream => Unit) => {
-//        val wr = new PrintWriter(in)
-//        wr.println("1+2")
-//        wr.println("3+4")
-//        wr.close()
-//      }
-//      ,
-//    (out: java.io.OutputStream => Unit) => {
-//        val src = scala.io.Source.fromInputStream(out)
-//
-//      }
-//    )
 
 
     val v1 = getRBS(cleanMsg,true)
