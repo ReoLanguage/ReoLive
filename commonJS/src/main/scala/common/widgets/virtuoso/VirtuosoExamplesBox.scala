@@ -128,7 +128,17 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |  [hide] t2 = writer*writer,
           |  [hide] act = reader
           |}
-        """.stripMargin::Nil
+        """.stripMargin::Nil,
+    "Simpler RoundRobin - with components"
+      ::"Round robin between 2 tasks, without an actuator."
+      ::"""rr {
+          | [hide] tk1 = writer*reader,
+          | [hide] tk2 = writer*reader,
+          |
+          | rr() =
+          |   tk1(r1,w1) tk2(r2,w2)
+          |   semaphore(w1,r2) semaphore(w2,r1)
+          |}""".stripMargin::Nil
 //      """// Round robin between 2 tasks, sending to an actuator
 //        |t1 * t2;
 //        |coord;

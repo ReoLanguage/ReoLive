@@ -1,11 +1,13 @@
 package services
 
+import java.io.PrintWriter
+
 import akka.actor._
 import nl.cwi.reo.Compiler
+import nl.cwi.reo.semantics.predicates._
 import nl.cwi.reo.templates.{Protocol, Transition}
 
 import scala.collection.JavaConverters._
-
 
 object TreoActor {
   def props(out: ActorRef) = Props(new TreoActor(out))
@@ -55,9 +57,9 @@ class TreoActor(out: ActorRef) extends Actor{
         val init = p.getInitial
           .asScala
           .toList
-          .map(kv => s"  ${kv._1} := ${if (kv._2==null) "*" else kv._2}")
+          .map(kv => s"  ${kv._1}:=${if (kv._2==null) "*" else kv._2}")
           .sorted
-          .mkString("\n")
+          .mkString(", ")
         res += s"  ${p.getPorts.asScala.mkString(" ")}"
         if (!p.getInitial.isEmpty)
           res += s"\n  --Init--\n$init"
@@ -75,15 +77,23 @@ class TreoActor(out: ActorRef) extends Actor{
   }
 
   private def pp(transition: Transition): String = {
-    transition.getGuard.toString.drop(1).dropRight(1)+
-      "  ->\n"+
+    pp(transition.getGuard) +
+//    transition.getGuard.toString.drop(1).dropRight(1)+
+      "  -->\n"+
       pp(transition.getOutput.asScala.toList)+
       pp(transition.getMemory.asScala.toList)
   }
   private def pp[A,B](l:List[(A,B)]): String =
     if (l.isEmpty) ""
-    else l.map(p => s"     - ${p._1} := ${p._2}").mkString("\n") + "\n"
+    else l.map(p => s"     - ${p._1}:=${p._2}").mkString("\n") + "\n"
 
+  private def pp(formula: Formula): String = formula match {
+    case f:Conjunction => f.getClauses.asScala.map(pp).mkString("  ∧  ")
+    case f:Disjunction => f.getClauses.asScala.map(pp).mkString("  \\/  ")
+    case f:Equality => s"${f.getLHS}==${f.getRHS}"
+    case f:Existential => f.toString
+    case _ => formula.toString
+  }
 
 
 }
