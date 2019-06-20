@@ -1,7 +1,7 @@
 package reolive
 
-import common.widgets.OutputArea
-import common.widgets.dsl.{DslAnalysisBox, DslBox}
+import common.widgets.{ButtonsBox, OutputArea}
+import common.widgets.dsl.{DslAnalysisBox, DslBox, DslExamplesBox}
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
 
@@ -16,6 +16,7 @@ object NewDSL {
   var inputBox: DslBox = _
   var errors: OutputArea = _
   var result: DslAnalysisBox = _
+  var examples: DslExamplesBox = _
   var descr: OutputArea = _
 
 
@@ -59,13 +60,18 @@ object NewDSL {
 
     inputBox = new DslBox(reload(),program,errors)
     result = new DslAnalysisBox(inputBox,errors)
+    examples = new DslExamplesBox(softReload(),List(inputBox,descr))
 
     inputBox.init(leftColumn, true)
     errors.init(leftColumn)
     result.init(rightColumn,visible = true)
     descr.init(leftColumn)
+    examples.init(leftColumn,visible = true)
 
-    reload()
+    // default button
+    if (examples.loadButton("Various types")) {
+      reload()
+    }
 
   }
 

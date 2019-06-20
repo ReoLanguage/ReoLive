@@ -27,6 +27,8 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
 
   override def update(): Unit = try {
     box.html("")
+    var ast = DSL.parse(program.get)
+    println("Inferred tree: " + ast)
     var types = DSL.typeCheck(DSL.parse(program.get))
     val list = box.append("ul")
     list.attr("style","margin-bottom: 20pt;")
