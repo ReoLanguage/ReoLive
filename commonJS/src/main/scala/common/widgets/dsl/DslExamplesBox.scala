@@ -150,7 +150,6 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |  }
         |}
         |
-        |
         |def noOutput = {
         |	(\x.fifo^x) ;
         |    (\n.drain^n)
