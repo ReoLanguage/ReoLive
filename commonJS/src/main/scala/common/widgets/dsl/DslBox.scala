@@ -18,6 +18,7 @@ class DslBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
     )
 
   override protected val codemirror: String = "dsl"
+  override protected val theme:String = "neat"
 
   override def reload(): Unit = {
     update()
