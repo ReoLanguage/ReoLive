@@ -166,7 +166,21 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |x = conn
         |y = conn(true)
         |w = alt(true,zero)""".stripMargin::
-      """Checking some connectors expression""".stripMargin::Nil
+      """Checking some connectors expression""".stripMargin::Nil,
+    "Multi Assign"::
+      """data Bool = True | False
+        |data Nat = Zero | Succ(Nat)
+        |
+        |def conn = {
+        |	dupl;fifo*lossy
+        |}
+        |
+        |x = conn
+        |y = conn(True)
+        |o1,o2 = conn
+        |o3,o4 = conn(Zero)
+        |""".stripMargin::
+      """Exmple of multiple assignment (allowed for conn and functions only?)""".stripMargin::Nil
 //    "Virtuoso Data"::
 //      """
 //        |data Unit = U
