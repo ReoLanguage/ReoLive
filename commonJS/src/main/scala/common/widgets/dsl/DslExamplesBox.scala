@@ -179,8 +179,8 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |y = conn(True)
         |o1,o2 = conn
         |o3,o4 = conn(Zero)
-        |""".stripMargin::
-      """Exmple of multiple assignment (allowed for conn and functions only?)""".stripMargin::Nil
+        |z = conn(Zero,out1,out2)""".stripMargin::
+      """Exmple of multiple assignment""".stripMargin::Nil
 //    "Virtuoso Data"::
 //      """
 //        |data Unit = U
