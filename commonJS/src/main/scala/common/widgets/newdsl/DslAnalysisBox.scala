@@ -1,4 +1,4 @@
-package common.widgets.dsl
+package common.widgets.newdsl
 
 import common.widgets.{Box, OutputArea}
 import dsl.DSL

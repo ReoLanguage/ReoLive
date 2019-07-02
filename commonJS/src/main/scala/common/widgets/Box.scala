@@ -6,7 +6,6 @@ import org.scalajs.dom
 import org.scalajs.dom.EventTarget
 import org.singlespaced.d3js.Selection
 import preo.common.TypeCheckException
-
 import scala.scalajs.js.{JavaScriptException, UndefOr}
 
 
@@ -152,6 +151,16 @@ object Box {
         errorBox.error(s"ParserException$by: " + e.getMessage)
       case e: hprog.frontend.SageSolver.SolvingException =>
         errorBox.error(s"Failed to solve expression$by:" + e.getMessage)
+      case e: dsl.common.ParsingException =>
+        errorBox.error(s"ParserException$by: " + e.getMessage)
+      case e: dsl.common.TypeException =>
+        errorBox.error(s"TypeException$by: " + e.getMessage)
+      case e: dsl.common.UndefinedVarException =>
+        errorBox.error(s"UndefinedVarException$by: " + e.getMessage)
+      case e: dsl.common.InvalidParameterException =>
+        errorBox.error(s"InvalidParameterException$by: " + e.getMessage)
+      case e: dsl.common.PatternMatchingException =>
+        errorBox.error(s"PatternMatchingException$by: " + e.getMessage)
       case e: JavaScriptException => {
         //      val sw = new StringWriter
         //      e.printStackTrace(new PrintWriter(sw))

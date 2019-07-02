@@ -1,11 +1,10 @@
-package common.widgets.dsl
+package common.widgets.newdsl
 
 import common.widgets.{Box, CodeBox, OutputArea}
 
 /**
   * Created by guillecledou on 2019-06-07
   */
-
 
 class DslBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
   extends Box[String]("New DSL Syntax", Nil) with CodeBox {

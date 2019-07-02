@@ -1,4 +1,4 @@
-package common.widgets.dsl
+package common.widgets.newdsl
 
 import common.widgets.{Box, Setable}
 import org.scalajs.dom.EventTarget
@@ -116,8 +116,8 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |}
         |
         |x = True
-        |y = conn
-        |w = alt
+        |y,z = conn(Nil)
+        |w = alt(Nil,x)
         |
         |//
         |// Some discussed ideas
@@ -126,7 +126,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |// don't need to be specified before
         |// if they are actual params for outputs:
         |// z = conn(x,o1,o2)
-        |// 2) unspecified could mean some kind of Unit type -
+        |// 2) (NO) unspecified could mean some kind of Unit type -
         |// no data is sent or don't care about data:
         |// z = conn
         |// 3) outputs are declared on the lhs,
@@ -163,8 +163,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |true = True
         |zero = Zero
         |nil = Nil
-        |x = conn
-        |y = conn(true)
+        |y,o = conn(true)
         |w = alt(true,zero)""".stripMargin::
       """Checking some connectors expression""".stripMargin::Nil,
     "Multi Assign"::
@@ -175,11 +174,10 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |	dupl;fifo*lossy
         |}
         |
-        |x = conn
-        |y = conn(True)
-        |o1,o2 = conn
+        |y,o = conn(True)
+        |o1,o2 = conn(True)
         |o3,o4 = conn(Zero)
-        |z = conn(Zero,out1,out2)""".stripMargin::
+        |z,p = conn(Zero,out1,out2)""".stripMargin::
       """Exmple of multiple assignment""".stripMargin::Nil
 //    "Virtuoso Data"::
 //      """

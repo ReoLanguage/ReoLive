@@ -1,7 +1,7 @@
 package reolive
 
 import common.widgets.{ButtonsBox, OutputArea}
-import common.widgets.dsl.{DslAnalysisBox, DslBox, DslExamplesBox}
+import common.widgets.newdsl.{DslAnalysisBox, DslBox, DslExamplesBox}
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
 
