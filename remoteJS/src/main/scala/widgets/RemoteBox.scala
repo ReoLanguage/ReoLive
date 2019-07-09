@@ -29,52 +29,52 @@ object RemoteBox {
   }
 
 
-  def lazySageCall(path:String, callback: String => Unit):
-      (String=>Unit, ()=>Int) = {
-    var writer: java.io.PrintWriter = null
-
-    // limit scope of any temporary variables
-    // locally {
-    val sage = s"$path/sage"
-    // strings are implicitly converted to ProcessBuilder
-    // via scala.sys.process.ProcessImplicits.stringToProcess(_)
-    val calcProc = sage.run(new ProcessIO(
-    // Handle subprocess's stdin
-    // (which we write via an OutputStream)
-    in => {
-      writer = new java.io.PrintWriter(in)
-      // later do writer.println(..); writer.flush; writer.close()
-    },
-    // Handle subprocess's stdout
-    // (which we read via an InputStream)
-    out => {
-      val src = scala.io.Source.fromInputStream(out)
-      for (line <- src.getLines()) {
-        callback(line)
-        //println("Answer: " + line)
-      }
-      src.close()
-    },
-    // We don't want to use stderr, so just close it.
-    _.close()
-    ))
-
-    // Using ProcessBuilder.run() will automatically launch
-    // a new thread for the input/output routines passed to ProcessIO.
-    // We just need to wait for it to finish.
-
-    def put(value:String): Unit = {
-      writer.println(value)
-      writer.flush()
-    }
-    def finished(): Int = {
-      writer.close()
-      val code = calcProc.exitValue()
-      //println(s"Subprocess exited with code $code.")
-      code
-    }
-    (put,finished)
-  }
+//  def lazySageCall(path:String, callback: String => Unit):
+//      (String=>Unit, ()=>Int) = {
+//    var writer: java.io.PrintWriter = null
+//
+//    // limit scope of any temporary variables
+//    // locally {
+//    val sage = s"$path/sage"
+//    // strings are implicitly converted to ProcessBuilder
+//    // via scala.sys.process.ProcessImplicits.stringToProcess(_)
+//    val calcProc = sage.run(new ProcessIO(
+//    // Handle subprocess's stdin
+//    // (which we write via an OutputStream)
+//    in => {
+//      writer = new java.io.PrintWriter(in)
+//      // later do writer.println(..); writer.flush; writer.close()
+//    },
+//    // Handle subprocess's stdout
+//    // (which we read via an InputStream)
+//    out => {
+//      val src = scala.io.Source.fromInputStream(out)
+//      for (line <- src.getLines()) {
+//        callback(line)
+//        //println("Answer: " + line)
+//      }
+//      src.close()
+//    },
+//    // We don't want to use stderr, so just close it.
+//    _.close()
+//    ))
+//
+//    // Using ProcessBuilder.run() will automatically launch
+//    // a new thread for the input/output routines passed to ProcessIO.
+//    // We just need to wait for it to finish.
+//
+//    def put(value:String): Unit = {
+//      writer.println(value)
+//      writer.flush()
+//    }
+//    def finished(): Int = {
+//      writer.close()
+//      val code = calcProc.exitValue()
+//      //println(s"Subprocess exited with code $code.")
+//      code
+//    }
+//    (put,finished)
+//  }
 
 //  def lazySyncSageCall(path:String): String
   

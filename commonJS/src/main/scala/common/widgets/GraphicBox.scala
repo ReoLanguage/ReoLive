@@ -5,6 +5,7 @@ import hprog.backend.{Show, TrajToJS}
 import hprog.common.ParserException
 import hprog.frontend.Semantics.Valuation
 import hprog.frontend.Traj
+import hprog.frontend.solver.Solver
 
 class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
   extends Box[Unit]("Trajectories", List(program)) {
