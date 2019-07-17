@@ -6,8 +6,8 @@ import akka.actor._
 import hprog.backend.TrajToJS
 import hprog.common.ParserException
 import hprog.frontend.Semantics.{Valuation, Warnings}
-import hprog.frontend.solver.{SageSolver, StaticSageSolver}
-import hprog.frontend.{Distance, SageSolver, Solver, Traj}
+import hprog.frontend.solver.{LiveSageSolver, StaticSageSolver, Solver}
+import hprog.frontend.{Distance, Traj}
 
 import sys.process._
 
@@ -53,54 +53,69 @@ class LinceActor(out: ActorRef) extends Actor{
 //    }
   }
 
-  private def callSage(progAndEps: String, sagePath:String): String = try {
-    /////
-    // needs to be updated.
-    // Create lazy solver - only this can "callSagesolver"
-    // Reply should be
-    //   - a cache of expressions solved (? sageReplies?)
-    //   - a cache of diff.eqs solved (sageReplies?)
-    //   - a set of warnings computed.
+  private def callSage(progAndEps: String, sagePath:String): String = {
+    var solver: LiveSageSolver = null
+    try {
+      /////
+      // needs to be updated.
+      // Create lazy solver - only this can "callSagesolver"
+      // Reply should be
+      //   - a cache of expressions solved (? sageReplies?)
+      //   - a cache of diff.eqs solved (sageReplies?)
+      //   - a set of warnings computed.
 
 
-    // first part is the epsilon
-    val splitted = progAndEps.split(" ",2)
-    val eps = splitted(0).toDouble
-    val prog = splitted(1)
+      // first part is the epsilon
+      val splitted = progAndEps.split(" ",2)
+      val eps = splitted(0).toDouble
+      val prog = splitted(1)
 
-    val syntax = hprog.DSL.parse(prog)
-    val eqs = hprog.frontend.Utils.getDiffEqs(syntax)
-    val replySage = SageSolver.callSageSolver(eqs,sagePath,timeout=20)
+      val syntax = hprog.DSL.parse(prog)
+      //    val eqs = hprog.frontend.Utils.getDiffEqs(syntax)
+      //    val replySage = LiveSageSolver.callSageSolver(eqs,sagePath,timeout=20)
 
-    // re-evaluating trajectory to get warnings
-    val solver = new StaticSageSolver(eqs,replySage)
-    val traj = hprog.frontend.Semantics.syntaxToValuation(syntax,solver,new Distance(eps)).traj(Map())
-    val warnings = traj.warnings(Some(Map()))
+      // re-evaluating trajectory to get warnings
+      //    val solver = new StaticSageSolver(eqs,replySage)
 
-    println(s"reply from sage: \n${replySage.mkString("\n")}")
-    replySage.mkString("§") ++
-    "§§§" ++
-    buildWarnings(warnings)
+      solver = new LiveSageSolver(sagePath)
+
+      val traj = hprog.frontend.Semantics.syntaxToValuation(syntax,solver,new Distance(eps)).traj(Map())
+
+      solver.closeWithoutWait()
+
+      //    val warnings = traj.warnings(Some(Map()))
+      val replySage = solver.exportAll
+
+      println(s"exporting: \n${replySage.split("§§§").mkString("\n")}")
+      //    replySage.mkString("§") ++
+      //    "§§§" ++
+      //    buildWarnings(warnings)
+      replySage
+    }
+    catch {
+      case p:ParserException =>
+        //println("failed parsing: "+p.toString)
+        if (solver != null) {solver.closeWithoutWait()}
+        s"Error: When parsing $progAndEps - ${p.toString}"
+      case e:Throwable =>
+        if (solver != null) {solver.closeWithoutWait()}
+        "Error "+e.toString
+    }
   }
-  catch {
-    case p:ParserException =>
-      //println("failed parsing: "+p.toString)
-      s"Error: When parsing $progAndEps - ${p.toString}"
-    case e:Throwable => "Error "+e.toString
-  }
 
-  private def buildWarnings(warns: Warnings): String = {
-    // "double" space "strings splitted by §"
-    // all splitted by §§
-    val s = warns.map(kv => s"${kv._1} ${kv._2._1.mkString("§")}").mkString("§§")
-    val toCheck = warns.values.flatMap(_._2)
-    toCheck.foreach(elem =>
-//      println(s"Check:\n ${elem._1} knowning ${elem._2}")
-      println("--> "+SageSolver.genSage(elem._1,elem._2))
-    )
-    //println(s"warnings: $s")
-    s
-  }
+
+//  private def buildWarnings(warns: Warnings): String = {
+//    // "double" space "strings splitted by §"
+//    // all splitted by §§
+//    val s = warns.map(kv => s"${kv._1} ${kv._2._1.mkString("§")}").mkString("§§")
+//    val toCheck = warns.values.flatMap(_._2)
+//    toCheck.foreach(elem =>
+////      println(s"Check:\n ${elem._1} knowning ${elem._2}")
+//      println("--> "+LiveSageSolver.genSage(elem._1,elem._2))
+//    )
+//    //println(s"warnings: $s")
+//    s
+//  }
 
 //  private def draw(msg: String, range: Option[(Double,Double)]): String =
 //    try {

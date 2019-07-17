@@ -74,7 +74,7 @@ object RemoteLince {
 
 
       // load default button
-      if (!examples.loadButton("Cruise control")) {
+      if (!examples.loadButton("Up and down")) {
         reload()
       }
 

@@ -1,6 +1,6 @@
 package common.widgets
 
-import hprog.frontend.solver.SageSolver
+import hprog.frontend.solver.LiveSageSolver
 import hub.common.ParseException
 import ifta.common.FExpOverflowException
 import org.scalajs.dom
@@ -151,7 +151,7 @@ object Box {
         errorBox.error(s"ParseException$by: " + e.getMessage)
       case e: hprog.common.ParserException =>
         errorBox.error(s"ParserException$by: " + e.getMessage)
-      case e: SageSolver.SolvingException =>
+      case e: LiveSageSolver.SolvingException =>
         errorBox.error(s"Failed to solve expression$by:" + e.getMessage)
       case e: JavaScriptException => {
         //      val sw = new StringWriter

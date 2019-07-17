@@ -71,6 +71,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |p'=v, v'=-p & 8""".stripMargin ->
       ("Experiments - when involving mutually dependent variables the naive numerical analysis does not work. " +
         "Use the online version to use the precise solution.")
+    ,"Up and down" -> """v:=0; v'=1 & 2; v'=3 & 2""" -> ""
   ).map(x=>List(x._1._1,x._1._2,x._2))
 
 }

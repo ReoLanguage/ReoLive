@@ -3,15 +3,9 @@ package services
 import java.io.{File, PrintWriter}
 
 import akka.actor._
-import preo.DSL
-import preo.ast.{Connector, CoreConnector}
-import preo.common.{GenerationException, TypeCheckException}
-import preo.frontend.{Eval, Show}
-import MCRL2Bind._
-import common.widgets.LogicBox
-import play.api.libs.json.JsValue
-import preo.frontend.mcrl2.{Formula, Model}
-import preo.lang.{FormulaParser, ParserUtils}
+import preo.frontend.mcrl2.Model
+import preo.lang.ParserUtils
+import services.MCRL2Bind._
 
 
 
