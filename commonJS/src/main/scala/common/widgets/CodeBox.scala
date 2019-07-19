@@ -12,6 +12,7 @@ trait CodeBox
   protected val buttons: List[(Either[String,String], (()=>Unit,String) )]
   def reload(): Unit
   protected val codemirror:String
+  protected val theme:String = "neat"
 
   //implemented functions from Box and Setable.
   protected var code: scalajs.js.Dynamic = _
@@ -52,7 +53,7 @@ trait CodeBox
   private def buildCodeArea(txt: String) = {
     val codemirrorJS = scalajs.js.Dynamic.global.CodeMirror
     val lit = scalajs.js.Dynamic.literal(
-      lineNumbers = true, matchBrackets = true, theme = "neat", id="strangeID"+boxId, mode=codemirror)
+      lineNumbers = true, matchBrackets = true, theme = theme, id="strangeID"+boxId, mode=codemirror)
     code = codemirrorJS.fromTextArea(dom.document.getElementById(boxId),lit)
     code.setValue(txt)
   }

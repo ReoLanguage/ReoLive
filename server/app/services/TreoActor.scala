@@ -38,12 +38,13 @@ class TreoActor(out: ActorRef) extends Actor{
 
 
     val v1 = getRBS(cleanMsg,true)
-    if (v1.startsWith("Error"))
-      v1
-    else {
-      val v2 = getRBS(cleanMsg, false)
-      s"## With restriction:\n$v1\n## With all ports:\n$v2"
-    }
+//    if (v1.startsWith("Error"))
+//      v1
+//    else {
+//      val v2 = getRBS(cleanMsg, false)
+//      s"## With restriction:\n$v1\n## With all ports:\n$v2"
+//    }
+    v1
   }
 
   private def getRBS(msg:String, restrict:Boolean): String = {
@@ -95,6 +96,10 @@ class TreoActor(out: ActorRef) extends Actor{
     case f:Disjunction => f.getClauses.asScala.map(pp).mkString("  \\/  ")
     case f:Equality => s"${f.getLHS}==${f.getRHS}"
     case f:Existential => f.toString
+    case f:Negation => f.getFormula match {
+      case e:Equality => s"${e.getLHS}≠${e.getRHS}"
+      case n => s"¬${pp(n)}"
+    }
     case _ => formula.toString
   }
 
