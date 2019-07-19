@@ -1,17 +1,17 @@
 package common.widgets
 
+import hprog.frontend.solver.LiveSageSolver
 import hub.common.ParseException
 import ifta.common.FExpOverflowException
 import org.scalajs.dom
-import org.scalajs.dom.EventTarget
+import org.scalajs.dom.{EventTarget, MouseEvent, html}
 import org.singlespaced.d3js.Selection
 import preo.common.TypeCheckException
-
 import scala.scalajs.js.{JavaScriptException, UndefOr}
 
 
 //panel boxes are the abstract entities which contain each panel displayed on the website
-abstract class Box[A](title: String, dependency: List[Box[_]]){
+abstract class Box[A](val title: String, dependency: List[Box[_]]){
   type Block = Selection[dom.EventTarget]
 
   var wrap:Block = _
@@ -103,6 +103,12 @@ abstract class Box[A](title: String, dependency: List[Box[_]]){
     !foundId
   }
 
+  // add actions in "init" to update to visibility toggles
+  def toggleVisibility(visible:()=>Unit = ()=>{}, invisible:()=>Unit = ()=>{}): Unit =
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+      .onclick = {e: MouseEvent => if(!isVisible) visible() else invisible()}
+
+
   def get: A
 
   /**
@@ -150,8 +156,18 @@ object Box {
         errorBox.error(s"ParseException$by: " + e.getMessage)
       case e: hprog.common.ParserException =>
         errorBox.error(s"ParserException$by: " + e.getMessage)
-      case e: hprog.frontend.SageSolver.SolvingException =>
+      case e: LiveSageSolver.SolvingException =>
         errorBox.error(s"Failed to solve expression$by:" + e.getMessage)
+      case e: dsl.common.ParsingException =>
+        errorBox.error(s"ParserException$by: " + e.getMessage)
+      case e: dsl.common.TypeException =>
+        errorBox.error(s"TypeException$by: " + e.getMessage)
+      case e: dsl.common.UndefinedVarException =>
+        errorBox.error(s"UndefinedVarException$by: " + e.getMessage)
+      case e: dsl.common.InvalidParameterException =>
+        errorBox.error(s"InvalidParameterException$by: " + e.getMessage)
+      case e: dsl.common.PatternMatchingException =>
+        errorBox.error(s"PatternMatchingException$by: " + e.getMessage)
       case e: JavaScriptException => {
         //      val sw = new StringWriter
         //      e.printStackTrace(new PrintWriter(sw))

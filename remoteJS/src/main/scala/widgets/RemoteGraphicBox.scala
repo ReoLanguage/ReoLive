@@ -3,14 +3,16 @@ package widgets
 import common.widgets.{Box, OutputArea}
 import hprog.ast.Syntax
 import hprog.backend.TrajToJS
-import hprog.frontend.{Deviator, Distance, Solver}
+import hprog.frontend.Deviator
+import hprog.frontend.Semantics.Warnings
+import hprog.frontend.solver.{Solver, StaticSageSolver}
 
-class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
+class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], errorBox: OutputArea)
     extends Box[Unit]("Trajectories", List(program)) {
   var box : Block = _
-  private var lastSolver:Option[Solver] = None
+  private var lastSolver:Option[StaticSageSolver] = None
   private var lastSyntax:Option[Syntax] = None
-  private var lastWarnings:Option[Map[Double,Set[String]]] = None
+//  private var lastWarnings:Option[Warnings] = None
 
   override def get: Unit = {}
 
@@ -30,6 +32,14 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
     box.append("div")
        .attr("id", "graphic")
 
+    toggleVisibility(visible = ()=>{
+      println("reloading...")
+      reload()
+      callSage()
+    }, invisible = ()=>{
+      println("hiding")
+    })
+
 //    traj = Trajectory.hprogToTraj(Map(),dependency.get)._1
 
     //    dom.document.getElementById("Circuit of the instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
@@ -41,28 +51,31 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
 //    drawGraph()
 //  }
 
-  def draw(sageReplyAndWarns: String): Unit = {
+  def draw(sageReply: String): Unit = {
     //println("before eval")
     errorBox.clear()
     //errorBox.message(s"got reply: ${sageReplyAndWarns}")
-    if (sageReplyAndWarns startsWith "Error")
-      errorBox.error(sageReplyAndWarns)
+    if (sageReply startsWith "Error")
+      errorBox.error(sageReply)
     else try {
       //println(s"got reply from sage: ${sageReply}. About to parse ${dependency.get}.")
       // repeating parsing work done at the server
       val syntax = hprog.DSL.parse(program.get)
       //println("parsed...")
       lastSyntax = Some(syntax)
-      val eqs = hprog.frontend.Utils.getDiffEqs(syntax)
-      //println("got diffEqs")
-      val splitted = sageReplyAndWarns.split("§§§",2)
-      val sageReply = splitted(0).split('§')
-      val warnings = parseWarnings(splitted(1))
-      lastWarnings = Some(warnings)
 
-      val solver = new hprog.frontend.SageSolverStatic(eqs,sageReply)
+//      val eqs = hprog.frontend.Utils.getDiffEqs(syntax)
+      //println("got diffEqs")
+//      val splitted = sageReplyAndWarns.split("§§§",2)
+//      val sageReply = splitted(0).split('§')
+//      val warnings = parseWarnings(splitted(1))
+//      lastWarnings = Some(warnings)
+
+      val solver = new StaticSageSolver()
+      solver.importAll(sageReply)
       //println("got static solver")
       lastSolver = Some(solver)
+
       redraw(None,hideCont = true)
 //      val prog = hprog.frontend.Semantics.syntaxToValuation(syntax,solver)
 //      val traj = prog.traj(Map())
@@ -85,24 +98,27 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
 //    }
   }
 
-  private def parseWarnings(str: String): Map[Double,Set[String]] = {
-    val entries = str.split("§§")
-    entries.filter(_!="").map(entry => {
-      val esplit = entry.split(" ",2)
-      val dbl = esplit(0).toDouble
-      val set = esplit(1).split("§").toSet
-      dbl -> set
-    }).toMap
-  }
+//  private def parseWarnings(str: String): Warnings = {
+//    val entries = str.split("§§")
+//    val msgs = entries.filter(_!="").map(entry => {
+//      val esplit = entry.split(" ",2)
+//      val dbl = esplit(0).toDouble
+//      val set = esplit(1).split("§").toSet
+//      dbl -> set
+//    }).toMap
+//    msgs.mapValues(ms => (ms,Set()))
+//  }
 
 
   private def redraw(range: Option[(Double,Double)],hideCont:Boolean): Unit = try {
-    (lastSyntax,lastSolver,lastWarnings) match {
-      case (Some(syntax),Some(solver),Some(warnings)) =>
+    (lastSyntax,lastSolver) match {
+      case (Some(syntax),Some(solver)) =>
 //        val e = getEps
         val prog = hprog.frontend.Semantics.syntaxToValuation(syntax,solver, Deviator.dummy)
-        val traj1 = prog.traj(Map())
-        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings
+        val traj = prog.traj(Map())
+          .addWarnings(solver.getWarnings)
+
+//        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings
         val js = TrajToJS(traj,range,hideCont)
         scalajs.js.eval(js)
       case _ => errorBox.error("Nothing to redraw.")
@@ -111,8 +127,18 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
   catch Box.checkExceptions(errorBox,"Trajectories")
 
   override def update(): Unit = {
+    if (!isVisible) {
+//      errorBox.message("traj. invisible")
+      return
+    }
+//    else
+//      errorBox.message("traj. visible - working")
+    callSage()
+  }
+
+  private def callSage() = {
     errorBox.message("Waiting for SageMath...")
-    RemoteBox.remoteCall("linceWS",eps.get+" "+program.get,draw)
+    RemoteBox.remoteCall("linceWS",s"G${eps.get}§${program.get}",draw)
   }
 
   def resample(hideCont:Boolean): Unit = {

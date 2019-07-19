@@ -234,9 +234,39 @@ object AutomataToJS {
                     // .style("pointer-events", "none")
                     .attr("startOffset", "50%")
                     .on("mouseenter", function(d) {
-                      d3.select(this).style("font-size","14px");})
+                      d3.select(this).style("font-size","14px");
+                        var ports = d.type.split("~");
+                        ports.shift();
+                        ports.forEach(function(el) {
+                          var p = document.getElementById("gr_"+el);
+                          //console.log("port "+el);
+                          if (p!=null && p.style.fill!="#00aaff") {
+                            p.style.backgroundColor = p.style.fill;
+                            p.style.fill = "#00aaff";
+                            p.style.fontWeight = "bold";
+                          }
+                        });
+                      })
                     .on("mouseleave", function(d) {
-                      d3.select(this).style("font-size", "10px");});
+                      d3.select(this).style("font-size", "10px");
+                        var ports = d.type.split("~");
+                        ports.shift();
+                        ports.forEach(function(el) {
+                          var p = document.getElementById("gr_"+el);
+                          //console.log("port "+el);
+                          if (p!=null) {
+                            if (p.style.backgroundColor == "")
+                              {p.style.fill = "black";}
+                            else
+                              {p.style.fill = p.style.backgroundColor;}
+                            p.style.fontWeight = "normal";
+                           }
+                        });
+                      });
+//                    .on("mouseenter", function(d) {
+//                      d3.select(this).style("font-size","14px");})
+//                    .on("mouseleave", function(d) {
+//                      d3.select(this).style("font-size", "10px");});
                   textpath.append("tspan")
                     .attr("class", "guards")
                     .style("fill","#008900")

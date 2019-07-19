@@ -39,6 +39,9 @@ class TreoResultBox(program: Box[String], errorBox: OutputArea)
     box.html("")
     errorBox.message("Waiting for Treo...")
     RemoteBox.remoteCall("treoWS",program.get,reload)
+//    RemoteBox.remoteSageCall("abc",println)
+//    val x = scala.io.Source.fromURL("http://localhost:8888/notebooks/Untitled.ipynb?token=4685499ca13b223b69e9072263def519a11c5d1a53349f22")
+//    errorBox(s"hehe\n$x\ndone")
   }
 
   def reload(s:String) = {

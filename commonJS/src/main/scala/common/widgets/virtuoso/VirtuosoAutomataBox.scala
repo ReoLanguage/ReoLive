@@ -3,11 +3,12 @@ package common.widgets.virtuoso
 import common.frontend.AutomataToJS
 import common.widgets.{Box, GraphBox, OutputArea}
 import hub.HubAutomata
+import ifta.backend.IftaAutomata
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
 import preo.ast.CoreConnector
 import preo.backend.Network.Mirrors
-import preo.backend.{Automata, Network, PortAutomata}
+import preo.backend.{Automata, Circuit, Network, PortAutomata}
 import preo.frontend.Show
 
 /**
@@ -44,7 +45,12 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
   private def drawAutomata(portNames:Boolean=true): Unit =
     try{
 //      automaton = Automata.fromOneToOneSimple[HubAutomata](dependency.get)//
-      automaton = Automata[HubAutomata](dependency.get).serialize.simplify
+      val mirrors = new Mirrors()
+      //println("- Starting Automata drawing - 1st the circuit")
+      Circuit(dependency.get,true,mirrors) // just to update mirrors
+      //println("- Mirrors after circuit creation: "+mirrors)
+      automaton = Automata[HubAutomata](dependency.get,mirrors).serialize.simplify
+      println("hub: \n"+automaton.show)
       //println(s"%%%\n${automaton.show}\n%%%")
       //println(s"${automaton.getTrans.mkString(" > ")}")
       val sizeAut = automaton.getStates.size
@@ -56,7 +62,7 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
       val height = (heightAutRatio * factorAut).toInt
       svg.attr("viewBox", s"00 00 $width $height")
 
-      scalajs.js.eval(AutomataToJS(automaton,new Mirrors(),"virtuosoAutomata",portNames))
+      scalajs.js.eval(AutomataToJS(automaton,mirrors,"virtuosoAutomata",portNames))
     }
     catch Box.checkExceptions(errorBox)
 
