@@ -7,7 +7,7 @@ import hprog.frontend.Deviator
 import hprog.frontend.Semantics.Warnings
 import hprog.frontend.solver.{Solver, StaticSageSolver}
 
-class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
+class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], errorBox: OutputArea)
     extends Box[Unit]("Trajectories", List(program)) {
   var box : Block = _
   private var lastSolver:Option[StaticSageSolver] = None
@@ -31,6 +31,14 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
       ))
     box.append("div")
        .attr("id", "graphic")
+
+    toggleVisibility(visible = ()=>{
+      println("reloading...")
+      reload()
+      callSage()
+    }, invisible = ()=>{
+      println("hiding")
+    })
 
 //    traj = Trajectory.hprogToTraj(Map(),dependency.get)._1
 
@@ -108,6 +116,8 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
 //        val e = getEps
         val prog = hprog.frontend.Semantics.syntaxToValuation(syntax,solver, Deviator.dummy)
         val traj = prog.traj(Map())
+          .addWarnings(solver.getWarnings)
+
 //        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings
         val js = TrajToJS(traj,range,hideCont)
         scalajs.js.eval(js)
@@ -117,8 +127,18 @@ class RemoteGraphicBox(program: Box[String], eps: Box[String], errorBox: OutputA
   catch Box.checkExceptions(errorBox,"Trajectories")
 
   override def update(): Unit = {
+    if (!isVisible) {
+//      errorBox.message("traj. invisible")
+      return
+    }
+//    else
+//      errorBox.message("traj. visible - working")
+    callSage()
+  }
+
+  private def callSage() = {
     errorBox.message("Waiting for SageMath...")
-    RemoteBox.remoteCall("linceWS",eps.get+" "+program.get,draw)
+    RemoteBox.remoteCall("linceWS",s"G${eps.get}§${program.get}",draw)
   }
 
   def resample(hideCont:Boolean): Unit = {

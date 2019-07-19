@@ -3,11 +3,13 @@ package services
 import java.util.Properties
 
 import akka.actor._
-import hprog.backend.TrajToJS
+import hprog.ast.{SVal, Syntax}
+import hprog.backend.{Show, TrajToJS}
 import hprog.common.ParserException
 import hprog.frontend.Semantics.{Valuation, Warnings}
-import hprog.frontend.solver.{LiveSageSolver, StaticSageSolver, Solver}
-import hprog.frontend.{Distance, Traj}
+import hprog.frontend.solver.{LiveSageSolver, Solver, StaticSageSolver}
+import hprog.frontend.{Distance, Eval, Traj}
+import hprog.lang.SageParser
 
 import sys.process._
 
@@ -66,8 +68,8 @@ class LinceActor(out: ActorRef) extends Actor{
 
 
       // first part is the epsilon
-      val splitted = progAndEps.split(" ",2)
-      val eps = splitted(0).toDouble
+      val splitted = progAndEps.split("§",2)
+      val arg = splitted(0) //.toDouble
       val prog = splitted(1)
 
       val syntax = hprog.DSL.parse(prog)
@@ -79,32 +81,75 @@ class LinceActor(out: ActorRef) extends Actor{
 
       solver = new LiveSageSolver(sagePath)
 
-      val traj = hprog.frontend.Semantics.syntaxToValuation(syntax,solver,new Distance(eps)).traj(Map())
+      arg.headOption match {
+        case Some('G') => getSolver(arg.drop(1).toDouble,solver,syntax)
+        case Some('E') => getEval(arg.drop(1),solver,syntax)
+        case _ => s"Error: unrecognised argument ${arg}"
+      }
 
-      solver.closeWithoutWait()
-
-      //    val warnings = traj.warnings(Some(Map()))
-      val replySage = solver.exportAll
-
-      println(s"exporting: \n${replySage.split("§§§").mkString("\n")}")
-      //    replySage.mkString("§") ++
-      //    "§§§" ++
-      //    buildWarnings(warnings)
-      replySage
     }
     catch {
       case p:ParserException =>
-        //println("failed parsing: "+p.toString)
+        //debug(()=>"failed parsing: "+p.toString)
         if (solver != null) {solver.closeWithoutWait()}
         s"Error: When parsing $progAndEps - ${p.toString}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
-        "Error "+e.toString
+        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
     }
   }
 
+  private def getSolver(eps:Double, solver: LiveSageSolver, syntax: Syntax): String = {
 
-//  private def buildWarnings(warns: Warnings): String = {
+    val traj = hprog.frontend.Semantics
+      .syntaxToValuation(syntax,solver,new Distance(eps))
+      .traj(Map())
+    traj.warnings.foreach(solver += _)
+
+    val replySage = solver.exportAll
+
+    debug(()=>s"exporting: \n${replySage.split("§§§")
+      .map(" - "+_)
+      .mkString("\n")}")
+
+    solver.closeWithoutWait()
+    replySage
+  }
+
+  private def getEval(expr:String, solver: LiveSageSolver, syntax: Syntax): String = {
+
+    val traj = hprog.frontend.Semantics
+      .syntaxToValuation(syntax,solver,new Distance(0.0))
+      .traj(Map())
+    val sexpr = hprog.DSL.parseExpr(expr)
+    val dur = traj.dur
+
+    val t = Eval(sexpr,0,Map())
+    val d = dur.map(Eval(_))
+
+    if (t < 0.0 || (d.nonEmpty && d.get < t)) { // comparisons still not in the Solver
+      solver.closeWithoutWait()
+      s"Error: time value $t out of bounds."
+    }
+    else {
+      val point = traj(Eval.update(sexpr, SVal(0), Map()))(solver)
+
+      debug(()=>s"sexpr/t/point = ${Show(sexpr)}, ${Show(Eval.update(sexpr, SVal(0), Map()))}, ${Show(point)}")
+
+      val res = point.map(kv => " - " + kv._1 + "§" + Show(kv._2)).mkString("§§")
+      debug(() => s"exporting eval result: \n$res")
+
+      solver.closeWithoutWait()
+      res
+    }
+  }
+
+  private def debug(str: () => String): Unit = {
+    //println("[Server] "+str())
+  }
+
+
+  //  private def buildWarnings(warns: Warnings): String = {
 //    // "double" space "strings splitted by §"
 //    // all splitted by §§
 //    val s = warns.map(kv => s"${kv._1} ${kv._2._1.mkString("§")}").mkString("§§")

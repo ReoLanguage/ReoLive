@@ -1,4 +1,4 @@
-package widgets
+package common.widgets.Lince
 
 import common.widgets.{Box, OutputArea}
 import hprog.backend.{Show, TrajToJS}

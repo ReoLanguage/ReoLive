@@ -4,7 +4,7 @@ import hprog.frontend.solver.LiveSageSolver
 import hub.common.ParseException
 import ifta.common.FExpOverflowException
 import org.scalajs.dom
-import org.scalajs.dom.EventTarget
+import org.scalajs.dom.{EventTarget, MouseEvent, html}
 import org.singlespaced.d3js.Selection
 import preo.common.TypeCheckException
 
@@ -12,7 +12,7 @@ import scala.scalajs.js.{JavaScriptException, UndefOr}
 
 
 //panel boxes are the abstract entities which contain each panel displayed on the website
-abstract class Box[A](title: String, dependency: List[Box[_]]){
+abstract class Box[A](val title: String, dependency: List[Box[_]]){
   type Block = Selection[dom.EventTarget]
 
   var wrap:Block = _
@@ -103,6 +103,12 @@ abstract class Box[A](title: String, dependency: List[Box[_]]){
     //    println("$$$ "+ (!foundId))
     !foundId
   }
+
+  // add actions in "init" to update to visibility toggles
+  def toggleVisibility(visible:()=>Unit = ()=>{}, invisible:()=>Unit = ()=>{}): Unit =
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+      .onclick = {e: MouseEvent => if(!isVisible) visible() else invisible()}
+
 
   def get: A
 
