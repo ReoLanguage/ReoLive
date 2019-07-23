@@ -8,6 +8,12 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
   override protected val buttons: Seq[List[String]] = Seq(
     "Simple Up Up" -> """v:=0; v'=1 & 2; v'=3 & 2""" -> "Very simple example."
     ,"Cruise control"->
+//        """x:= -1; v:= 0; a:= 1;
+//          |repeat 2 {
+//          |  if x <= 0 then a:= 1 else a:=-1;
+//          |  x' = v, v' = a  & 0.5
+//          |}
+//          |""".stripMargin ->
        """// Cruise control
           |p:=0; v:=2;
           |repeat 15 {

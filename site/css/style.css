@@ -38,9 +38,79 @@
 .navbar {
     margin-bottom: 0px;
 }
+.navbar-arca {
+    background-image: -webkit-linear-gradient(top,#36569c 0,#182b53 100%);
+    background-image: -o-linear-gradient(top,#36569c 0,#182b53 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#36569c),to(#182b53));
+    background-image: linear-gradient(to bottom,#36569c 0,#182b53 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36569c', endColorstr='#ff182b53', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    border-radius: 0px; 
+    border: 0px;
+}
+.navbar-brand { /*brand name (arcatools)*/
+    color: white;
+}
+.navbar-brand:hover { /*brand name (arcatools)*/
+    color: white;
+    text-decoration: underline;
+}
+.navbar-brand:focus { /*brand name (arcatools)*/
+    color: white;
+}
+.navbar-nav>li>a { /*items in sections*/
+    color: white;
+}
+.navbar-nav>li>a:hover, .navbar-nav>li>a:focus { /*hovered items insections*/
+    color: #36569c;
+    background-color: #cadcf3;
+    font-weight: bold;
+}
+/*a:focus, a:hover {
+    color: red;
+    font-weight: bolder;
+    background-color: red;
+    text-decoration: underline;
+}
+*/
+/* alert boxes should match template */
+.alert-info {
+    background-image: -webkit-linear-gradient(top,#f1f7ff 0,#cadcf3 100%);
+    background-image: -o-linear-gradient(top,#f1f7ff 0,#cadcf3 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#f1f7ff),to(#cadcf3));
+    background-image: linear-gradient(to bottom,#f1f7ff 0,#cadcf3 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff1f7ff', endColorstr='#ffcadcf3', GradientType=0);
+    background-repeat: repeat-x;
+    border-color: #cadcf3;
+    color: #31708f;
+    background-color: #f1f7ff;
+}
+
+.navbar-toggle .icon-bar {
+    background-color: white;
+}
+.navbar-toggle {
+ /*   position: relative;
+    float: right;
+    padding: 9px 10px;
+    margin-top: 8px;
+    margin-right: 15px;
+    margin-bottom: 8px;
+    background-color: #25fbacb5;
+    background-image: none;
+ */
+    border: 0px solid transparent;
+    border-radius: 4px;
+}
 .noscroll {
     overflow: hidden;
 }
+
+/*.alert-info {
+    color: #31708f;
+    background-color: #f1f7ff;
+    border-color: #bce8f1;
+}*/
 
 #myTabContent {
     min-height: 50vh;

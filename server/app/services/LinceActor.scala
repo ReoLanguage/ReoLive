@@ -3,7 +3,8 @@ package services
 import java.util.Properties
 
 import akka.actor._
-import hprog.ast.{SVal, Syntax}
+import hprog.ast.SageExpr.SExprFun
+import hprog.ast.{SVal, SVar, Syntax}
 import hprog.backend.{Show, TrajToJS}
 import hprog.common.ParserException
 import hprog.frontend.Semantics.{Valuation, Warnings}
@@ -124,19 +125,49 @@ class LinceActor(out: ActorRef) extends Actor{
     val sexpr = hprog.DSL.parseExpr(expr)
     val dur = traj.dur
 
-    val t = Eval(sexpr,0,Map())
-    val d = dur.map(Eval(_))
+    val t    = Eval(sexpr,0,Map())
+    val texp = Eval.update(sexpr, SVal(0), Map())
+    val d    = dur.map(Eval(_))
 
     if (t < 0.0 || (d.nonEmpty && d.get < t)) { // comparisons still not in the Solver
       solver.closeWithoutWait()
       s"Error: time value $t out of bounds."
     }
     else {
-      val point = traj(Eval.update(sexpr, SVal(0), Map()))(solver)
+      val point = traj(texp)(solver)
 
-      debug(()=>s"sexpr/t/point = ${Show(sexpr)}, ${Show(Eval.update(sexpr, SVal(0), Map()))}, ${Show(point)}")
+      debug(()=>s"sexpr/t/point = ${
+        Show(sexpr)}, ${
+        Show(texp)}, ${
+        Show(point)}")
 
-      val res = point.map(kv => " - " + kv._1 + "§" + Show(kv._2)).mkString("§§")
+      // experimental: simplifying long expressions in Sage
+      def simplifySageExpr(e:SExprFun): SExprFun =
+        SageParser.parseExpr(solver.askSage(e).getOrElse("{")) match {
+          case SageParser.Success(newExpr, _) =>
+            newExpr
+          case _: SageParser.NoSuccess =>
+            throw new ParserException(s"Failed to parse Sage reply when simplifying ${Show(e)}'.")
+        }
+
+      def more(s:String,msg:String): String = {
+        val id1 = s"tr1_$s"
+        val id2 = s"tr2_$s"
+        def showHide(i1:String,i2:String): String =
+          s"""document.getElementById('$i1').style.display = 'inline';"""+
+          s"""document.getElementById('$i2').style.display = 'none';"""
+
+        s"""<a id="$id1" onclick="${showHide(id2,id1)}" style='display: inline;'> (+) </a>
+           |<a id="$id2" onclick="${showHide(id1,id2)}" style='display: none;'>$msg</a>""".stripMargin
+      }
+
+      val res = point.map(kv =>
+        " - " + kv._1 +
+          s"§${Show(kv._2)}" + more(kv._1,s" ~ ${Eval(kv._2)} ~ ${
+//            Show(traj.fun.getOrElse(kv._1,SVal(0)))}]")
+            Show.pp(
+              Eval.simplifyMan(traj.fun(texp)(solver).getOrElse(kv._1,SVal(0))))}"))
+        .mkString("§§")
       debug(() => s"exporting eval result: \n$res")
 
       solver.closeWithoutWait()
