@@ -4,7 +4,7 @@ import common.widgets.{Box, OutputArea}
 import common.widgets.virtuoso.VirtuosoParser.Result
 import preo.DSL
 import preo.ast.{BVal, Connector, CoreConnector}
-import preo.frontend.{Eval, Show, Simplify}
+import preo.frontend.{Eval, Show, Simplify, TreoLite}
 
 class VirtuosoInstantiate(code: Box[String], errorBox: OutputArea)
     extends Box[CoreConnector]("Concrete instance", List(code)){
@@ -48,7 +48,7 @@ class VirtuosoInstantiate(code: Box[String], errorBox: OutputArea)
     Eval.unsafeInstantiate(c) match {
       case Some(reduc) =>
         // GOT A TYPE
-        Right(Eval.unsafeReduce(reduc))
+        Right(TreoLite.treo2preo(Eval.unsafeReduce(reduc),"xor"))
       case _ =>
         // Failed to simplify
         Left("Failed to reduce connector: " + Show(Simplify.unsafe(c)))
