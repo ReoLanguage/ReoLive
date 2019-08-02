@@ -6,7 +6,7 @@ import akka.actor._
 import hprog.ast.SageExpr.SExprFun
 import hprog.ast.{SVal, SVar, Syntax}
 import hprog.backend.{Show, TrajToJS}
-import hprog.common.ParserException
+import hprog.common.{ParserException, TimeoutException}
 import hprog.frontend.Semantics.{Valuation, Warnings}
 import hprog.frontend.solver.{LiveSageSolver, Solver, StaticSageSolver}
 import hprog.frontend.{Distance, Eval, Traj}
@@ -94,6 +94,9 @@ class LinceActor(out: ActorRef) extends Actor{
         //debug(()=>"failed parsing: "+p.toString)
         if (solver != null) {solver.closeWithoutWait()}
         s"Error: When parsing $progAndEps - ${p.toString}"
+      case t:TimeoutException =>
+        if (solver != null) {solver.closeWithoutWait()}
+        s"Error: ${t.toString}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
         "Error "+e.toString //+" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
@@ -105,7 +108,7 @@ class LinceActor(out: ActorRef) extends Actor{
     val traj = hprog.frontend.Semantics
       .syntaxToValuation(syntax,solver,new Distance(eps))
       .traj(Map())
-    traj.warnings.foreach(solver += _)
+    traj.warnings.foreach(w => solver += (w._1,w._2))
 
     val replySage = solver.exportAll
 
