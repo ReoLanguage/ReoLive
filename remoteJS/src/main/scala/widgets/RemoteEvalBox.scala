@@ -8,11 +8,11 @@ import hprog.frontend.solver.StaticSageSolver
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
 
-class RemoteEvalBox(program: Box[String], errorBox: OutputArea)
+class RemoteEvalBox(program: Box[String], errorBox: OutputArea, default:String = "")
   extends Box[Unit]("Symbolic Evaluation", List(program)) {
 
   private var box : Block = _
-  private var input: String = ""
+  private var input: String = default
   private var inputAreaDom: html.TextArea = _
   private var outEval: Block = _
 

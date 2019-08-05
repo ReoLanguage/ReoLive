@@ -61,7 +61,7 @@ object RemoteLince {
         title = "Maximum perturbation",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, errors)
-      eval   = new RemoteEvalBox(inputBox, errors)
+      eval   = new RemoteEvalBox(inputBox, errors, "")
 
       inputBox.init(leftColumn,true)
       errors.init(leftColumn)

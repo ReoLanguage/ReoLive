@@ -164,12 +164,14 @@ class LinceActor(out: ActorRef) extends Actor{
            |<a id="$id2" onclick="${showHide(id1,id2)}" style='display: none;'>$msg</a>""".stripMargin
       }
 
+      val sol = traj.fun(texp)(solver)
+
       val res = point.map(kv =>
         " - " + kv._1 +
           s"§${Show(kv._2)}" + more(kv._1,s" ~ ${Eval(kv._2)} ~ ${
 //            Show(traj.fun.getOrElse(kv._1,SVal(0)))}]")
             Show.pp(
-              Eval.simplifyMan(traj.fun(texp)(solver).getOrElse(kv._1,SVal(0))))}"))
+              Eval.simplifyMan(sol.getOrElse(kv._1,SVal(0))))}"))
         .mkString("§§")
       debug(() => s"exporting eval result: \n$res")
 
