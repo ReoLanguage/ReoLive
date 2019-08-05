@@ -7,7 +7,7 @@ echo "## Building standalone - assuming 'compile.sh' was executed at least once 
 sbt fullOptJS server/compile dist
 echo "## Unzipping standalone"
 cd server/target/universal
-unzip server-1.0.zip
+yes | unzip server-1.0.zip
 cd ../../../
 echo "## Executing  the server - './server/target/univeral/server-1.0/bin/server"
 ./server/target/universal/server-1.0/bin/server -J-Xms2048m -J-Xmx2048m

@@ -4,7 +4,9 @@
 set -e
 
 # reference directory is where the script runs - the root of the project
-cd ${BASH_SOURCE%/*}
+# cd ${BASH_SOURCE%/*}
+
+echo "path: " `pwd`
 
 # clean files that will be overridden by symbolic links
 echo "Creating symbolic links to the site content"
@@ -38,6 +40,7 @@ ln -sf ../../site/js
 ln -sf ../../site/index.html
 cd ../../
 
+echo "path: " `pwd`
 
 # warning
 echo "--------------------------------------------------------------"
