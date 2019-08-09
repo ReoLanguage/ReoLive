@@ -89,18 +89,18 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       """v:=0; v'=2 & v>4; v'=-1 & v<3""" ->
       "Experimental event-driven example (using approximations)."
     /////
-//    ,"Bounce (ED)"->
-//  """// Bouncing ball example
-//        |v:=5; p:=10; c:=0;
-//        |while (c<4) {
-//        |  v'=-9.8, p'=v & p<0 /\ v<0;
-//        |  v:=-0.5*v; c:=c+1
-//        |}""".stripMargin ->
-//      descr("Bouncing Ball","Experimental Event-Driven example. " +
-//  "Not yet fully supported." +
-//  "A ball position and velocity as it bounces in the floor. " +
-//  "It includes an experimental feature: using a condition (p<0 /\\ v<0) " +
-//  "to end a trajectory using a naive search algorithm.")
+    ,"Bounce (ED)"->
+    """// Bouncing ball example
+          |v:=5; p:=10; c:=0;
+          |while (c<4) {
+          |  v'=-9.8, p'=v & p<0 /\ v<0;
+          |  v:=-0.5*v; c:=c+1
+          |}""".stripMargin ->
+        descr("Bouncing Ball","Experimental Event-Driven example. " +
+    //"Not yet fully supported." +
+    "A ball position and velocity as it bounces in the floor. " +
+    "It includes an experimental feature: using a condition (p<0 /\\ v<0) " +
+    "to end a trajectory using a naive search algorithm.")
     /////
     //    ,"Bounce"->
     //       """// Bouncing ball example
