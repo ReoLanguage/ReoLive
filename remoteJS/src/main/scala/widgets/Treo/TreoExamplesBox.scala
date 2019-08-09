@@ -158,7 +158,17 @@ class TreoExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable
         |  | i : <1..n> }
         |}
         |""".stripMargin ->
-       descr("N-ary exclusive router","")
+       descr("N-ary exclusive router",""),
+    "FilterTransf" ->
+      """import reo.filter;
+        |import reo.transformer;
+        |
+        |main(a, c) {
+        |  transformer<"concat">(a,b)
+        |  filter<"abc">(b,c)
+        |}
+        |""".stripMargin ->
+      descr("Transform and Filter","")
   ).map(x=>List(x._1._1,x._1._2,x._2))
 
 }
