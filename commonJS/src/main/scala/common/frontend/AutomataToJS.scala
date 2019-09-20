@@ -13,8 +13,10 @@ import scala.util.Try
 //todo: add rectangle colision colision
 object AutomataToJS {
 
+  //todo: Maybe create a special abstract automata that has time so that ifta and hub can inherit from it
   def apply[A<:Automata](aut: A, mirrors: Mirrors, boxName:String, portNames:Boolean=false): String = aut match {
-    case a: IftaAutomata => generateJS(getIftaNodes(a), getLinks(aut, boxName, portNames, mirrors), boxName)
+    case a: IftaAutomata => generateJS(getInvNodes(a), getLinks(aut, boxName, portNames, mirrors), boxName)
+    case a:HubAutomata => generateJS(getInvNodes(a), getLinks(aut, boxName, portNames, mirrors), boxName)
     case _ => generateJS(getNodes(aut), getLinks(aut, boxName, portNames, mirrors), boxName)
   }
 
@@ -106,7 +108,7 @@ object AutomataToJS {
                     }
                 });
 
-                // add invariants to ifta automata nodes
+                // add invariants to timed automata nodes (ifta,hub)
                 var nodelabel = nd.append("text")
                   .style("font-size","6px")
                   .style("fill","#A742A8")
@@ -275,21 +277,34 @@ object AutomataToJS {
                       return (g != "" ) ?  "〈" + g + "〉" : "";
                     });
                   textpath.append("tspan")
+                    .attr("class", "ccHub")
+                    .style("fill","#A1A928")
+                    .text(function (d) {
+                      var g = d.type.split("~")[1] ;
+                      return (g != "" ) ?  g : "";
+                    });
+                  textpath.append("tspan")
                     .attr("class", "acts")
                     .style("fill","#3B01E9")
                     .text(function (d) {
-                      var g = d.type.split("~")[0] ;
-                      var a = d.type.split("~")[1] ;
+                      var g = d.type.split("~")[1] ;
+                      var a = d.type.split("~")[2] ;
                       var acts = (a !== undefined) ? a : ""
-                      return (g != "" && acts!= "")? ", " + acts : acts;
+                      return (g != "" && acts!= "")? " " + acts : acts;
                     }) ;
                   textpath.append("tspan")
                     .attr("class", "updates")
                     .style("fill","#0F024F")
                     .text(function (d) {
-                      var u = d.type.split("~")[2] ;
-//                      return (typeof u != 'undefined') ? (", " + u) : " ";
-                      return (u != "" && u!== undefined) ? ", " + u : "";
+                      var u = d.type.split("~")[3] ;
+                      return (u != "" && u!== undefined) ? " " + u : "";
+                    });
+                  textpath.append("tspan")
+                    .attr("class", "cresetsHub")
+                    .style("fill","#972F65")
+                    .text(function (d) {
+                      var r = d.type.split("~")[4] ;
+                      return (r != "" && r!== undefined) ? " " + r : "";
                     });
             } else { //iftaAutomata
                 var textpath = d3.select(".labels${name}")
@@ -479,8 +494,18 @@ object AutomataToJS {
   private def getNodes[A<:Automata](aut: A): String =
     aut.getTrans().flatMap(processNode(aut.getInit, _)).mkString("[",",","]")
 
-  private def getIftaNodes(aut:IftaAutomata):String =
-    aut.getTrans().flatMap(processNode(aut.getInit, _, aut.ifta.cInv)).mkString("[",",","]")
+//  private def getIftaNodes(aut:IftaAutomata):String =
+//    aut.getTrans().flatMap(processNode(aut.getInit, _, aut.ifta.cInv)).mkString("[",",","]")
+
+  private def getInvNodes[A<:Automata](aut:A):String = aut match {
+    case IftaAutomata(ifta,nifta,cons) =>
+      aut.getTrans().flatMap(processNode(aut.getInit,_,ifta.cInv)).mkString("[",",","]")
+    case HubAutomata(ps,sts,init,trans,c,inv,v) =>
+      aut.getTrans().flatMap(processNode(aut.getInit,_,inv)).mkString("[",",","]")
+  }
+
+
+
 
   private def getLinks[A<:Automata](aut: A,name:String,portNames:Boolean=false, ms: Mirrors): String =
     aut.getTrans(portNames).flatMap(t => processEdge(expandMirrors(t,ms),name)).mkString("[",",","]")

@@ -1,7 +1,7 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
-import hprog.ast.SageExpr.SExpr
+import hprog.ast.SymbolicExpr.SyExpr
 import hprog.ast.Syntax
 import hprog.frontend.Deviator
 import hprog.frontend.solver.StaticSageSolver

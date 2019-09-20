@@ -4,7 +4,7 @@ import common.widgets.{Box, OutputArea}
 import hprog.ast.Syntax
 import hprog.backend.TrajToJS
 import hprog.frontend.Deviator
-import hprog.frontend.Semantics.Warnings
+import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.solver.{Solver, StaticSageSolver}
 
 class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], errorBox: OutputArea)
@@ -114,9 +114,12 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], e
     (lastSyntax,lastSolver) match {
       case (Some(syntax),Some(solver)) =>
 //        val e = getEps
-        val prog = hprog.frontend.Semantics.syntaxToValuation(syntax,solver, Deviator.dummy)
-        val traj = prog.traj(Map())
-          .addWarnings(solver.getWarnings)
+//        val prog = hprog.frontend.Semantics.syntaxToValuation(syntax,solver, Deviator.dummy)
+//        val traj = prog.traj(Map())
+//          .addWarnings(solver.getWarnings)
+
+        val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy)
+        traj.addWarnings(solver.getWarnings)
 
 //        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings
         val js = TrajToJS(traj,range,hideCont)

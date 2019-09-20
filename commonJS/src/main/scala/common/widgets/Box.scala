@@ -162,7 +162,7 @@ object Box {
         errorBox.error(s"ParserException$by: " + e.getMessage)
       case e: dsl.common.TypeException =>
         errorBox.error(s"TypeException$by: " + e.getMessage)
-      case e: dsl.common.UndefinedVarException =>
+      case e: dsl.common.UndefinedNameException =>
         errorBox.error(s"UndefinedVarException$by: " + e.getMessage)
       case e: dsl.common.InvalidParameterException =>
         errorBox.error(s"InvalidParameterException$by: " + e.getMessage)
