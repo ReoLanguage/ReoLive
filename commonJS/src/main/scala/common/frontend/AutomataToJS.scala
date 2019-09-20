@@ -108,7 +108,7 @@ object AutomataToJS {
                     }
                 });
 
-                // add invariants to ifta automata nodes
+                // add invariants to timed automata nodes (ifta,hub)
                 var nodelabel = nd.append("text")
                   .style("font-size","6px")
                   .style("fill","#A742A8")
