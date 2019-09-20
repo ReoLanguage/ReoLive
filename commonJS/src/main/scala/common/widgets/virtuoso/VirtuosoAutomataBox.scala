@@ -42,15 +42,16 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) drawAutomata()
 
 
-  private def drawAutomata(portNames:Boolean=true): Unit =
-    try{
-//      automaton = Automata.fromOneToOneSimple[HubAutomata](dependency.get)//
+  private def drawAutomata(portNames:Boolean=true): Unit = {
+    deleteAutomaton()
+    try {
+      //      automaton = Automata.fromOneToOneSimple[HubAutomata](dependency.get)//
       val mirrors = new Mirrors()
       //println("- Starting Automata drawing - 1st the circuit")
-      Circuit(dependency.get,true,mirrors) // just to update mirrors
+      Circuit(dependency.get, true, mirrors) // just to update mirrors
       //println("- Mirrors after circuit creation: "+mirrors)
-      automaton = Automata[HubAutomata](dependency.get,mirrors).serialize.simplify
-      println("hub: \n"+automaton.show)
+      automaton = Automata[HubAutomata](dependency.get, mirrors).serialize.simplify
+      println("hub: \n" + automaton.show)
       //println(s"%%%\n${automaton.show}\n%%%")
       //println(s"${automaton.getTrans.mkString(" > ")}")
       val sizeAut = automaton.getStates.size
@@ -62,9 +63,10 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
       val height = (heightAutRatio * factorAut).toInt
       svg.attr("viewBox", s"00 00 $width $height")
 
-      scalajs.js.eval(AutomataToJS(automaton,mirrors,"virtuosoAutomata",portNames))
+      scalajs.js.eval(AutomataToJS(automaton, mirrors, "virtuosoAutomata", portNames))
     }
     catch Box.checkExceptions(errorBox)
+  }
 
   private def deleteAutomaton(): Unit = {
     svg.selectAll("g").html("")

@@ -2,19 +2,16 @@ package reolive
 
 import common.widgets.Lince.{GraphicBox, LinceBox, LinceExamplesBox}
 import common.widgets._
-import org.scalajs.dom
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
-import widgets._
 
 import scala.scalajs.js.annotation.JSExportTopLevel
-import hprog.ast.Syntax
 
 
 /**
   * Created by jose on 1/09/2018.
   */
-object Lince extends{
+object LinceLW extends{
 
   var inputBox: LinceBox = _
 //  var information: Box[Syntax] = _

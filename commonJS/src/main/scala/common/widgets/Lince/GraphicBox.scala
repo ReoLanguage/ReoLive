@@ -3,15 +3,15 @@ package common.widgets.Lince
 import common.widgets.{Box, OutputArea}
 import hprog.backend.{Show, TrajToJS}
 import hprog.common.ParserException
-import hprog.frontend.Semantics.Valuation
-import hprog.frontend.Traj
-import hprog.frontend.solver.Solver
+import hprog.frontend.CommonTypes.Valuation
+import hprog.frontend.{Deviator, Traj}
+import hprog.frontend.solver.{Solver, StaticSageSolver}
 
 class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
   extends Box[Unit]("Trajectories", List(program)) {
   var box : Block = _
   override def get: Unit = {}
-  private var trajectory: Option[Traj[Valuation]] = None
+  private var trajectory: Option[Traj] = None
 
   //  private val widthCircRatio = 7
   //  private val heightCircRatio = 3
@@ -58,15 +58,17 @@ class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
 
       //      println("a")
       //      val (traj,_) = hprog.ast.Trajectory.hprogToTraj(Map(),prog)
-      val prog = hprog.frontend.Semantics.syntaxToValuationTaylor(syntax)
+//      val prog = hprog.frontend.Semantics.syntaxToValuationTaylor(syntax)
+      val traj = new hprog.frontend.Traj(syntax,new StaticSageSolver,Deviator.dummy)
+      //hprog.frontend.Semantics.syntaxToValuationTaylor(syntax)
 
       // tests: to feed to Sage
-      val eqs = Solver.getDiffEqs(syntax)
-      for (e <- eqs) if (e.nonEmpty)
-        errorBox.message(s"- ${e.map(Show(_)).mkString(", ")}" )
+//      val eqs = Solver.getDiffEqs(syntax)
+//      for (e <- eqs) if (e.nonEmpty)
+//        errorBox.message(s"- ${e.map(Show(_)).mkString(", ")}" )
           //s"\n${hprog.frontend.solver.SageSolver.genSage(e)}")
 
-      trajectory = Some(prog.traj(Map()))
+      trajectory = Some(traj)
       //      println(s"b - traj(0)=${traj(0)} - traj(1)=${traj(1)}")
 
       draw(None,true)
