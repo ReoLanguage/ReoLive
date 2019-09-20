@@ -1,6 +1,6 @@
 package reolive
 
-import common.widgets.Lince.{LinceBox, LinceExamplesBox}
+import common.widgets.Lince.{GraphicBox, LinceBox, LinceExamplesBox}
 import common.widgets._
 import org.scalajs.dom
 import org.scalajs.dom.html

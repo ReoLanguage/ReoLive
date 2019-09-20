@@ -1,10 +1,11 @@
-package widgets
+package common.widgets.Lince
 
 import common.widgets.{Box, OutputArea}
 import hprog.backend.{Show, TrajToJS}
 import hprog.common.ParserException
 import hprog.frontend.Semantics.Valuation
-import hprog.frontend.{Solver, Traj}
+import hprog.frontend.Traj
+import hprog.frontend.solver.Solver
 
 class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
   extends Box[Unit]("Trajectories", List(program)) {
@@ -63,7 +64,7 @@ class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
       val eqs = Solver.getDiffEqs(syntax)
       for (e <- eqs) if (e.nonEmpty)
         errorBox.message(s"- ${e.map(Show(_)).mkString(", ")}" )
-          //s"\n${hprog.frontend.SageSolver.genSage(e)}")
+          //s"\n${hprog.frontend.solver.SageSolver.genSage(e)}")
 
       trajectory = Some(prog.traj(Map()))
       //      println(s"b - traj(0)=${traj(0)} - traj(1)=${traj(1)}")

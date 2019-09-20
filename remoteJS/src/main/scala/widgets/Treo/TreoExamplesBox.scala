@@ -68,6 +68,22 @@ class TreoExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable
         |  fifofull<"hi">(a,b)
         |}""".stripMargin ->
       descr("fifofull",""),
+    "NFifo" ->
+      """import reo.sync;
+        |import reo.fifo1;
+        |
+        |main(in,out){
+        |  NFifo<2>(in,out)
+        |}
+        |
+        |NFifo<N:int>(a,b){
+        |  { fifo1(y[i-1],y[i])
+        |  | i:<1..N> }
+        |
+        |  sync(a,y[0])
+        |  sync(y[N],b)
+        |}""".stripMargin ->
+      descr("N fifo channels in sequence",""),
     "Alternator"->
       """import reo.sync;
         |import reo.syncdrain;
@@ -91,6 +107,26 @@ class TreoExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable
         |  fifofull<42>(x,c) sync(a,c)
         |}""".stripMargin ->
       descr("Alternator full",""),
+    "NAlternator"->
+      """import reo.sync;
+        |import reo.syncdrain;
+        |import reo.fifo1;
+        |
+        |main(p[1..3],out){
+        |	Nalternator<3>(p[1..3],out)
+        |}
+        |
+        |Nalternator<N:int>(p[1..N],x[1]!){
+        |	{
+        |	 syncdrain(p[i-1],p[i])
+        |	 sync(p[i],x[i])
+        |	 fifo1(x[i],x[i-1])
+        |	|
+        |	 i:<2..N>
+        |	}
+        |	sync(p[1],x[1])
+        |}""".stripMargin ->
+      descr("N-ary alternator",""),
     "Sequencer Spout"->
       """import reo.sync;
         |import reo.fifo1;
@@ -104,7 +140,35 @@ class TreoExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable
         |  sync(b,o2)
         |  sync(c,o3)
         |}""".stripMargin ->
-      descr("Sequencer spout","")
+      descr("Sequencer spout",""),
+    "XRouter" ->
+      """import reo.sync;
+        |import reo.syncdrain;
+        |import reo.lossy;
+        |
+        |main(in,out[1..3]){
+        |	xrouter<3>(in,out[1..3])
+        |}
+        |
+        |xrouter<n:int>(in, out[1..n])
+        |{
+        |  sync(in, s)  syncdrain(s, m)
+        |  { lossy(s, x[i])  sync(x[i], m)
+        |    sync(x[i], out[i])
+        |  | i : <1..n> }
+        |}
+        |""".stripMargin ->
+       descr("N-ary exclusive router",""),
+    "FilterTransf" ->
+      """import reo.filter;
+        |import reo.transformer;
+        |
+        |main(a, c) {
+        |  transformer<"concat">(a,b)
+        |  filter<"abc">(b,c)
+        |}
+        |""".stripMargin ->
+      descr("Transform and Filter","")
   ).map(x=>List(x._1._1,x._1._2,x._2))
 
 }

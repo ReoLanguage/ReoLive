@@ -4,7 +4,7 @@ import common.widgets.Lince.{LinceBox, LinceExamplesBox}
 import common.widgets._
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
-import widgets.RemoteGraphicBox
+import widgets.{RemoteEvalBox, RemoteGraphicBox}
 
 import scala.scalajs.js.annotation.JSExportTopLevel
 
@@ -17,6 +17,7 @@ object RemoteLince {
     //var information: Box[Syntax] = _
     var examples: LinceExamplesBox = _
     var graphic: RemoteGraphicBox = _
+    var eval: RemoteEvalBox = _
     var errors: OutputArea = _
     var descr: OutputArea = _
     var perturbation: InputBox = _
@@ -56,15 +57,17 @@ object RemoteLince {
       inputBox = new LinceBox(reload(), "",errors)
       examples = new LinceExamplesBox(softReload(),inputBox,descr)
       //information = new LinceInfoBox(inputBox, errors)
-      perturbation = new InputBox(softReload(),"2","perturbation",1,
+      perturbation = new InputBox(softReload(),"0.1","perturbation",1,
         title = "Maximum perturbation",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
-      graphic= new RemoteGraphicBox(inputBox, perturbation, errors)
+      graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, errors)
+      eval   = new RemoteEvalBox(inputBox, errors, "")
 
       inputBox.init(leftColumn,true)
       errors.init(leftColumn)
       examples.init(leftColumn,true)
       descr.init(leftColumn)
+      eval.init(leftColumn,visible = false)
       perturbation.init(leftColumn,visible = false)
       //information.init(rightColumn,true)
       graphic.init(rightColumn,true)
@@ -96,12 +99,14 @@ object RemoteLince {
       //information.update()
       perturbation.update()
       graphic.update()
+      eval.update()
     }
 
-    private def reloadGraphics(): Unit = {
+    private def prepareGraphics(): Unit = {
       errors.clear()
+      inputBox.update()
       perturbation.update()
-      graphic.resample(hideCont = true)
+      //graphic.update()
     }
 
   }
