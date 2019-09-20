@@ -67,7 +67,7 @@ class VirtuosoInfoBox(dependency: Box[CoreConnector], errorBox: OutputArea)
       }
       loc += g
       var ups = 0
-      for (t <- aut.trans) ups += t._2._4.size
+      for (t <- aut.trans) ups += t._2._5.size
       loc += ups
       box.append("p")
         .append("strong")
