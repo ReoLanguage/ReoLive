@@ -1,18 +1,14 @@
 package services
 
-import java.util.Properties
-
 import akka.actor._
-import hprog.ast.SageExpr.SExprFun
-import hprog.ast.{SVal, SVar, Syntax}
-import hprog.backend.{Show, TrajToJS}
+import hprog.ast.SymbolicExpr.SyExprAll
+import hprog.ast.{SVal, Syntax}
+import hprog.backend.Show
 import hprog.common.{ParserException, TimeoutException}
-import hprog.frontend.Semantics.{Valuation, Warnings}
-import hprog.frontend.solver.{LiveSageSolver, Solver, StaticSageSolver}
+import hprog.frontend.CommonTypes.Valuation
+import hprog.frontend.solver.LiveSageSolver
 import hprog.frontend.{Distance, Eval, Traj}
 import hprog.lang.SageParser
-
-import sys.process._
 
 
 
@@ -43,17 +39,6 @@ class LinceActor(out: ActorRef) extends Actor{
       .replace("\\n", "\n")
 
     callSage(cleanMsg,"/home/jose/Applications/SageMath")
-
-//    if (cleanMsg.startsWith("§redraw ")) {
-//      cleanMsg.drop(8).split(",", 3) match {
-//        case Array(v1, v2, rest) =>
-//          draw(rest, Some(v1.toDouble, v2.toDouble))
-//        case _ => s"Error: Unexpected message: ${msg.drop(8)}."
-//      }
-//    }
-//    else {
-//      draw(cleanMsg, None)
-//    }
   }
 
   private def callSage(progAndEps: String, sagePath:String): String = {
@@ -74,11 +59,6 @@ class LinceActor(out: ActorRef) extends Actor{
       val prog = splitted(1)
 
       val syntax = hprog.DSL.parse(prog)
-      //    val eqs = hprog.frontend.Utils.getDiffEqs(syntax)
-      //    val replySage = LiveSageSolver.callSageSolver(eqs,sagePath,timeout=20)
-
-      // re-evaluating trajectory to get warnings
-      //    val solver = new StaticSageSolver(eqs,replySage)
 
       solver = new LiveSageSolver(sagePath)
 
@@ -99,16 +79,17 @@ class LinceActor(out: ActorRef) extends Actor{
         s"Error: ${t.toString}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
-        "Error "+e.toString //+" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
+        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
     }
   }
 
   private def getSolver(eps:Double, solver: LiveSageSolver, syntax: Syntax): String = {
 
-    val traj = hprog.frontend.Semantics
-      .syntaxToValuation(syntax,solver,new Distance(eps))
-      .traj(Map())
-    traj.warnings.foreach(w => solver += (w._1,w._2))
+    val traj = new Traj(syntax, solver, new Distance(eps))
+    traj.doFullRun() // fill caches of the solver + warnings & notes
+
+    traj.getWarnings
+        .foreach(warns => solver.addWarnings(warns.toList))
 
     val replySage = solver.exportAll
 
@@ -122,14 +103,12 @@ class LinceActor(out: ActorRef) extends Actor{
 
   private def getEval(expr:String, solver: LiveSageSolver, syntax: Syntax): String = {
 
-    val traj = hprog.frontend.Semantics
-      .syntaxToValuation(syntax,solver,new Distance(0.0))
-      .traj(Map())
+    val traj = new Traj(syntax,solver, new Distance(0.0))
     val sexpr = hprog.DSL.parseExpr(expr)
-    val dur = traj.dur
+    val dur = traj.getDur
 
     val t    = Eval(sexpr,0,Map())
-    val texp = Eval.update(sexpr, SVal(0), Map())
+    val texp = Eval.update(sexpr, SVal(0), Map():Valuation)
     val d    = dur.map(Eval(_))
 
     if (t < 0.0 || (d.nonEmpty && d.get < t)) { // comparisons still not in the Solver
@@ -137,7 +116,7 @@ class LinceActor(out: ActorRef) extends Actor{
       s"Error: time value $t out of bounds."
     }
     else {
-      val point = traj(texp)(solver)
+      val point = traj.eval(texp).get //  traj(texp)(solver)
 
       debug(()=>s"sexpr/t/point = ${
         Show(sexpr)}, ${
@@ -145,7 +124,7 @@ class LinceActor(out: ActorRef) extends Actor{
         Show(point)}")
 
       // experimental: simplifying long expressions in Sage
-      def simplifySageExpr(e:SExprFun): SExprFun =
+      def simplifySageExpr(e:SyExprAll): SyExprAll =
         SageParser.parseExpr(solver.askSage(e).getOrElse("{")) match {
           case SageParser.Success(newExpr, _) =>
             newExpr
@@ -164,14 +143,18 @@ class LinceActor(out: ActorRef) extends Actor{
            |<a id="$id2" onclick="${showHide(id1,id2)}" style='display: none;'>$msg</a>""".stripMargin
       }
 
-      val sol = traj.fun(texp)(solver)
+      //val sol = traj.fun(texp)(solver)
 
       val res = point.map(kv =>
         " - " + kv._1 +
-          s"§${Show(kv._2)}" + more(kv._1,s" ~ ${Eval(kv._2)} ~ ${
+          s"§${Show(kv._2)}" + more(kv._1,s" ~ ${Eval(kv._2)}"))
+//      ~ ${
 //            Show(traj.fun.getOrElse(kv._1,SVal(0)))}]")
-            Show.pp(
-              Eval.simplifyMan(sol.getOrElse(kv._1,SVal(0))))}"))
+//            Show.pp(
+              //Eval.simplifyMan(sol.getOrElse(kv._1,SVal(0)))
+              //traj.eval(texp)
+//            )
+//        }"))
         .mkString("§§")
       debug(() => s"exporting eval result: \n$res")
 
@@ -183,50 +166,5 @@ class LinceActor(out: ActorRef) extends Actor{
   private def debug(str: () => String): Unit = {
     //println("[Server] "+str())
   }
-
-
-  //  private def buildWarnings(warns: Warnings): String = {
-//    // "double" space "strings splitted by §"
-//    // all splitted by §§
-//    val s = warns.map(kv => s"${kv._1} ${kv._2._1.mkString("§")}").mkString("§§")
-//    val toCheck = warns.values.flatMap(_._2)
-//    toCheck.foreach(elem =>
-////      println(s"Check:\n ${elem._1} knowning ${elem._2}")
-//      println("--> "+LiveSageSolver.genSage(elem._1,elem._2))
-//    )
-//    //println(s"warnings: $s")
-//    s
-//  }
-
-//  private def draw(msg: String, range: Option[(Double,Double)]): String =
-//    try {
-//        //println(s"building trajectory with range $range from $msg")
-//        val syntax = hprog.DSL.parse(msg)
-//        //      println("a")
-//        //      val (traj,_) = hprog.ast.Trajectory.hprogToTraj(Map(),prog)
-//        val prog = hprog.frontend.Semantics.syntaxToValuation(syntax)
-//
-//        /////
-//        // tests: to feed to Sage
-//        //      var sages = List[String]()
-//        //      val systems = Solver.getDiffEqs(syntax)
-//        //      val solver = new SageSolver("/home/jose/Applications/SageMath")
-//        //      solver.batch(systems)
-//        //      for ((eqs,repl) <- solver.cached) {
-//        //        sages ::= s"## Solved(${eqs.map(Show(_)).mkString(", ")})"
-//        ////        sages ::= repl.mkString(",")
-//        //      }
-//
-//        val traj = prog.traj(Map())
-//
-//        TrajToJS(traj,range)
-//    }
-//    catch {
-//      case p:ParserException =>
-//        //println("failed parsing: "+p.toString)
-//        "Error: "+p.toString
-//      case e:Throwable => "Error "+e.toString
-//    }
-
 
 }
