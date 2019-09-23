@@ -36,42 +36,37 @@ object JsonCreater {
   }
 
   private def convert(connector: CoreConnector): JsValue = connector match{
-    case CSeq(c1, c2) => {
+    case CSeq(c1, c2) =>
       JsObject(Map(
         "type" -> JsString("seq"),
         "c1" -> convert(c1),
         "c2" -> convert(c2))
       )
-    }
-    case CPar(c1, c2) => {
+    case CPar(c1, c2) =>
       JsObject(Map(
         "type" -> JsString("par"),
         "c1" -> convert(c1),
         "c2" -> convert(c2)
       ))
-    }
-    case CId(i) => {
+    case CId(i) =>
       JsObject(Map(
         "type" -> JsString("id"),
         "i" -> convert(i)
       ))
-    }
 
-    case CSymmetry(i,j) => {
+    case CSymmetry(i,j) =>
       JsObject(Map(
         "type" -> JsString("symmetry"),
         "i" -> convert(i),
         "j" -> convert(j)
       ))
-    }
-    case CTrace(i,c) => {
+    case CTrace(i,c) =>
       JsObject(Map(
         "type" -> JsString("trace"),
         "i" -> convert(i),
         "c" -> convert(c)
       ))
-    }
-    case CPrim(name,i,j,extra) => {
+    case CPrim(name,i,j,extra) =>
       JsObject(Map(
         "type" -> JsString("prim"),
         "name" -> JsString(name),
@@ -83,16 +78,19 @@ object JsonCreater {
 //          case None => JsString("")
 //        })
       ))
-    }
 
-    case CSubConnector(name, c, ann) => {
+    case CSubConnector(name, c, ann) =>
       JsObject(Map(
         "type" -> JsString("sub"),
         "name" -> JsString(name),
         "c" -> convert(c),
         "ann" -> convertAnns(ann)
       ))
-    }
+    case CTreo(treo) =>
+      JsObject(Map(
+        "error" -> JsString(s"Unsupported - exporting Treo ($treo)"))
+      )
+
   }
 
   private def convert(i: CoreInterface): JsValue = convert(i.toInterface)
