@@ -25,6 +25,8 @@ object Virtuoso extends{
 
   var aut: VirtuosoAutomataBox = _
 
+  var uppaal:VirtuosoUppaalBox = _
+
   var csBox:VirtuosoCSInputBox = _
   var csInfoBox:VirtuosoCSInfoBox = _
   var outputCs:OutputArea = _
@@ -75,6 +77,7 @@ object Virtuoso extends{
     outputCs = new OutputArea
     csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
     examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
+    uppaal = new VirtuosoUppaalBox(instantiate,errors)
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -82,10 +85,12 @@ object Virtuoso extends{
     examples.init(leftColumn,true)
     graphics.init(rightColumn,visible = true)
     aut.init(rightColumn,false)
+    uppaal.init(rightColumn,false)
     csBox.init(leftColumn,true)
     outputCs.init(leftColumn)
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
+
 
 
     reload()
@@ -119,10 +124,11 @@ object Virtuoso extends{
     instantiate.update()
     graphics.update()
     aut.update()
+    uppaal.update()
     infoBox.update()
   }
 
-  private def reloadCsInfo() = {
+  private def reloadCsInfo():Unit = {
     csInfoBox.update()
   }
 

@@ -38,11 +38,12 @@ class VirtuosoInfoBox(dependency: Box[CoreConnector], errorBox: OutputArea)
 
       // Memory
       //////////
-      val (states, vars) = aut.memory
+      val (states,vars,clocks) = aut.memory
       var mem = 0
       var varsByType = vars.groupBy(_._1)
       mem += Math.ceil(Math.log(states) / Math.log(2)).toInt
       varsByType.foreach(v =>  mem += v._2.size * v._2.head._2)
+      mem += clocks * 32
       box.append("p")
         .append("strong")
         .text(s"Memory: $mem bit${if( mem != 1) "s" else ""} \n")
@@ -55,6 +56,8 @@ class VirtuosoInfoBox(dependency: Box[CoreConnector], errorBox: OutputArea)
           varsByType.map(v => s"${v._2.size} variable(s) of type ${v._1}: ${v._2.size} * ${v._2.head._2} bit(s)").mkString("\n")
         }
         else "0 variables: 0 bits")
+      list.append("li")
+        .text(if (clocks>0) s"$clocks of type Float: $clocks * 32" else "0 clocks: 0 bits")
 //      list.append("li")
 //        .text(s"Total: $mem bit${if( mem != 1) "s" else ""} \n")
 
