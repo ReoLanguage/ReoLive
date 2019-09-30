@@ -1,16 +1,20 @@
 package reolive
 
+
+import common.widgets._
 import common.widgets.virtuoso._
-import common.widgets.{Box, GraphBox, OutputArea, Setable}
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
-import preo.DSL
-import preo.ast.{BVal, Connector}
-import preo.frontend.Show
+import widgets.Virtuoso.RemoteUppaalBox
 
 import scala.scalajs.js.annotation.JSExportTopLevel
 
-object Virtuoso extends{
+/**
+  * Created by guillecledou on 2019-09-30
+  */
+
+
+object RemoteVirtuoso extends {
 
   var inputBox: VirtuosoBox = _
   var graphics: GraphBox = _
@@ -25,13 +29,13 @@ object Virtuoso extends{
 
   var aut: VirtuosoAutomataBox = _
 
-  var uppaal:VirtuosoUppaalBox = _
+  var uppaal:RemoteUppaalBox = _
 
   var csBox:VirtuosoCSInputBox = _
   var csInfoBox:VirtuosoCSInfoBox = _
   var outputCs:OutputArea = _
 
-  @JSExportTopLevel("reolive.Virtuoso.main")
+  @JSExportTopLevel("reolive.RemoteVirtuoso.main")
   def main(content: html.Div): Unit = {
 
 
@@ -58,12 +62,7 @@ object Virtuoso extends{
       .attr("class", "rightside")
 
     errors = new OutputArea
-//    object Description extends Setable[String] {
-//      override def setValue(value: String): Unit = {println("hmmm... "+value); errors.warning(value)}
-//      override def get: Unit = {}
-//      override def init(div: Description.Block, visible: Boolean): Unit = ???
-//      override def update(): Unit = ???
-//    }
+
     descr = new OutputArea {
       override def setValue(msg: String): Unit = {clear(); super.setValue(msg)}
     }
@@ -77,7 +76,7 @@ object Virtuoso extends{
     outputCs = new OutputArea
     csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
     examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
-    uppaal = new VirtuosoUppaalBox(instantiate,errors)
+    uppaal = new RemoteUppaalBox(instantiate,errors)
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -92,22 +91,9 @@ object Virtuoso extends{
     infoBox.init(leftColumn,false)
 
 
-
     reload()
 
   }
-
-//  def typeCheck(cstr:String): Unit = try {
-//    val c = common.widgets.virtuoso.VirtuosoParser.parse(cstr).getOrElse(preo.DSL.id)
-//
-//    val typ = DSL.unsafeCheckVerbose(c)
-//    val (_, rest) = DSL.unsafeTypeOf(c)
-//    errors.message("Type: "+Show(typ))
-//    if (rest != BVal(true))
-//      errors.warning(s"Warning: did not check if ${Show(rest)}.")
-//  }
-//  catch Box.checkExceptions(errors)
-
 
   /**
     * Function that parses the expressions written in the input box and
@@ -133,5 +119,4 @@ object Virtuoso extends{
   }
 
   private def export():Unit = {}
-
 }
