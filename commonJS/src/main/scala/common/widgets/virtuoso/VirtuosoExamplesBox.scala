@@ -138,6 +138,25 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           | rr() =
           |   tk1(r1,w1) tk2(r2,w2)
           |   semaphore(w1,r2) semaphore(w2,r1)
+          |}""".stripMargin::Nil,
+    "Simpler RoundRobin - with tasks"
+      ::"Round robin between 2 tasks, without an actuator."
+      ::"""rr {
+          | rr() =
+          |   task<tk1>(W r1?,W w1!)
+          |   task<tk2>(W r2?,W w2!)
+          |   semaphore(w1,r2) semaphore(w2,r1)
+          |}""".stripMargin::Nil,
+    "Tasks (preo)"
+      ::"Examples of task using preo syntax."
+      ::"""t1 {
+          | t1 = task(NW!),
+          | t2 = task(NW?),
+          | t3 = task(W!),
+          | t4 = task(W?),
+          | t5 = task(5!),
+          | t6 = task(10?),
+          | t7 = task(NW!,W?,5!)
           |}""".stripMargin::Nil
 //      """// Round robin between 2 tasks, sending to an actuator
 //        |t1 * t2;

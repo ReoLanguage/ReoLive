@@ -121,7 +121,7 @@ class LinceActor(out: ActorRef) extends Actor{
       debug(()=>s"sexpr/t/point = ${
         Show(sexpr)}, ${
         Show(texp)}, ${
-        Show(point)}")
+        Show(point._1)}")
 
       // experimental: simplifying long expressions in Sage
       def simplifySageExpr(e:SyExprAll): SyExprAll =
@@ -144,10 +144,11 @@ class LinceActor(out: ActorRef) extends Actor{
       }
 
       //val sol = traj.fun(texp)(solver)
-
-      val res = point.map(kv =>
+      val x = point._1
+      val tc = point._2
+      val res = x.map(kv =>
         " - " + kv._1 +
-          s"§${Show(kv._2)}" + more(kv._1,s" ~ ${Eval(kv._2)}"))
+          s"§${Show(kv._2)}" + more(kv._1,s" ~ ${Eval(kv._2)} ~ ${
 //      ~ ${
 //            Show(traj.fun.getOrElse(kv._1,SVal(0)))}]")
 //            Show.pp(
@@ -155,6 +156,9 @@ class LinceActor(out: ActorRef) extends Actor{
               //traj.eval(texp)
 //            )
 //        }"))
+        Show(tc.e.getOrElse(kv._1,SVal(0))).replace("_t_","t")} @ ${
+        Show(tc.t)
+        }"))
         .mkString("§§")
       debug(() => s"exporting eval result: \n$res")
 
