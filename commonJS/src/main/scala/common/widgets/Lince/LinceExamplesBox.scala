@@ -87,14 +87,20 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 
 
     ,"Simple (ED)" ->
-      """v:=0; v'=2 until v>4; v'=-1 until v<3""" ->
+      """v:=0;
+        |// jump every 0.01 until the condition holds
+        |v'=2 until_0.01 v>4;
+        |// jump every 0.1 until the condition holds,
+        |// and then give smaller and smaller jumps
+        |// until a precision of 10^-9
+        |v'=-1 until_0.000000001,0.1 v<3""".stripMargin ->
       "Experimental event-driven example (using approximations)."
     /////
     ,"Bounce (ED)"->
     """// Bouncing ball example
           |v:=5; p:=10; c:=0;
           |while (c<4) {
-          |  v'=-9.8, p'=v until p<0 /\ v<0;
+          |  v'=-9.8, p'=v until_0.001 p<0 /\ v<0;
           |  v:=-0.5*v; c:=c+1
           |}""".stripMargin ->
         descr("Bouncing Ball","Experimental Event-Driven example. " +
@@ -114,8 +120,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     ,"Fireflies 2x (ED)"->
         """f1 := 1; f2 := 4;
         |repeat 8 {
-        |  f1'=1, f2'=1
-        |     until f1 > 10 \/ f2 > 10;
+        |  f1'=1, f2'=1 until_0.01
+        |       f1>10 \/ f2>10;
         |  if f1>=10 /\ f2<10
         |    then { f1:=0; f2:=f2+2 }
         |    else if f2>=10 /\ f1<10
@@ -134,8 +140,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         """f1 := 1; f2 := 4; f3 := 7;
         |repeat 8 {
         |  f1'=1, f2'=1, f3'=1
-        |  until f1 > 10 \/ f2 > 10 \/ f3 > 10;
-        |  if f1>=10 /\ f2<10 /\ f3 < 10
+        |  until_0.01 f1>10 \/ f2>10 \/ f3>10;
+        |  if f1>=10 /\ f2<10 /\ f3<10
         |    then { f1:=0; f2:=f2+2; f3:=f3+2 }
         |    else if f2>=10 /\ f1<10 /\ f3 < 10
         |         then { f2:=0;f1 :=f1 +2; f3:=f3+ 2 }

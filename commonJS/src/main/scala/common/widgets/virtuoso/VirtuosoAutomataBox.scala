@@ -3,6 +3,7 @@ package common.widgets.virtuoso
 import common.frontend.AutomataToJS
 import common.widgets.{Box, GraphBox, OutputArea}
 import hub.HubAutomata
+import hub.backend.Uppaal
 import ifta.backend.IftaAutomata
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
@@ -51,7 +52,7 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
       Circuit(dependency.get, true, mirrors) // just to update mirrors
       //println("- Mirrors after circuit creation: "+mirrors)
       automaton = Automata[HubAutomata](dependency.get, mirrors).serialize.simplify
-      println("hub: \n" + automaton.show)
+//      println("hub: \n" + automaton.show)
       //println(s"%%%\n${automaton.show}\n%%%")
       //println(s"${automaton.getTrans.mkString(" > ")}")
       val sizeAut = automaton.getStates.size

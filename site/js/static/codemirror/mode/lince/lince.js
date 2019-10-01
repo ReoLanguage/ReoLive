@@ -26,7 +26,8 @@ CodeMirror.defineMode("lince", function(_config, modeConfig) {
   var digitRE = /\d/;
   var hexitRE = /[0-9A-Fa-f]/;
   var octitRE = /[0-7]/;
-  var idRE = /[a-z_A-Z0-9'\xa1-\uffff]/;
+  // var idRE = /[a-z_A-Z0-9'\xa1-\uffff]/;
+  var idRE = /[a-z_A-Z'\xa1-\uffff]/;
   var symbolRE = /[!#$%&\/=?\\^|~:]/;
   // var symbolRE = /[-!#$%&*+.\/<=>?@\\^|~:]/;
   var specialRE = /[(),;[\]`{}]/;
@@ -192,7 +193,7 @@ CodeMirror.defineMode("lince", function(_config, modeConfig) {
     }
 
     setType("keyword")( // where, ...
-      "while","repeat","&","if","then","else"
+      "while","repeat","if","then","else","for","until","until_"
       );
 
     setType("keyword")(

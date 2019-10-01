@@ -11,35 +11,34 @@
     <title>Online Tools for Hybrid Programs</title>
 
     <!-- Bootstrap core CSS -->
-    <link href='@routes.Assets.versioned("css/bootstrap.min.css")' rel="stylesheet">
+    <link href='@routes.Assets.versioned("/public","css/bootstrap.min.css")' rel="stylesheet">
     <!-- Bootstrap theme -->
-    <link href='@routes.Assets.versioned("css/bootstrap-theme.min.css")' rel="stylesheet">
-    <link href='@routes.Assets.versioned("css/style.css")' rel="stylesheet">
-    <link rel="stylesheet" href='@routes.Assets.versioned("css/codemirror/codemirror.css")'>
-    <link rel="stylesheet" href='@routes.Assets.versioned("css/codemirror/theme/neat.css")'>
+    <link href='@routes.Assets.versioned("/public","css/bootstrap-theme.min.css")' rel="stylesheet">
+    <link href='@routes.Assets.versioned("/public","css/style.css")' rel="stylesheet">
+    <link rel="stylesheet" href='@routes.Assets.versioned("/public","css/codemirror/codemirror.css")'>
+    <link rel="stylesheet" href='@routes.Assets.versioned("/public","css/codemirror/theme/neat.css")'>
 </head>
 
 <body>
     <div id="contentWrap"></div>
 </body>
 
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/jquery-1.10.2.min.js")'></script>
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/bootstrap.min.js")'></script>
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/d3.v4.min.js")'></script>
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/codemirror/codemirror.js")'></script>
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/plotly.min.js")'></script>
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/codemirror/addon/edit/matchbrackets.js")'></script>
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/codemirror/mode/lince/lince.js")'></script>
-<!--<script type="text/javascript" src='@routes.Assets.versioned("javascripts/remote_js-opt.js")'></script>-->
-<script type="text/javascript" src='@routes.Assets.versioned("js/gen/remote_js-opt.js")'></script>
-<!--<script type="text/javascript" src='@routes.Assets.versioned("../assets/javascripts/starter.js")'></script>-->
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/jquery-1.10.2.min.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/bootstrap.min.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/d3.v4.min.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/codemirror/codemirror.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/plotly.min.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/codemirror/addon/edit/matchbrackets.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/codemirror/mode/lince/lince.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/gen/remote_js-opt.js")'></script>
+<!-- <script type="text/javascript" src='@routes.Assets.versioned("/public","js/gen/remote_js-fastopt.js")'></script> -->
 
 
 <script type="text/javascript">
     reolive.RemoteLince.main(document.getElementById('contentWrap'));
 </script>
 
-<script type="text/javascript" src='@routes.Assets.versioned("js/static/resizeCols.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("/public","js/static/resizeCols.js")'></script>
 
 </html>
 
