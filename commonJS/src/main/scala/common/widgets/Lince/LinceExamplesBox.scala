@@ -88,7 +88,11 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 
     ,"Simple (ED)" ->
       """v:=0;
+        |// jump every 0.01 until the condition holds
         |v'=2 until_0.01 v>4;
+        |// jump every 0.1 until the condition holds,
+        |// and then give smaller and smaller jumps
+        |// until a precision of 10^-9
         |v'=-1 until_0.000000001,0.1 v<3""".stripMargin ->
       "Experimental event-driven example (using approximations)."
     /////
