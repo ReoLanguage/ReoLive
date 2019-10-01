@@ -36,7 +36,6 @@ ln -sf ../../site/favicon.svg
 ln -sf ../../site/fonts
 ln -sf ../../site/js
 ln -sf ../../site/index.html
-ln -sf ../../site/content/svg
 cd ../../
 
 
