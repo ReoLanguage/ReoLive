@@ -78,7 +78,12 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       ("<p><strong>Alternator</strong></p>" +
         "For every pair of values received by two waiting lists, it forwards them to the output. " +
         "It sends the values always in the same order, and stores at most 1 value.") ::
-        "dupl*dupl;\nfifo*drain*id;\nmerger"::Nil,
+        "alt {\n  alt(in1?,in2?,out!) =\n    dupl(in1,d1,out)\n    dupl(in2,d2,f)\n    fifo(f,out)\n    drain(d1,d2)\n}"::Nil,
+    "Alternator (no variables)" ::
+      ("<p><strong>Alternator</strong></p>" +
+        "For every pair of values received by two waiting lists, it forwards them to the output. " +
+        "It sends the values always in the same order, and stores at most 1 value.") ::
+      "dupl*dupl;\nfifo*drain*id;\nmerger"::Nil,
     "Sequencer"
       ::"Outputs a value alternating between 3 outputs"
       ::"""seq3 {
@@ -92,12 +97,13 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |coord;
         |get
         |{
-        |  dupl1 = dupls 3,
-        |  dupl2 = dupls 3,
-        |
+        |  dupl3(a?,b!,c!,d!) =
+        |    dupl(a,b,a2)
+        |    dupl(a2,c,d)
+        |  ,
         |  coord(s1?,p1?,s2?,p2?,get!) =
-        |    dupl1(p1,d11,d12,d13)
-        |    dupl2(p2,d21,d22,d23)
+        |    dupl3(p1,d11,d12,d13)
+        |    dupl3(p2,d21,d22,d23)
         |    drain(s1,d21) drain(s2,d11)
         |    drain(d12,d42) drain(d22,d32)
         |    dupl(e1,d41,d42) dupl(e2,d32,d31)
@@ -113,12 +119,13 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |coord;
           |act
           |{
-          |  dupl1 = dupls 3,
-          |  dupl2 = dupls 3,
-          |
+          |  dupl3(a?,b!,c!,d!) =
+          |    dupl(a,b,a2)
+          |    dupl(a2,c,d)
+          |  ,
           |  coord(s1?,p1?,s2?,p2?,get!) =
-          |    dupl1(p1,d11,d12,d13)
-          |    dupl2(p2,d21,d22,d23)
+          |    dupl3(p1,d11,d12,d13)
+          |    dupl3(p2,d21,d22,d23)
           |    drain(s1,d21) drain(s2,d11)
           |    drain(d12,d42) drain(d22,d32)
           |    dupl(e1,d41,d42) dupl(e2,d32,d31)
@@ -132,8 +139,8 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
     "Simpler RoundRobin - with components"
       ::"Round robin between 2 tasks, without an actuator."
       ::"""rr {
-          | [hide] tk1 = writer*reader,
-          | [hide] tk2 = writer*reader,
+          | [hide] tk1(i?,o!) = writer(o) reader(i),
+          | [hide] tk2(i?,o!) = writer(o) reader(i),
           |
           | rr() =
           |   tk1(r1,w1) tk2(r2,w2)
