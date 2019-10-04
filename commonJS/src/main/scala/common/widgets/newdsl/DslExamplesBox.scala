@@ -67,6 +67,77 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     *
     */
   protected val buttons: Seq[List[String]] = Seq(
+    "New Syntax"::
+      """data List<a> = Nil | Cons(a,List<a>)
+        |data Bool = True | False
+        |data Nat = Zero | Succ(Nat)
+        |data Pair<a,b> = P(a,b)
+        |data Either<a,b> = Left(a) | Right(b)
+        |data Unit = U
+        |
+        |x := Cons(Zero,Nil)
+        |y := Cons(Zero,x)
+        |z := Cons(Succ(Succ(Zero)),y)
+        |w := True
+        |a,b,c := dupl3(x)
+        |
+        |def alt(i1,i2) = {
+        |  a:=in1(i1) b:=in2(i2)
+        |  drain(a, b)
+        |  o:=a o:=fifo(b)
+        |  o
+        |}
+        |// If Then Else
+        |def ite(b:Bool,then:A,else:A): A = {
+        |    t,f := match(b)
+        |    drain(t,ok)
+        |    drain(f,ko)
+        |    ok
+        |    ko
+        |}
+        |
+        |// fibbonaci
+        |def fib(): Nat = {
+        |  b:=fifoFull_Succ_Zero(a)
+        |  c:=fifo(b)
+        |  a := add(b,c)
+        |  a
+        |}
+        |
+        |// counts ticks (to check)
+        |def counter(tick): Nat = {
+        |  drain(tick,n)
+        |  succ:=build(nil,n)
+        |  next:=fifo(succ)
+        |  iter:=fifoFull_Zero(next)
+        |  n,res:=xor(iter)
+        |  zero:=Zero
+        |  drain(res,zero)
+        |  succ:=zero
+        |  res
+        |}
+        |
+        |// Addition of naturals (to check)
+        |def add(a, b): Nat = {
+        |  drain(a,b)
+        |  lockAll:=fifo(a)
+        |  lockA:=fifo(a)
+        |  waitB:=fifo(b)
+        |  next:=a
+        |  toMatch:=fifo(next)
+        |  zero,succ:=match(toMatch)
+        |  next:=fifo(succ)
+        |  res:=counter(succ)
+        |  aDone,bDone:=xor(zero)
+        |  drain(aDone,lockA)
+        |  drain(aDone,waitB)
+        |  next:=waitB
+        |  lockB:=fito(waitB)
+        |  drain(bDone,lockB)
+        |  drain(bDone,lockAll)
+        |  drain(bDone,res)
+        |  res
+        |}""".stripMargin::""::Nil,
     "Various types"::
       """data List<a> = Nil | Cons(a,List<a>)
         |data Bool = True | False

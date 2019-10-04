@@ -29,14 +29,15 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
     box.html("")
 //    var ast = DSL.parse(program.get)
     var ast = DSL.parse(program.get)
-    println("Inferred tree: " + ast)
-    var types = DSL.typeCheck(DSL.parse(program.get))
+//    println("Inferred tree: " + Show(ast))
     val list = box.append("ul")
     list.attr("style","margin-bottom: 20pt;")
-    types.map(v =>
-      list.append("li")
-        .text(s"${v._1}: ${Show(v._2)}")
-    )
-  } catch Box.checkExceptions(errorBox)
+//    var types = DSL.typeCheck(DSL.parse(program.get))
+//    types.map(v =>
+//      list.append("li")
+//        .text(s"${v._1}: ${Show(v._2)}")
+//    )
+    list.text(Show(ast))
+  } catch Box.checkExceptions(errorBox,"DSL Analysis")
 
 }
