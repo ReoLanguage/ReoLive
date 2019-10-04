@@ -529,9 +529,10 @@ object AutomataToJS {
     val res = string.split("§").toList match {
       case Nil => string
       case head :: tl =>
+        val sync = head //.split("~").mkString(" / ") // TODO: uncomment to use Animation from PortAutomata
         val ints = collectInts(tl,mirrors)
 //        val expanded = ints.flatMap(mirrors(_))
-        (head::ints.map(_.toString).toList).mkString("~")
+        (sync::ints.map(_.toString).toList).mkString("~")
     }
     //println(s"- expanding $string --> $res")
     res

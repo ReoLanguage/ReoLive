@@ -69,7 +69,7 @@ object NewDSL {
     examples.init(leftColumn,visible = true)
 
     // default button
-    if (examples.loadButton("Various types")) {
+    if (examples.loadButton("New Syntax")) {
       reload()
     }
 
