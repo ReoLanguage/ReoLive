@@ -7,12 +7,13 @@ import org.scalajs.dom.XMLHttpRequest
 import preo.ast.CoreConnector
 import widgets.RemoteBox
 
+
 /**
   * Created by guillecledou on 2019-10-04
   */
 
 
-class RemoteVerifytaBox(connector: Box[CoreConnector],connectorStr:Box[String], errorBox: OutputArea, defaultText:String = "") extends
+class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String], outputBox: OutputArea, defaultText:String = "") extends
   Box[String]("Temporal Logic", List(connector)) with CodeBox  {
 
   override protected var input: String = defaultText
@@ -24,12 +25,12 @@ class RemoteVerifytaBox(connector: Box[CoreConnector],connectorStr:Box[String], 
     )
 
 
-  override def reload(): Unit = {}
+  override def reload(): Unit = doOperation("check")
 
   protected var operation:String = "check"
 
   private def doOperation(op:String): Unit = {
-    errorBox.clear()
+    outputBox.clear()
     operation = op
     update()
     callVerifyta()
@@ -43,29 +44,15 @@ class RemoteVerifytaBox(connector: Box[CoreConnector],connectorStr:Box[String], 
   }
 
   def process(receivedData: String): Unit = {
-//    if (receivedData != "ok") {
-//      val result = Loader.loadModalOutput(receivedData)
-//
-//      result match {
-//        case Right(message) =>
-//          outputBox.error(message)
-//        case Left(message) =>
-//          val res = message.filterNot(_=='\n')
-//          outputBox.message("- "+res+" -")
-//          ParserUtils.parseFormula(input) match {
-//            case Left(err) => outputBox.error(err)
-//            case Right(form) =>
-//              val prefixes = Formula.notToHide(form).filterNot(_==Nil)
-//              if (prefixes.nonEmpty)
-//                outputBox.warning(s"Exposing ${prefixes.map(_.map(_.name).mkString("[", "/", "]")).mkString(",")}")
-//              ParserUtils.hideBasedOnFormula(form,connector.get) match {
-//                case Left(err) => outputBox.error(err)
-//                case Right((_,formExpanded)) =>
-//                  outputBox.warning("Expanded formula:\n" + formExpanded)
-//              }
-//          }
-//      }
-//    }
+    if (receivedData.startsWith("error:")) outputBox.error(receivedData.drop(6)) //drop error:
+    else outputBox.message(receivedData.drop(3) //drop ok:
+      //.replaceFirst("\\[2K","")
+      .replaceAll("\\[2K","")
+      .replaceAll("Verifying formula ([0-9]+) at \\/tmp\\/uppaal_([0-9]*)\\.q:[0-9]*","\n")
+      .replaceFirst("\\n","")
+      .split("\\n").zipWithIndex.map(f=> s"(${f._2+1}) ${f._1}").mkString("\n"))
+
+
   }
 
   override protected val codemirror: String = "temporal"
@@ -96,7 +83,7 @@ class RemoteVerifytaBox(connector: Box[CoreConnector],connectorStr:Box[String], 
         )
       }
       else if(x.status == 404){
-        errorBox.error(x.responseText)
+        outputBox.error(x.responseText)
       }
     }
     x.send()

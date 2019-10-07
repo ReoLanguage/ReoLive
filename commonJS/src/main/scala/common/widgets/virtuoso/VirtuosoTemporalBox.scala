@@ -8,11 +8,10 @@ import hub.analyse.TemporalFormula
 import hub.backend.{Show, Simplify, Uppaal}
 import org.scalajs.dom.XMLHttpRequest
 import preo.ast.CoreConnector
-import preo.backend.Network.Mirrors
-import preo.backend.{Automata, Circuit}
+import preo.backend.{Automata}
 
 /**
-  * Created by guillerminacledou on 2019-10-06
+  * Created by guillecledou on 2019-10-06
   */
 
 

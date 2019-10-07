@@ -1,9 +1,14 @@
 package services
 
 import akka.actor.{Actor, ActorRef, Props}
-import hub.backend.Uppaal
+import hub.{DSL, HubAutomata}
+import hub.analyse.TemporalFormula
+import hub.backend.{Show, Simplify, Uppaal}
 import play.api.libs.json._
+import preo.ast.CoreConnector
+import preo.backend.Automata
 import preo.lang.ParserUtils
+import services.UppaalBind
 
 /**
   * Created by guillecledou on 2019-10-05
@@ -39,9 +44,9 @@ class VerifytaActor(out:ActorRef) extends Actor {
     val operation     = parseMsg(jsmsg,"operation")
     (rawConnector,rawFormula,operation) match {
       case (Some(c),Some(f),Some("check")) => modelCheck(c, f)
-      case (None,_,_) => error("Parser error: no connector found")
-      case (_,None,_) => error("Parser error: no temporal logic found")
-      case _ => error("Parser error: no operation found " + operation)
+      case (None,_,_) => "error:Parser error: no connector found"
+      case (_,None,_) => "error:Parser error: no temporal logic found"
+      case _ => "error:Parser error: no operation found " + operation
     }
   }
 
@@ -66,43 +71,46 @@ class VerifytaActor(out:ActorRef) extends Actor {
     * @return result from verifyta
     */
   private def modelCheck(raw_conn: String, raw_form: String): String = {
-//    ParserUtils.parseAndHide(raw_conn, raw_form) match {
-//      case Right((model, mcrl2form)) => modelCheck(model, mcrl2form, warning)
-//      case Left(err) => error(err)
-//    }
-  ""
+    val formula = DSL.parseFormula(raw_form)
+    val conn = ParserUtils.parseCoreConnector(raw_conn)
+    (conn,formula) match {
+      case (Right(c),Right(f)) => modelCheck(c,f)
+      case (Left(msg),_) => s"error:$msg"
+      case (_,Left(msg)) => s"error:$msg"
+    }
   }
 
-  private def modelCheck(uppaal: Uppaal, formula:String): String = {
-//    try {
-//      val id = Thread.currentThread().getId
-//      storeInFile(model) // create model_id.mcrl2
-//      minimiseLTS()      // create model_id.lts
-//
-//      val file = new File(s"/tmp/modal_$id.mu")
-//      file.setExecutable(true)
-//      val pw = new PrintWriter(file)
-//      pw.write(form)
-//      pw.close()
-//
-//      val save_output = savepbes()
-//      if(save_output._1 == 0)
-//        JsonCreater.create(solvepbes(),warning).toString
-//      else
-//        error("Modal Logic failed: " + save_output._2+
-//          "\n when parsing\n"+form)
-//    }
-//    catch {
-//      case e: java.io.IOException => // by solvepbes/savepbes/storeInFile/generateLTS
-//        error("IO exception: " + e.getMessage)
-//    }
-    ""
+  private def modelCheck(conn: CoreConnector, formulas:List[TemporalFormula]): String = {
+    try {
+      // get hub
+      val hub = Automata[HubAutomata](conn).serialize.simplify
+      // converted to Uppaal Ta
+      val ta = Uppaal.mkTimeAutomata(hub)
+      // get uppaal model
+      val uppaal = Uppaal(ta)
+      // get a map from port number to shown name (from hub)
+      val interfaces:Map[Int,String] = (hub.getInputs ++ hub.getOutputs).map(p=>p->hub.getPortName(p)).toMap
+      // get a map from port name to the locations after the port executed (based on uppaal ta)
+      val act2locs = ta.act2locs.map(a => interfaces(a._1)-> a._2)
+      // expand formulas (remove syntactic sugar
+      val expandedFormulas = formulas.map(f=>Uppaal.expandTemporalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
+      // simplify formulas and convert them to string suitable fro uppaal
+      val formulasStr = expandedFormulas.map(f => Show(Simplify(f))).mkString("\n")
+
+      // store model and formulas
+      val id = Thread.currentThread().getId
+      val modelPath = s"/tmp/uppaal_$id.xml"
+      val queryPath = s"/tmp/uppaal_$id.q"
+      UppaalBind.storeInFile(uppaal,modelPath) // store model in /tmp/uppaal_$id.xml
+      UppaalBind.storeInFile(formulasStr,queryPath) // store model in /tmp/uppaal_$id.xml
+
+      // call to verifity
+      val verifytaOut = UppaalBind.verifyta(modelPath,queryPath,"-q")
+      if (verifytaOut._1 == 0) "ok:"+ verifytaOut._2
+      else "error:Verifyta fail: " + verifytaOut._2
+    }catch {
+      case e: java.io.IOException => "error:IO exception: " + e.getMessage
+    }
   }
 
-  /**
-    * Creates an error to return to the caller
-    * @param e error msg
-    * @return json string with error tag
-    */
-  private def error(e:String):String = JsObject(Map("error" -> JsString(e))).toString()
 }
