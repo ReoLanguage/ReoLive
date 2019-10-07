@@ -31,6 +31,8 @@ object Virtuoso extends{
   var csInfoBox:VirtuosoCSInfoBox = _
   var outputCs:OutputArea = _
 
+  var logicBox:VirtuosoTemporalBox = _
+
   @JSExportTopLevel("reolive.Virtuoso.main")
   def main(content: html.Div): Unit = {
 
@@ -78,6 +80,7 @@ object Virtuoso extends{
     csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
     examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
     uppaal = new VirtuosoUppaalBox(instantiate,errors)
+    logicBox = new VirtuosoTemporalBox(instantiate,"",errors)
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -90,7 +93,7 @@ object Virtuoso extends{
     outputCs.init(leftColumn)
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
-
+    logicBox.init(leftColumn,true)
 
 
     reload()
@@ -126,6 +129,7 @@ object Virtuoso extends{
     aut.update()
     uppaal.update()
     infoBox.update()
+    logicBox.update()
   }
 
   private def reloadCsInfo():Unit = {

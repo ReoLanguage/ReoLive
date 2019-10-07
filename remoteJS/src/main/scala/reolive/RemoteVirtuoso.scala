@@ -5,7 +5,7 @@ import common.widgets._
 import common.widgets.virtuoso._
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
-import widgets.Virtuoso.RemoteUppaalBox
+import widgets.Virtuoso.{RemoteUppaalBox, RemoteVerifytaBox}
 
 import scala.scalajs.js.annotation.JSExportTopLevel
 
@@ -34,6 +34,8 @@ object RemoteVirtuoso extends {
   var csBox:VirtuosoCSInputBox = _
   var csInfoBox:VirtuosoCSInfoBox = _
   var outputCs:OutputArea = _
+
+  var verifyta:RemoteVerifytaBox = _
 
   @JSExportTopLevel("reolive.RemoteVirtuoso.main")
   def main(content: html.Div): Unit = {
@@ -77,6 +79,7 @@ object RemoteVirtuoso extends {
     csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
     examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
     uppaal = new RemoteUppaalBox(instantiate,errors)
+    verifyta = new RemoteVerifytaBox(instantiate,inputBox,errors,"")
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -89,6 +92,7 @@ object RemoteVirtuoso extends {
     outputCs.init(leftColumn)
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
+    verifyta.init(leftColumn,true)
 
 
     reload()
@@ -112,6 +116,7 @@ object RemoteVirtuoso extends {
     aut.update()
     uppaal.update()
     infoBox.update()
+    verifyta.update()
   }
 
   private def reloadCsInfo():Unit = {
