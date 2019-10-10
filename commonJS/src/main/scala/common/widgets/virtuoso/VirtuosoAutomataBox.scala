@@ -52,7 +52,7 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
       Circuit(dependency.get, true, mirrors) // just to update mirrors
       //println("- Mirrors after circuit creation: "+mirrors)
       automaton = Automata[HubAutomata](dependency.get, mirrors).serialize.simplify
-//      println("hub: \n" + automaton.show)
+      //println("hub: \n" + automaton)
       //println(s"%%%\n${automaton.show}\n%%%")
       //println(s"${automaton.getTrans.mkString(" > ")}")
       val sizeAut = automaton.getStates.size

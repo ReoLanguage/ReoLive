@@ -11,8 +11,9 @@ import preo.frontend.Show
 
 import scala.util.Try
 
-class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea, path: String=".")
-    extends Box[Circuit]("Circuit of the instance", List(dependency)) {
+class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
+               path: String=".", title: String = "Circuit of the instance")
+    extends Box[Circuit](title, List(dependency)) {
   var graph: Circuit = _
   var box: Block = _
   override def get: Circuit = graph
@@ -27,8 +28,8 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea, path: Strin
       buttons = List(
         Left("&dArr;")-> (() => saveSvg(),"Download image as SVG")
       )),"circuit", path=path)
-    dom.document.getElementById("Circuit of the instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
-      .onclick = {e: MouseEvent => if(!isVisible) drawGraph() else deleteDrawing()}
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+      .onclick = {e: MouseEvent => update()}
   }
 
   override def update(): Unit = if(isVisible) {

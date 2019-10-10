@@ -31,6 +31,9 @@ object Virtuoso extends{
   var csInfoBox:VirtuosoCSInfoBox = _
   var outputCs:OutputArea = _
 
+  var logicBox:VirtuosoTemporalBox = _
+  var logicOutBox:OutputArea = _
+
   @JSExportTopLevel("reolive.Virtuoso.main")
   def main(content: html.Div): Unit = {
 
@@ -68,6 +71,8 @@ object Virtuoso extends{
       override def setValue(msg: String): Unit = {clear(); super.setValue(msg)}
     }
 
+    logicOutBox = new OutputArea
+
     inputBox = new VirtuosoBox(reload(),"port",errors)
     instantiate = new VirtuosoInstantiate(inputBox,errors)
     graphics = new VirtuosoGraphBox(instantiate,errors)
@@ -78,6 +83,7 @@ object Virtuoso extends{
     csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
     examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
     uppaal = new VirtuosoUppaalBox(instantiate,errors)
+    logicBox = new VirtuosoTemporalBox(instantiate,"",logicOutBox)
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -90,7 +96,8 @@ object Virtuoso extends{
     outputCs.init(leftColumn)
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
-
+    logicBox.init(leftColumn,true)
+    logicOutBox.init(leftColumn)
 
 
     reload()
@@ -120,12 +127,14 @@ object Virtuoso extends{
   private def softReload(): Unit = {
     errors.clear()
     csInfoBox.clear()
+    logicOutBox.clear()
     inputBox.update()
     instantiate.update()
     graphics.update()
     aut.update()
     uppaal.update()
     infoBox.update()
+    logicBox.update()
   }
 
   private def reloadCsInfo():Unit = {

@@ -28,7 +28,7 @@ object GraphsToJS {
         var radius = 7.75;
         var rectangle_width  = 40; // of component boxes
         var rectangle_height = 20; // of component boxes
-        var hubSize = 18;
+        var hubSize = 22;
 
         var graph = {"nodescircuit": $nodes, "linkscircuit": $edges};
 

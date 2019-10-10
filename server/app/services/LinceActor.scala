@@ -79,7 +79,8 @@ class LinceActor(out: ActorRef) extends Actor{
         s"Error: ${t.toString}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
-        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
+//        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
+        "Error "+e.toString +" # "+ e.getMessage
     }
   }
 
@@ -156,8 +157,10 @@ class LinceActor(out: ActorRef) extends Actor{
               //traj.eval(texp)
 //            )
 //        }"))
-        Show(tc.e.getOrElse(kv._1,SVal(0))).replace("_t_","t")} @ ${
-        Show(tc.t)
+        if(tc.e.isEmpty) "Open value at the end of the trajectory."
+        else
+        Show(tc.e.getOrElse(kv._1,SVal(0))).replace("_t_","t") +
+          " @ " + Show(tc.t)
         }"))
         .mkString("§§")
       debug(() => s"exporting eval result: \n$res")

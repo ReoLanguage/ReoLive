@@ -42,4 +42,5 @@ class IftaActor(out:ActorRef) extends Actor {
     val feats:String = (res \ "feats").get.asInstanceOf[JsString].value
     (fm,feats)
   }
+
 }

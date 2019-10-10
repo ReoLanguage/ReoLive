@@ -76,6 +76,5 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
       fileNotFound()
   }
 
-
   def fileNotFound() = NotFound("File not found! \nPerform an update and try again.")
 }
