@@ -40,6 +40,8 @@ GET     /modal                      controllers.ModalController.socket
 
 GET     /linceWS                    controllers.LinceController.socket
 
-GET     /treoWS                    controllers.TreoController.socket
+GET     /treoWS                     controllers.TreoController.socket
 
 GET     /ifta                       controllers.IFTAController.socket
+
+GET     /verifyta                   controllers.VerifytaController.socket
