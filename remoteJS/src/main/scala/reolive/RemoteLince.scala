@@ -58,7 +58,7 @@ object RemoteLince {
       examples = new LinceExamplesBox(softReload(),inputBox,descr)
       //information = new LinceInfoBox(inputBox, errors)
       perturbation = new InputBox(softReload(),"0.1","perturbation",1,
-        title = "Maximum perturbation",
+        title = "Perturbations up-to  (experimental)",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, errors)
       eval   = new RemoteEvalBox(inputBox, errors, "")

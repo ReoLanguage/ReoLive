@@ -1,7 +1,7 @@
 package reolive
 
 import common.widgets.{ButtonsBox, OutputArea}
-import common.widgets.newdsl.{DslAnalysisBox, DslBox, DslExamplesBox}
+import common.widgets.newdsl.{DslAnalysisBox, DslBox, DslExamplesBox, DslGraphBox}
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
 
@@ -17,6 +17,7 @@ object NewDSL {
   var errors: OutputArea = _
   var result: DslAnalysisBox = _
   var examples: DslExamplesBox = _
+  var graph: DslGraphBox = _
   var descr: OutputArea = _
 
 
@@ -61,11 +62,19 @@ object NewDSL {
     inputBox = new DslBox(reload(),program,errors)
     result = new DslAnalysisBox(inputBox,errors)
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
+    graph = new DslGraphBox(result,errors)
 
+    println(".1")
     inputBox.init(leftColumn, true)
+    println(".2")
     errors.init(leftColumn)
+    println(".3")
+    graph.init(rightColumn,visible = true)
+    println(".4")
     result.init(rightColumn,visible = true)
+    println(".5")
     descr.init(leftColumn)
+    println(".6")
     examples.init(leftColumn,visible = true)
 
     // default button
@@ -85,9 +94,15 @@ object NewDSL {
     softReload()
   }
   private def softReload(): Unit = {
+    println(".r1")
     errors.clear()
+    println(".r2")
     inputBox.update()
+    println(".r3")
     result.update()
+    println(".r4")
+    graph.update()
+    println(".r5")
   }
 
 
