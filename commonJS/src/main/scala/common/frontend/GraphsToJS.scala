@@ -269,19 +269,33 @@ object GraphsToJS {
                 .attr('xlink:href', function (d, i) {return '#edgepathcircuit' + i})
                 .style("text-anchor", "middle")
                 .style("pointer-events", "none")
+                .style("font-size", "8px")
                 .attr("startOffset", "50%")
                 .text(function (d) {
                   if(d.type === "drain" || d.type === "lossy" || d.type === "merger" ||
                      d.type === "sync" || d.type === "fifo" || d.type
-                     === "fifofull" || d.type === "timer"){
-                    return "";
-//                  }
-//                  else if (d.type === "timer") {
-//                    return "t"
+                     === "fifofull" || d.type === "timer" ||
+                     d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw"""/^\d/.test(d.type)) {""" +s"""
+                      return "";
                   }else {
                     return d.type;
                   }
                 });
+                textpath.append("tspan")
+                    .attr("class", "sync-type")
+                    .style("fill","#3B01E9")
+                    .text(function (d) {
+                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
+                        return d.type.split(" ")[0]+" "
+                      } else return  ""
+                    });
+                textpath.append("tspan")
+                    .attr("class", "port-name")
+                    .text(function (d) {
+                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
+                        return d.type.split(" ")[1];
+                      } else return  ""
+                    });
 
             var timerTextPath = d3.select(".labelscircuit").selectAll(".edgelabel")
                 .append('textPath')

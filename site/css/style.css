@@ -170,6 +170,14 @@
     font-family: monospace;
 }
 
+.sync-type {
+    font-family: monospace;
+}
+
+.port-name {
+    font-family: monospace;
+}
+
 /* experiments with drag bars */
 .clearfix:after {
     content: '';
