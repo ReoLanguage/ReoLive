@@ -1,5 +1,6 @@
 package common.frontend
 
+import hub.DSL
 import preo.backend._
 
 import scala.collection.Map
@@ -428,8 +429,10 @@ object GraphsToJS {
     case Mixed  =>
       if (extra.contains("box"))
         "box"
-      else if (virtuoso ) {
-        (extra - "mrg").headOption.getOrElse("xor").toString
+      else if (virtuoso) {
+        //(extra - "mrg").headOption.getOrElse("xor").toString
+        val hub = extra.filter(e=>e.isInstanceOf[String]).asInstanceOf[Set[String]].find(e=> (DSL.hubs++DSL.primitiveConnectors-"mrg").contains(e))
+        if (hub.isDefined) hub.get else "xor"
       }
       else if (extra.contains("xor"))
         "xrouter"
