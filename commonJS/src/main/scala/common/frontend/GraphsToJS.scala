@@ -269,7 +269,6 @@ object GraphsToJS {
                 .attr('xlink:href', function (d, i) {return '#edgepathcircuit' + i})
                 .style("text-anchor", "middle")
                 .style("pointer-events", "none")
-                .style("font-size", "8px")
                 .attr("startOffset", "50%")
                 .text(function (d) {
                   if(d.type === "drain" || d.type === "lossy" || d.type === "merger" ||
@@ -284,6 +283,7 @@ object GraphsToJS {
                 textpath.append("tspan")
                     .attr("class", "sync-type")
                     .style("fill","#3B01E9")
+                    .style("font-size", "8px")
                     .text(function (d) {
                       if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
                         return d.type.split(" ")[0]+" "
@@ -291,6 +291,7 @@ object GraphsToJS {
                     });
                 textpath.append("tspan")
                     .attr("class", "port-name")
+                    .style("font-size", "8px")
                     .text(function (d) {
                       if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
                         return d.type.split(" ")[1];
