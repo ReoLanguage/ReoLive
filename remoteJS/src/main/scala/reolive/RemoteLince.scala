@@ -57,7 +57,7 @@ object RemoteLince {
       inputBox = new LinceBox(reload(), "",errors)
       examples = new LinceExamplesBox(softReload(),inputBox,descr)
       //information = new LinceInfoBox(inputBox, errors)
-      perturbation = new InputBox(softReload(),"0.1","perturbation",1,
+      perturbation = new InputBox(softReload(),"0","perturbation",1,
         title = "Perturbations up-to  (experimental)",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, errors)
@@ -72,12 +72,11 @@ object RemoteLince {
       //information.init(rightColumn,true)
       graphic.init(rightColumn,true)
 
-      //    typeInfo = new TypeBox(inputBox, errors)
-      //    typeInfo.init(colDiv1,true)
-
 
       // load default button
+
       if (!examples.loadButton("Cruise control")) {
+//      if (!examples.loadButton("Avoiding approx. error")) {
         reload()
       }
 
