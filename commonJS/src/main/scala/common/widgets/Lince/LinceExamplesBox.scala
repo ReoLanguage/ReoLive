@@ -6,7 +6,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
   extends ButtonsBox(reload, List(inputBox,descr)){
 
   override protected val buttons: Seq[List[String]] = Seq(
-    "Simple Up Up" -> """v:=0; v'=1 for 2; v'=3 for 2""" -> "Very simple example."
+    "Basic composition" -> """v:=0; v'=1 for 2; v'=3 for 2""" ->
+      "Very simple example composing two basic atomic elements."
     ,"Cruise control"->
 //        """x:= -1; v:= 0; a:= 1;
 //          |repeat 2 {
@@ -32,28 +33,29 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |}""".stripMargin ->
         descr("Traffic lights","Alternating between two constant values.")
       ////
-      ,"Approximation error"->
-        """// The approximation error gives a
-          |// wrong evaluation of the if-condition
+      ,"Avoiding approx. error"->
+        """// A naive evaluation would give an approximation
+          |// error of the if-condition.
           |x := 1;
           |x' = -x for 40;
           |x' =  x for 40;
           |if x == 1 then x:= 2
           |          else x:= 3""".stripMargin ->
-      ( "The approximation error at point 80 makes the value of x slightly different " +
-        "from 1 in practice, yielding a final value of 3 instead of 2. This possibility is reported " +
-        "by our warning system that checks if perturbations could affect the output of conditions.")
+      ( "Using approximated values, the value of x at 80 makes is slightly different " +
+        "from 1, yielding a final value of 3 instead of 2. Using our symbolic computations, " +
+        "the correct value of 2 is obtained. Note that our experimental warning system that " +
+        "checks perturbations can detect that an approximation error can occur here at 80.")
       ////
-      ,"Dependent variables"->
+      ,"Trigonometric computation"->
         """// Solution not naively computed (precise solution involves sin/cos)
           |// Use the online version to use the precise solution.
           |p:=1;v:=1;
           |p'=v, v'=-p for 8""".stripMargin ->
-      ("Experiments - when involving mutually dependent variables the naive numerical analysis does not work. " +
-        "Use the online version to use the precise solution.")
+      ("When involving mutually dependent variables the naive numerical analysis does not work. " +
+        "Using symbolic computations we plot precisely the functions with sin/cos.")
       ////
     ////
-    ,"Moving particle" ->
+    ,"Naive particle position" ->
       """x:= -1; v:= 0; a:= 1; //t:= 0;
         |repeat 100 {
         |	//t:= 0;
@@ -96,20 +98,20 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |v'=-1 until_0.000000001,0.1 v<3""".stripMargin ->
       "Experimental event-driven example (using approximations)."
     /////
-    ,"Bounce (ED)"->
+    ,"Bouncing ball (ED)"->
     """// Bouncing ball example
           |v:=5; p:=10; c:=0;
           |while (c<4) {
           |  v'=-9.8, p'=v until_0.001 p<0 /\ v<0;
           |  v:=-0.5*v; c:=c+1
           |}""".stripMargin ->
-        descr("Bouncing Ball","Experimental Event-Driven example. " +
+        descr("Bouncing Ball","Experimental Event-Driven example, using steps of 0.001. " +
     //"Not yet fully supported." +
     "A ball position and velocity as it bounces in the floor. " +
     "It includes an experimental feature: using a condition (p<0 /\\ v<0) " +
     "to end a trajectory using a naive search algorithm.")
     /////
-    //    ,"Bounce"->
+    //    ,"Bouncing ball"->
     //       """// Bouncing ball example
     //         |v:=5; p:=10;
     //         |repeat 4 {
@@ -128,7 +130,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |         then { f2:=0;f1 :=f1 +2 }
         |         else { f1:=0; f2 :=0 }
         |}""".stripMargin ->
-      descr("Fireflies 2x","Experimental Event-Driven example. Not yet fully supported." +
+      descr("Fireflies 2x","Experimental Event-Driven example. " +
         "Every firefly has an internal clock which helps " +
         "it to know when to flash: when the clock reaches a threshold the firefly " +
         "flashes and the clock’s value is reset to zero. The flash of a firefly " +
@@ -147,7 +149,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |         then { f2:=0;f1 :=f1 +2; f3:=f3+ 2 }
         |         else { f3:=0; f1 := f1 +2; f2:= f2 +2 }
         |}""".stripMargin ->
-      descr("Fireflies 3x","Experimental Event-Driven Example. Not yet fully supported." +
+      descr("Fireflies 3x","Experimental Event-Driven Example. " +
         "Every firefly has an internal clock which helps " +
         "it to know when to flash: when the clock reaches a threshold the firefly " +
         "flashes and the clock’s value is reset to zero. The flash of a firefly " +

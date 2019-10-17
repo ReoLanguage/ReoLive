@@ -1,5 +1,6 @@
 package common.frontend
 
+import hub.DSL
 import preo.backend._
 
 import scala.collection.Map
@@ -272,15 +273,30 @@ object GraphsToJS {
                 .text(function (d) {
                   if(d.type === "drain" || d.type === "lossy" || d.type === "merger" ||
                      d.type === "sync" || d.type === "fifo" || d.type
-                     === "fifofull" || d.type === "timer"){
-                    return "";
-//                  }
-//                  else if (d.type === "timer") {
-//                    return "t"
+                     === "fifofull" || d.type === "timer" ||
+                     d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw"""/^\d/.test(d.type)) {""" +s"""
+                      return "";
                   }else {
                     return d.type;
                   }
                 });
+                textpath.append("tspan")
+                    .attr("class", "sync-type")
+                    .style("fill","#3B01E9")
+                    .style("font-size", "8px")
+                    .text(function (d) {
+                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
+                        return d.type.split(" ")[0]+" "
+                      } else return  ""
+                    });
+                textpath.append("tspan")
+                    .attr("class", "port-name")
+                    .style("font-size", "8px")
+                    .text(function (d) {
+                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
+                        return d.type.split(" ")[1];
+                      } else return  ""
+                    });
 
             var timerTextPath = d3.select(".labelscircuit").selectAll(".edgelabel")
                 .append('textPath')
@@ -428,8 +444,10 @@ object GraphsToJS {
     case Mixed  =>
       if (extra.contains("box"))
         "box"
-      else if (virtuoso ) {
-        (extra - "mrg").headOption.getOrElse("xor").toString
+      else if (virtuoso) {
+        //(extra - "mrg").headOption.getOrElse("xor").toString
+        val hub = extra.filter(e=>e.isInstanceOf[String]).asInstanceOf[Set[String]].find(e=> (DSL.hubs++DSL.primitiveConnectors-"mrg").contains(e))
+        if (hub.isDefined) hub.get else "xor"
       }
       else if (extra.contains("xor"))
         "xrouter"
