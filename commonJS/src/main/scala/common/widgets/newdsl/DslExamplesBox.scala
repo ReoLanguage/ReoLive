@@ -30,7 +30,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     for (ops <- buttons ) yield genButton(ops,buttonsDiv)
   }
 
-  override def update: Unit = ()
+  override def update(): Unit = ()
 
   private def genButton(ss:List[String],buttonsDiv:Block): Unit = {
     ss match {
@@ -38,7 +38,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         val button = buttonsDiv.append("button")
           .text(hd)
 
-        button.on("click",{(e: EventTarget, a: Int, b:UndefOr[Int])=> {
+        button.on("click",{(_: EventTarget, _: Int, _:UndefOr[Int])=> {
           toSet.zip(tl).foreach(pair => pair._1.setValue(pair._2))
           toSet.drop(tl.size).foreach(_.setValue(""))
           reload
@@ -249,8 +249,42 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |o1,o2 = conn(True)
         |o3,o4 = conn(Zero)
         |z,p = conn(Zero,out1,out2)""".stripMargin::
-      """Exmple of multiple assignment""".stripMargin::Nil
-//    "Virtuoso Data"::
+      """Exmple of multiple assignment""".stripMargin::Nil,
+    "alt"::
+      """def alt(i1,i2) = {
+        |  a:=in1(i1) b:=in2(i2)
+        |  drain(a, b)
+        |  o:=a o:=fifo(b)
+        |  o
+        |}
+        |alt(x,y)
+        |""".stripMargin::"Alternator"::Nil,
+    "xor"::
+      """def exRouter(in) = {
+        |  out1 := lossy(in)
+        |  out2 := lossy(in)
+        |  m:=out1  m:=out2
+        |  drain(in,m)
+        |  out1 out2
+        |}
+        |exRouter(x)
+        |""".stripMargin::
+      "Exclusive router"::Nil,
+    "merger"::
+      """out:=in1 out:=in2
+        |out
+        |""".stripMargin::
+      "Merger"::Nil,
+    "dupl"::
+      """out1:=in out2:=in
+        |out1 out2
+        |""".stripMargin::
+      "Replicator"::Nil,
+    "lossy"::
+      """lossy(x)
+        |""".stripMargin::
+      "Lossy channel"::Nil
+    //    "Virtuoso Data"::
 //      """
 //        |data Unit = U
 //        |data Nat = Zero | Succ(Nat)
