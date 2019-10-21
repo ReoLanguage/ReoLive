@@ -78,7 +78,7 @@ object NewDSL {
     examples.init(leftColumn,visible = true)
 
     // default button
-    if (examples.loadButton("New Syntax")) {
+    if (examples.loadButton("alt")) {
       reload()
     }
 

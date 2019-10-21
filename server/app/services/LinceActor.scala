@@ -1,5 +1,8 @@
 package services
 
+import java.io.FileInputStream
+import java.util.Properties
+
 import akka.actor._
 import hprog.ast.SymbolicExpr.SyExprAll
 import hprog.ast.{SVal, Syntax}
@@ -38,7 +41,11 @@ class LinceActor(out: ActorRef) extends Actor{
     val cleanMsg = msg.replace("\\\\", "\\")
       .replace("\\n", "\n")
 
-    callSage(cleanMsg,"/home/jose/Applications/SageMath")
+    val props: Properties = new Properties
+    props.load(new FileInputStream("global.properties"))
+    val sagePath = props.getProperty("sagePath")
+
+    callSage(cleanMsg,sagePath)
   }
 
   private def callSage(progAndEps: String, sagePath:String): String = {
@@ -76,7 +83,7 @@ class LinceActor(out: ActorRef) extends Actor{
         s"Error: When parsing $progAndEps - ${p.toString}"
       case t:TimeoutException =>
         if (solver != null) {solver.closeWithoutWait()}
-        s"Error: ${t.toString}"
+        s"Error: ${t.getMessage}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
 //        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
