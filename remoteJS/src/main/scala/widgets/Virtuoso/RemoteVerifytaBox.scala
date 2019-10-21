@@ -3,6 +3,8 @@ package widgets.Virtuoso
 import java.util.Base64
 
 import common.widgets.{Box, CodeBox, OutputArea}
+import hub.DSL
+import hub.backend.{Show, Simplify, Uppaal}
 import org.scalajs.dom.XMLHttpRequest
 import preo.ast.CoreConnector
 import widgets.RemoteBox
@@ -13,7 +15,7 @@ import widgets.RemoteBox
   */
 
 
-class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String], outputBox: OutputArea, defaultText:String = "") extends
+class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],expandedBox:OutputArea, outputBox: OutputArea, defaultText:String = "") extends
   Box[String]("Temporal Logic", List(connector)) with CodeBox  {
 
   override protected var input: String = defaultText
@@ -31,6 +33,7 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
 
   private def doOperation(op:String): Unit = {
     outputBox.clear()
+    expandedBox.clear()
     operation = op
     update()
     callVerifyta()
@@ -45,14 +48,18 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
 
   def process(receivedData: String): Unit = {
     if (receivedData.startsWith("error:")) outputBox.error(receivedData.drop(6)) //drop error:
-    else outputBox.message(receivedData.drop(3) //drop ok:
-      //.replaceFirst("\\[2K","")
-      .replaceAll("\\[2K","")
-      .replaceAll("Verifying formula ([0-9]+) at \\/tmp\\/uppaal_([0-9]*)\\.q:[0-9]*","\n")
-      .replaceFirst("\\n","")
-      .split("\\n").zipWithIndex.map(f=> s"(${f._2+1}) ${f._1}").mkString("\n"))
-
-
+    else {
+//      DSL.parseFormula(input) match {
+//        case Left(err) => expandedBox.error(err)
+//        case Right(list) => expandedBox.message("Expanded Formulas:\n"+ list.map(f=>Show(Simplify(Uppaal.toVerifyta(f)))).mkString("\n"))
+//      }
+      outputBox.message(receivedData.drop(3) //drop ok:
+        //.replaceFirst("\\[2K","")
+        .replaceAll("\\[2K","")
+        .replaceAll("Verifying formula ([0-9]+) at \\/tmp\\/uppaal_([0-9]*)\\.q:[0-9]*","\n")
+        .replaceFirst("\\n","")
+        .split("\\n").zipWithIndex.map(f=> s"(${f._2+1}) ${f._1}").mkString("\n"))
+    }
   }
 
   override protected val codemirror: String = "temporal"

@@ -37,6 +37,7 @@ object RemoteVirtuoso extends {
 
   var verifyta:RemoteVerifytaBox = _
   var verifytaOut:OutputArea =_
+  var verifytaExpanded:OutputArea =_
 
   @JSExportTopLevel("reolive.RemoteVirtuoso.main")
   def main(content: html.Div): Unit = {
@@ -71,6 +72,7 @@ object RemoteVirtuoso extends {
     }
 
     verifytaOut = new OutputArea
+    verifytaExpanded = new OutputArea
 
     inputBox = new VirtuosoBox(reload(),"port",errors)
     instantiate = new VirtuosoInstantiate(inputBox,errors)
@@ -82,7 +84,7 @@ object RemoteVirtuoso extends {
     csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
     examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
     uppaal = new RemoteUppaalBox(instantiate,errors)
-    verifyta = new RemoteVerifytaBox(instantiate,inputBox,verifytaOut,"")
+    verifyta = new RemoteVerifytaBox(instantiate,inputBox,verifytaExpanded,verifytaOut,"")
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -96,6 +98,7 @@ object RemoteVirtuoso extends {
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
     verifyta.init(leftColumn,true)
+    verifytaExpanded.init(leftColumn)
     verifytaOut.init(leftColumn)
 
 
@@ -121,6 +124,7 @@ object RemoteVirtuoso extends {
     uppaal.update()
     infoBox.update()
     verifytaOut.clear()
+    verifytaExpanded.clear()
     verifyta.update()
 
   }

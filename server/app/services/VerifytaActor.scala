@@ -85,17 +85,19 @@ class VerifytaActor(out:ActorRef) extends Actor {
       // get hub
       val hub = Automata[HubAutomata](conn).serialize.simplify
       // converted to Uppaal Ta
-      val ta = Uppaal.mkTimeAutomata(hub)
+      val ta = Uppaal.fromFormula(formulas.head,hub)
       // get uppaal model
       val uppaal = Uppaal(ta)
       // get a map from port number to shown name (from hub)
       val interfaces:Map[Int,String] = (hub.getInputs ++ hub.getOutputs).map(p=>p->hub.getPortName(p)).toMap
       // get a map from port name to the locations after the port executed (based on uppaal ta)
       val act2locs = ta.act2locs.map(a => interfaces(a._1)-> a._2)
-      // expand formulas (remove syntactic sugar
-      val expandedFormulas = formulas.map(f=>Uppaal.expandTemporalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
+      // expand formulas (remove syntactic sugar)
+      //val expandedFormulas = formulas.map(f=>Uppaal.expandTemporalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
+      val expandedFormulas = formulas.map(f=>Uppaal.toUppaalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
       // simplify formulas and convert them to string suitable fro uppaal
       val formulasStr = expandedFormulas.map(f => Show(Simplify(f))).mkString("\n")
+      println("Expanded Formulas:\n"+formulasStr)
 
       // store model and formulas
       val id = Thread.currentThread().getId
