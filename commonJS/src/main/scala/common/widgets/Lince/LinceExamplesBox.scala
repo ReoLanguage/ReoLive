@@ -41,10 +41,10 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |x' =  x for 40;
           |if x == 1 then x:= 2
           |          else x:= 3""".stripMargin ->
-      ( "Using approximated values, the value of x at 80 makes is slightly different " +
-        "from 1, yielding a final value of 3 instead of 2. Using our symbolic computations, " +
-        "the correct value of 2 is obtained. Note that our experimental warning system that " +
-        "checks perturbations can detect that an approximation error can occur here at 80.")
+      ( "Using approximated values, the value of x at 80 is slightly different " +
+        "from 1, yielding a final value of 3 instead of 2. Using our symbolic evaluation, " +
+        "Lince obtains the correct value of 2. Note that our experimental warning system, which " +
+        "checks perturbations, detects that an approximation error can occur here at 80.")
       ////
       ,"Trigonometric computation"->
         """// Solution not naively computed (precise solution involves sin/cos)
@@ -55,12 +55,11 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         "Using symbolic computations we plot precisely the functions with sin/cos.")
       ////
     ////
-    ,"Naive particle position" ->
-      """x:= -1; v:= 0; a:= 1; //t:= 0;
+    ,"Naive particle positioning" ->
+      """x:= -1; v:= 0; a:= 1;
         |repeat 100 {
-        |	//t:= 0;
         |	if x <= 0 then a:= 1 else {a:=-1 };
-        |    	x' = v, v' = a  for 0.5  //, t' = 1 for t >= 0.5
+        |    	x' = v, v' = a  for 0.5
         |}""".stripMargin ->
       descr("Moving particle", "A naive approach for moving a particle to a position x.")
 
@@ -68,19 +67,19 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     ,"Landing system" ->
       """y := 10000; v := -1000; a:= 0; g:= 10;
         |while (y >= 1000) {
-        |	// t:= 0;
-        |	if v <= -100 then { a := (100 - g) } else { a:= -g } ;
-        |    y' = v, v' = a for 1//, t' = 1 &  t >= 1
+        |	if v <= -100 then { a := (100 - g) }
+        |              else { a:= -g } ;
+        |    y' = v, v' = a for 1
         |} ;
         |while (y >= 25) {
-        |	// t:= 0;
-        |	if v <= -20 then { a := (20 - g) } else { a:= -g } ;
-        |    y' = v, v' = a  for 1 //, t' = 1 &  t >= 1
+        |	if v <= -20 then { a := (20 - g) }
+        |             else { a:= -g } ;
+        |    y' = v, v' = a  for 1
         |} ;
         |while (y >= 1) {
-        |	// t:= 0;
-        |	if v <= -1 then { a := (15 - g) } else { a:= -g } ;
-        |    y' = v, v' = a  for 0.05 // , t' = 1 &  t >= 0.05 \/ y<=0
+        |	if v <= -1 then { a := (15 - g) }
+        |            else { a:= -g } ;
+        |    y' = v, v' = a  for 0.05
         |}""".stripMargin ->
       descr("A Landing System", //"Experimental Event-Driven case-study. Not yet supported." +
         "Simulating a controller with 3 modes of approximation to land softly.")
@@ -88,15 +87,15 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     ///
 
 
-    ,"Simple (ED)" ->
-      """v:=0;
-        |// jump every 0.01 until the condition holds
-        |v'=2 until_0.01 v>4;
-        |// jump every 0.1 until the condition holds,
-        |// and then give smaller and smaller jumps
-        |// until a precision of 10^-9
-        |v'=-1 until_0.000000001,0.1 v<3""".stripMargin ->
-      "Experimental event-driven example (using approximations)."
+//    ,"Simple (ED)" ->
+//      """v:=0;
+//        |// jump every 0.01 until the condition holds
+//        |v'=2 until_0.01 v>4;
+//        |// jump every 0.1 until the condition holds,
+//        |// and then give smaller and smaller jumps
+//        |// until a precision of 10^-9
+//        |v'=-1 until_0.000000001,0.1 v<3""".stripMargin ->
+//      "Experimental event-driven example (using approximations)."
     /////
     ,"Bouncing ball (ED)"->
     """// Bouncing ball example
@@ -105,7 +104,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |  v'=-9.8, p'=v until_0.001 p<0 /\ v<0;
           |  v:=-0.5*v; c:=c+1
           |}""".stripMargin ->
-        descr("Bouncing Ball","Experimental Event-Driven example, using steps of 0.001. " +
+        descr("Bouncing Ball","Event-Driven (ED) example, using steps of 0.001. " +
     //"Not yet fully supported." +
     "A ball position and velocity as it bounces in the floor. " +
     "It includes an experimental feature: using a condition (p<0 /\\ v<0) " +
@@ -130,7 +129,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |         then { f2:=0;f1 :=f1 +2 }
         |         else { f1:=0; f2 :=0 }
         |}""".stripMargin ->
-      descr("Fireflies 2x","Experimental Event-Driven example. " +
+      descr("Fireflies 2x","Event-Driven (ED) example. " +
         "Every firefly has an internal clock which helps " +
         "it to know when to flash: when the clock reaches a threshold the firefly " +
         "flashes and the clock’s value is reset to zero. The flash of a firefly " +
@@ -149,11 +148,12 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |         then { f2:=0;f1 :=f1 +2; f3:=f3+ 2 }
         |         else { f3:=0; f1 := f1 +2; f2:= f2 +2 }
         |}""".stripMargin ->
-      descr("Fireflies 3x","Experimental Event-Driven Example. " +
+      descr("Fireflies 3x","Event-Driven (ED) Example. " +
         "Every firefly has an internal clock which helps " +
         "it to know when to flash: when the clock reaches a threshold the firefly " +
         "flashes and the clock’s value is reset to zero. The flash of a firefly " +
-        "increases the internal clock’s value of all other fireflies nearby. This version synchronizes 3 fireflies")
+        "increases the internal clock’s value of all other fireflies nearby. " +
+        "This version synchronizes 3 fireflies")
 
   ).map(x=>List(x._1._1,x._1._2,x._2))
 

@@ -48,8 +48,8 @@ extends GraphBox(null, errorBox, path, "Circuit of the Connector"){
 
   /** For each connector c:ins->outs, replace boundary interfaces with nodes  */
   private def addNodes(net:Net): Net = {
-    val io = net.prims.flatMap(p => p.ins:::p.out)
-    val allPorts = io ::: net.ins ::: net.outs
+    val io = net.prims.flatMap(p => p.ins++p.out)
+    val allPorts = io ++ net.ins ++ net.outs
     val seed = allPorts.max + 1
     addNodes(net,seed)
   }
@@ -57,10 +57,10 @@ extends GraphBox(null, errorBox, path, "Circuit of the Connector"){
   private def addNodes(net:Net,seed:Int): Net = {
     var conns = List[Connector]()
     var sd = seed
-    val ins:  Map[Int,(List[Int],List[Int])] = net.ins.map( p => p -> (List(p),Nil)).toMap
-    val outs: Map[Int,(List[Int],List[Int])] = net.outs.map(p => p -> (Nil,List(p))).toMap
+    val ins:  Map[Int,(Set[Int],Set[Int])] = net.ins.map( p => p -> (Set(p),Set[Int]())).toMap
+    val outs: Map[Int,(Set[Int],Set[Int])] = net.outs.map(p => p -> (Set[Int](),Set(p))).toMap
     val inouts = (for (i <- ins.keySet.intersect(outs.keySet)) yield i -> (ins(i)._1,outs(i)._2)).toMap
-    var ns: Map[Int,(List[Int],List[Int])] = ins ++ outs ++ inouts
+    var ns: Map[Int,(Set[Int],Set[Int])] = ins ++ outs ++ inouts
 //    var (conns,sd,ns): (List[Connector],Int,Map[Int,(List[Int],List[Int])]) = (Nil,seed,ns2)
     for (c<-net.prims) {
       val res = addNodes(c)(sd,ns)
@@ -73,14 +73,14 @@ extends GraphBox(null, errorBox, path, "Circuit of the Connector"){
   }
 
   private def addNodes(con:Connector)
-                      (implicit seed:Int, nodes:Map[Int,(List[Int],List[Int])])
-      : (Connector,Int,Map[Int,(List[Int],List[Int])]) = {
+                      (implicit seed:Int, nodes:Map[Int,(Set[Int],Set[Int])])
+      : (Connector,Int,Map[Int,(Set[Int],Set[Int])]) = {
     var ns = nodes
     var sd = seed
     def upd(p:Int,in:Boolean): Int = {
-      val intfs = ns.getOrElse(p,(Nil,Nil))
-      ns += p -> (if (in) (sd::intfs._1,intfs._2)
-                  else    (intfs._1,sd::intfs._2))
+      val intfs:(Set[Int],Set[Int]) = ns.getOrElse(p,(Set(),Set()))
+      ns += p -> (if (in) (intfs._1 + sd,intfs._2)
+                  else    (intfs._1,intfs._2 + sd))
       sd += 1
       sd-1
     }
@@ -91,12 +91,12 @@ extends GraphBox(null, errorBox, path, "Circuit of the Connector"){
 
 
   private def mkPreoNet(net: Net): Network =
-    Network(net.prims.map(mkPreoPrim),net.ins, net.outs)
+    Network(net.prims.map(mkPreoPrim),net.ins.toList, net.outs.toList)
   private def mkPreoPrim(p:Net.Connector): Network.Prim = {
     val extra:Set[Any] =
       (if (p.name == "node" && p.ins.size>1) Set("mrg") else Set()) ++
       (if (p.name == "node" && p.out.size>1) Set("dupl") else Set())
     Network.Prim(CPrim(p.name,CoreInterface(p.ins.size),CoreInterface(p.out.size),extra)
-                , p.ins, p.out, Nil) // no parents yet.
+                , p.ins.toList, p.out.toList, Nil) // no parents yet.
   }
 }
