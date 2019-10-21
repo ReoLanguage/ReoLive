@@ -41,15 +41,11 @@ class LinceActor(out: ActorRef) extends Actor{
     val cleanMsg = msg.replace("\\\\", "\\")
       .replace("\\n", "\n")
 
-<<<<<<< HEAD
-    callSage(cleanMsg,"/home/vhaslab/Applications/SageMath")
-=======
     val props: Properties = new Properties
     props.load(new FileInputStream("global.properties"))
     val sagePath = props.getProperty("sagePath")
 
     callSage(cleanMsg,sagePath)
->>>>>>> master
   }
 
   private def callSage(progAndEps: String, sagePath:String): String = {
