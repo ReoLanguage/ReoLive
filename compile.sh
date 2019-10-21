@@ -41,8 +41,6 @@ cd ../../
 
 # warning
 echo "--------------------------------------------------------------"
-echo "- Run snapshot/update.sh if you want to update the JS and CS -"
-echo "-   before publishing the snapshot. Not needed by the server.-"
 echo "- Compiling everything - the first time may take a while.    -"
 echo "--------------------------------------------------------------"
 
@@ -52,5 +50,5 @@ sbt fastOptJS server/compile
 
 echo ""
 echo "Compilation done."
-echo "- Open 'site/index.html'"
-echo "- Run the server using 'sbt server/run' to access the 'online' tabs of the site."
+echo "- Run the server using 'sbt server/run' to be able to access the 'online' tabs of the site."
+echo "- Open either 'site/index.html' or 'http://localhost:9000' (if the server is running)."
