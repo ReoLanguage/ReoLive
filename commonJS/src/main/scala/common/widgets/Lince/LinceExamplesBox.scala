@@ -130,10 +130,10 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |         else { f1:=0; f2 :=0 }
         |}""".stripMargin ->
       descr("Fireflies 2x","Event-Driven (ED) example. " +
-        "Every firefly has an internal clock which helps " +
-        "it to know when to flash: when the clock reaches a threshold the firefly " +
-        "flashes and the clock’s value is reset to zero. The flash of a firefly " +
-        "increases the internal clock’s value of all other fireflies nearby." +
+        "Every firefly has an internal clock that helps it to know when to flash: " +
+        "when the clock reaches a threshold the firefly flashes and the clock’s value " +
+        "is reset to zero. If other fireflies are nearby then they try to synchronise " +
+        "their flashes in a decentralised way." +
         "This version synchronises 2 fireflies.")
     ////
 
@@ -149,10 +149,10 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |         else { f3:=0; f1 := f1 +2; f2:= f2 +2 }
         |}""".stripMargin ->
       descr("Fireflies 3x","Event-Driven (ED) Example. " +
-        "Every firefly has an internal clock which helps " +
-        "it to know when to flash: when the clock reaches a threshold the firefly " +
-        "flashes and the clock’s value is reset to zero. The flash of a firefly " +
-        "increases the internal clock’s value of all other fireflies nearby. " +
+        "Every firefly has an internal clock that helps it to know when to flash: " +
+        "when the clock reaches a threshold the firefly flashes and the clock’s value " +
+        "is reset to zero. If other fireflies are nearby then they try to synchronise " +
+        "their flashes in a decentralised way." +
         "This version synchronizes 3 fireflies")
 
   ).map(x=>List(x._1._1,x._1._2,x._2))
