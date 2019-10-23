@@ -27,7 +27,7 @@ object Virtuoso extends{
 
   var uppaal:VirtuosoUppaalBox = _
 
-  var csBox:VirtuosoCSInputBox = _
+//  var csBox:VirtuosoCSInputBox = _
   var csInfoBox:VirtuosoCSInfoBox = _
   var outputCs:OutputArea = _
 
@@ -78,10 +78,10 @@ object Virtuoso extends{
     graphics = new VirtuosoGraphBox(instantiate,errors)
     aut = new VirtuosoAutomataBox(instantiate,errors)
     infoBox = new VirtuosoInfoBox(instantiate,errors)
-    csBox = new VirtuosoCSInputBox(reloadCsInfo())
+//    csBox = new VirtuosoCSInputBox(reloadCsInfo())
     outputCs = new OutputArea
-    csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
-    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
+    csInfoBox = new VirtuosoCSInfoBox(instantiate,outputCs)
+    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csInfoBox)
     uppaal = new VirtuosoUppaalBox(instantiate,errors)
     logicBox = new VirtuosoTemporalBox(instantiate,"",logicOutBox)
 
@@ -92,7 +92,7 @@ object Virtuoso extends{
     graphics.init(rightColumn,visible = true)
     aut.init(rightColumn,false)
     uppaal.init(rightColumn,false)
-    csBox.init(leftColumn,true)
+//    csBox.init(leftColumn,true)
     outputCs.init(leftColumn)
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
@@ -137,9 +137,9 @@ object Virtuoso extends{
     logicBox.update()
   }
 
-  private def reloadCsInfo():Unit = {
-    csInfoBox.update()
-  }
+//  private def reloadCsInfo():Unit = {
+//    csInfoBox.update()
+//  }
 
   private def export():Unit = {}
 

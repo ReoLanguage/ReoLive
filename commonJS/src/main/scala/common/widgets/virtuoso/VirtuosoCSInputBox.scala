@@ -26,7 +26,7 @@ class VirtuosoCSInputBox(reloadCsInfo: => Unit)
 
   override def reload(): Unit = {
     update()
-    reloadCsInfo
+//    reloadCsInfo
   }
 
   def clear() =
