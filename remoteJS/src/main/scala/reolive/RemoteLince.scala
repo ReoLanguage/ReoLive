@@ -63,14 +63,14 @@ object RemoteLince {
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, errors)
       eval   = new RemoteEvalBox(inputBox, errors, "")
 
-      inputBox.init(leftColumn,true)
+      inputBox.init(leftColumn, visible = true)
       errors.init(leftColumn)
-      examples.init(leftColumn,true)
+      examples.init(leftColumn, visible = true)
       descr.init(leftColumn)
-      eval.init(leftColumn,visible = false)
       perturbation.init(leftColumn,visible = false)
       //information.init(rightColumn,true)
-      graphic.init(rightColumn,true)
+      graphic.init(rightColumn, visible = true)
+      eval.init(rightColumn,visible = false)
 
 
       // load default button
