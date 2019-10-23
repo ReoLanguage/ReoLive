@@ -31,12 +31,13 @@ object RemoteVirtuoso extends {
 
   var uppaal:RemoteUppaalBox = _
 
-  var csBox:VirtuosoCSInputBox = _
+//  var csBox:VirtuosoCSInputBox = _
   var csInfoBox:VirtuosoCSInfoBox = _
   var outputCs:OutputArea = _
 
   var verifyta:RemoteVerifytaBox = _
   var verifytaOut:OutputArea =_
+  var verifytaExpanded:OutputArea =_
 
   @JSExportTopLevel("reolive.RemoteVirtuoso.main")
   def main(content: html.Div): Unit = {
@@ -71,18 +72,19 @@ object RemoteVirtuoso extends {
     }
 
     verifytaOut = new OutputArea
+    verifytaExpanded = new OutputArea
 
     inputBox = new VirtuosoBox(reload(),"port",errors)
     instantiate = new VirtuosoInstantiate(inputBox,errors)
     graphics = new VirtuosoGraphBox(instantiate,errors)
     aut = new VirtuosoAutomataBox(instantiate,errors)
     infoBox = new VirtuosoInfoBox(instantiate,errors)
-    csBox = new VirtuosoCSInputBox(reloadCsInfo())
+//    csBox = new VirtuosoCSInputBox(reloadCsInfo())
     outputCs = new OutputArea
-    csInfoBox = new VirtuosoCSInfoBox(csBox,instantiate,outputCs)
-    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csBox)
+    csInfoBox = new VirtuosoCSInfoBox(instantiate,outputCs)
+    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csInfoBox)
     uppaal = new RemoteUppaalBox(instantiate,errors)
-    verifyta = new RemoteVerifytaBox(instantiate,inputBox,verifytaOut,"")
+    verifyta = new RemoteVerifytaBox(instantiate,inputBox,verifytaExpanded,verifytaOut,"")
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -91,11 +93,12 @@ object RemoteVirtuoso extends {
     graphics.init(rightColumn,visible = true)
     aut.init(rightColumn,false)
     uppaal.init(rightColumn,false)
-    csBox.init(leftColumn,true)
+//    csBox.init(leftColumn,true)
     outputCs.init(leftColumn)
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
     verifyta.init(leftColumn,true)
+    verifytaExpanded.init(leftColumn)
     verifytaOut.init(leftColumn)
 
 
@@ -121,13 +124,14 @@ object RemoteVirtuoso extends {
     uppaal.update()
     infoBox.update()
     verifytaOut.clear()
+    verifytaExpanded.clear()
     verifyta.update()
 
   }
 
-  private def reloadCsInfo():Unit = {
-    csInfoBox.update()
-  }
+//  private def reloadCsInfo():Unit = {
+//    csInfoBox.update()
+//  }
 
   private def export():Unit = {}
 }

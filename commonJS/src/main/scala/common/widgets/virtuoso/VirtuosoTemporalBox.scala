@@ -4,11 +4,11 @@ import java.util.Base64
 
 import common.widgets.{Box, CodeBox, OutputArea}
 import hub.{DSL, HubAutomata}
-import hub.analyse.TemporalFormula
+import hub.analyse.{TemporalFormula, UppaalFormula}
 import hub.backend.{Show, Simplify, Uppaal}
 import org.scalajs.dom.XMLHttpRequest
 import preo.ast.CoreConnector
-import preo.backend.{Automata}
+import preo.backend.Automata
 
 /**
   * Created by guillecledou on 2019-10-06
@@ -84,11 +84,11 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, output
     x.send()
   }
 
-  protected def expandFormulas(formulas:List[TemporalFormula]):List[TemporalFormula] = {
+  protected def expandFormulas(formulas:List[TemporalFormula]):List[UppaalFormula] = {
     val hub:HubAutomata = Automata[HubAutomata](connector.get).serialize.simplify
     val interfaces:Map[Int,String] = (hub.getInputs ++ hub.getOutputs).map(p=>p->hub.getPortName(p)).toMap
     val ta = Uppaal.mkTimeAutomata(hub)
     val act2locs = ta.act2locs.map(a => interfaces(a._1)-> a._2)
-    formulas.map(f=>Uppaal.expandTemporalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
+    formulas.map(f=>Uppaal.toUppaalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
   }
 }

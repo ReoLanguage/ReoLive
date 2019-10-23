@@ -83,7 +83,7 @@ class LinceActor(out: ActorRef) extends Actor{
         s"Error: When parsing $progAndEps - ${p.toString}"
       case t:TimeoutException =>
         if (solver != null) {solver.closeWithoutWait()}
-        s"Error: ${t.toString}"
+        s"Error: ${t.getMessage}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
 //        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
