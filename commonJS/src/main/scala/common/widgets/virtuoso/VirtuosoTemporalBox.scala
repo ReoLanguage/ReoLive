@@ -37,7 +37,7 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, output
     DSL.parseFormula(input) match {
       case Left(err) => outputBox.error(err)
       case Right(forms) =>
-//        mkOutput()
+
         outputBox.message("Parsed formulas:\n" +
           forms.zip(expandFormulas(forms)).map(f=> s"Original: ${Show(f._1)} \nExpanded: ${Show(Simplify(f._2))}").mkString("\n"))
     }
@@ -93,27 +93,4 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, output
     formulas.map(f=>Uppaal.toUppaalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
   }
 
-//  def mkOutput() = {
-//    var formulasStr = (1 to 4).map(i => ("formula"+i.toString, i.toString, i.toString))
-//    var out = outputBox.outputs
-//      .append("div").attr("class", "verifyta-result")
-//      .append("ul").attr("class", "list-group mb-3")
-//
-//    var results = (1 to 4).map(i => "result" + i.toString)
-//    for (((o, uf, um), res) <- formulasStr.zip(results)) {
-//      var li = out.append("li")
-//        .attr("class", "list-group-item d-flex justify-content-between lh-condensed")
-//        .append("div")
-//
-//      var form = li.append("span")
-//        .style("align", "left")
-//        .attr("class", "formula-result").text(o)
-//
-//      var extras = li.append("span")
-//        .style("align", "right")
-//
-//      extras.append("a").attr("class", "text-muted expand-formula").text("+")
-//      extras.append("a").attr("class", "text-muted expand-model").text("m")
-//    }
-//  }
 }

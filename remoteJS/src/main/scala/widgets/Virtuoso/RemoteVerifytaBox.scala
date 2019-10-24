@@ -2,11 +2,13 @@ package widgets.Virtuoso
 
 import java.util.Base64
 
+import common.Utils
 import common.widgets.{Box, CodeBox, OutputArea}
 import hub.analyse.{TemporalFormula, UppaalFormula, UppaalStFormula}
 import hub.{DSL, HubAutomata}
 import hub.backend.{Show, Simplify, Uppaal}
-import org.scalajs.dom.XMLHttpRequest
+import org.scalajs.dom
+import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 import preo.ast.CoreConnector
 import preo.backend.Automata
 import widgets.RemoteBox
@@ -24,8 +26,8 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
   override protected val boxId: String = "temporalLogicArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("glyphicon glyphicon-refresh")-> (()=>reload(),"Check if the property holds (shift-enter)"),
-      Left("&dArr;")-> (()=>download(), "Download query in temporal logic for Uppaal")
+      Right("glyphicon glyphicon-refresh")-> (()=>reload(),"Check if the property holds (shift-enter)")//,
+      //Left("&dArr;")-> (()=>download(), "Download query in temporal logic for Uppaal")
     )
 
 
@@ -67,9 +69,9 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
   override protected val codemirror: String = "temporal"
 
   // todo: perhaps this should be a reusable method, e.g. in Utils, because many boxes use this.
-  private def download(): Unit = {
-    val enc = Base64.getEncoder.encode(get.toString.getBytes()).map(_.toChar).mkString
-    val filename = "UppaalQuery.q"
+  private def download(content:String,file:String): Unit = {
+    val enc = Base64.getEncoder.encode(content.getBytes()).map(_.toChar).mkString
+    val filename = file
     val url= "data:application/octet-stream;charset=utf-16le;base64,"+enc
     //
     val x = new XMLHttpRequest()
@@ -128,28 +130,6 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
     val formulasStr: List[(TemporalFormula,String,String)] =
       formula2nta2uf.map(f => (f._1,Show(Simplify(f._2)),Uppaal(f._3)))
 
-
-//    // seperate response in groups of calls to verifyta
-//    val groups:List[String] = response
-//      .replaceAll("\\[2K","")
-//      .split("§").toList
-
-//    // get formulas and responses
-//    val fs2res:List[List[String]] = groups.map(g=> g.split("~").toList)
-//    // match formula with response
-//    val rs:List[(String,String)] =
-//      fs2res.flatMap(g=>(g.head.split("\n").toList.zip(g.last.split("Verifying formula ([0-9]*) at \\/tmp\\/uppaal([0-9]*)_([0-9]*)\\.q:[0-9]*").map(_.trim))))
-//    println(rs)
-    // val
-//    val results:List[String] = response
-//        .replaceAll("\\[2K","")
-//        .replaceAll("Verifying formula ([0-9]+) at \\/tmp\\/uppaal_([0-9]*)\\.q:[0-9]*","\n")
-//        .replaceFirst("\\n","")
-//        .split("\\n").toList //.zipWithIndex.map(f=> s"(${f._2+1}) ${f._1}").mkString("\n")
-
-
-    // show results with the extra information
-
     // seperate response in groups of calls to verifyta
     val groups:List[String] = response
       .replaceAll("\\[2K","")
@@ -166,35 +146,77 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
     // show in order
     var results:List[String] = formulas.map(f=>rs(Show(f)))
 
-    println(results)
+    // show results with the extra information
 
     var out = outputBox.outputs
       .append("div").attr("class", "verifyta-result")
-      .append("ul").attr("class","list-group mb-3")
+      .append("ul").attr("class","list-group list-group-flush mb-3")
 
-    for(((o,uf,um),res) <- formulasStr.zip(results)) {
+    for ((((o, uf, um), res),i) <- formulasStr.zip(results).zipWithIndex) {
+      //var satisfied = res.replace("\\u001B"," ").stripMargin.endsWith("Formula is satisfied.")
+      var satisfied = !res.split(" ").contains("NOT")
+      println("RES"+res)
       var li = out.append("li")
-        .attr("class", "list-group-item d-flex justify-content-between lh-condensed")
-        .append("div")
+        .attr("class", "list-group-item lh-condensed")
 
-    var form = li.append("span")
-      .style("align","left")
-      .attr("class","formula-result").text(Show(o))
+      var div = li.append("div")
+        .style("display","flex")
+        .style("justify-content","space-between")
 
-    var extras = li.append("span")
-      .style("align","right")
+      var form = div.append("textarea")
+        .attr("id","formula"+i)
+        .attr("class", "formula-result").text(Show(o))
 
-    extras.append("a").attr("class","text-muted expand-formula").text("+")
-    extras.append("a").attr("class","text-muted expand-model").text("m")
-      // needs bootstrap 4
-//      var extras = li.append("span")
-//        .attr("class","formula-result").text(Show(o))
-//        extras.append("a").attr("class","text-muted expand-formula").text("+")
-//        extras.append("a").attr("class","text-muted expand-model").text("m")
+      var extras = div.append("span")
+
+      //.style("align", "right")
+      extras.append("span")
+        .style("color",if(satisfied) "#008900" else "#972f65")
+        .style("margin","5px")
+        .text(if (satisfied) "✓" else "✗" )
+      extras.append("a")
+        .style("margin","5px")
+        .attr("title","Show expanded formula")
+        .attr("data-toggle","collapse")
+        .attr("data-target","#collapseFormula"+i)
+        .attr("class", "expand-formula").text("+")
+      extras.append("a")
+        .style("margin","5px")
+        .attr("title","Download Uppaal model used to verify this property")
+        .attr("id", "model"+i).text("m")
+
+
+
+      li.append("div")
+        .attr("class","collapse")
+        .attr("id","collapseFormula"+i)
+        .append("span") //textearea
+        .attr("id","expandedFormula"+i)
+        .attr("class","temporal-formula text-muted")
+//        .style("height","10px")
+        .text(uf)
+
+      Utils.codemirror("formula"+i,"text/x-temporal")
+      //Utils.codemirror("expandedFormula"+i,"text/x-temporal")
+
+      var model = dom.document.getElementById("model"+i).asInstanceOf[html.Element]
+        .onclick = {e: MouseEvent => download(um,s"uppaalModel${i}.xml")}
 
     }
 
 
+
+//    box.append("textarea")
+//      .attr("id","uppaalHubModel")
+//      .style("white-space","pre-wrap")
+//      .text(uppaal)
+
+//    val codemirrorJS = scalajs.js.Dynamic.global.CodeMirror
+//    val lit = scalajs.js.Dynamic.literal(
+//      lineNumbers = false, matchBrackets = true, lineWrapping = true,
+//      readOnly = true, theme = "default", cursorBlinkRate = -1, mode="text/x-temporal")
+//    codemirrorJS.fromTextArea(dom.document.getElementsByClassName("temporal-formula"),lit)
   }
+
 
 }
