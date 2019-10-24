@@ -2,10 +2,9 @@ package widgets.Virtuoso
 
 import java.util.Base64
 
-import common.Utils
-import common.widgets.{Box, CodeBox, OutputArea}
+import common.widgets._
 import hub.analyse.{TemporalFormula, UppaalFormula, UppaalStFormula}
-import hub.{DSL, HubAutomata}
+import hub.{DSL, HubAutomata, Utils}
 import hub.backend.{Show, Simplify, Uppaal}
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
@@ -19,8 +18,8 @@ import widgets.RemoteBox
   */
 
 
-class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],expandedBox:OutputArea, outputBox: OutputArea, defaultText:String = "") extends
-  Box[String]("Temporal Logic", List(connector)) with CodeBox  {
+class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],errorBox:OutputArea, outputBox: VerifytaOutputArea, defaultText:String = "") extends
+  Box[String]("Temporal Logic", List(connector)) with CodeBox with Setable[String] {
 
   override protected var input: String = defaultText
   override protected val boxId: String = "temporalLogicArea"
@@ -37,7 +36,7 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
 
   private def doOperation(op:String): Unit = {
     outputBox.clear()
-    expandedBox.clear()
+    errorBox.clear()
     operation = op
     update()
     callVerifyta()
@@ -48,22 +47,6 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
       s""" "connector" : "${connectorStr.get}", """+
       s""" "operation" : "$operation" }"""
     RemoteBox.remoteCall("verifyta",msg,process)
-  }
-
-  def process(receivedData: String): Unit = {
-    if (receivedData.startsWith("error:")) outputBox.error(receivedData.drop(6)) //drop error:
-    else {
-        mkOutput(receivedData)
-//        println(receivedData)
-
-     // println(rs)
-//      outputBox.message(receivedData.drop(3) //drop ok:
-//        //.replaceFirst("\\[2K","")
-//        .replaceAll("\\[2K","")
-//        .replaceAll("Verifying formula ([0-9]+) at \\/tmp\\/uppaal_([0-9]*)\\.q:[0-9]*","\n")
-//        .replaceFirst("\\n","")
-//        .split("\\n").zipWithIndex.map(f=> s"(${f._2+1}) ${f._1}").mkString("\n"))
-    }
   }
 
   override protected val codemirror: String = "temporal"
@@ -94,16 +77,16 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
         )
       }
       else if(x.status == 404){
-        outputBox.error(x.responseText)
+        errorBox.error(x.responseText)
       }
     }
     x.send()
   }
 
-  private def mkOutput(response:String):Unit = {
+  private def process(response:String):Unit = {
     // parsed formulas
     var formulas = DSL.parseFormula(input) match {
-      case Left(err) => expandedBox.error(err); List()
+      case Left(err) => errorBox.error(err); List()
       case Right(list) => list
     }
 
@@ -127,95 +110,32 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
         f._2))
 
     // simplify formulas and convert them to a string suitable for uppaal
-    val formulasStr: List[(TemporalFormula,String,String)] =
-      formula2nta2uf.map(f => (f._1,Show(Simplify(f._2)),Uppaal(f._3)))
+    val formulasStr: List[(String,String,String)] =
+      formula2nta2uf.map(f => (Show(f._1),Show(Simplify(f._2)),Uppaal(f._3)))
 
-    // seperate response in groups of calls to verifyta
-    val groups:List[String] = response
-      .replaceAll("\\[2K","")
-      .split("§").toList
-    println(groups)
-    // get formulas and responses
-    val fs2res:List[List[String]] = groups.map(g=> g.split("~").toList)
-    println(fs2res)
-    // match formula with response
-    val rs:Map[String,String] =
-      fs2res.flatMap(g=>
-        (g.head.split("\n").toList
-          .zip(g.last.stripMargin.split("Verifying formula ([0-9]*) at \\/tmp\\/uppaal([0-9]*)_([0-9]*)\\.q:[0-9]*").filterNot(_.matches("\\x1B"))))).toMap
+    // get groups of calls to verifyta (formulas, response)
+    val f2res:List[(String,String)] = Utils.parseMultipleVerifyta(response)
+//    println("Groups:\n"+f2res.mkString("\n"))
+    // map each formula to its corresponding result (when the call succeeded, otherwise output error
+    val parseResponses:Map[String,String] =
+      f2res.flatMap(r => Utils.parseVerifytaResponse(r._2) match {
+      case Left(err) => errorBox.error(err); List()
+      case Right(res) => r._1.split("\n").zip(res).toList
+    }).toMap
+
+
     // show in order
-    var results:List[String] = formulas.map(f=>rs(Show(f)))
+    var orderedResults:List[Option[Boolean]] = formulas.map(f=>
+      if (parseResponses.isDefinedAt(Show(f)))
+        Some(Utils.isSatisfiedVerifyta(parseResponses(Show(f))))
+      else None)
 
-    // show results with the extra information
+    // show results with the extra information (show only results for ok verifyta call)
 
-    var out = outputBox.outputs
-      .append("div").attr("class", "verifyta-result")
-      .append("ul").attr("class","list-group list-group-flush mb-3")
+    val show = formulasStr.zip(orderedResults).filter(r=>r._2.isDefined)
 
-    for ((((o, uf, um), res),i) <- formulasStr.zip(results).zipWithIndex) {
-      //var satisfied = res.replace("\\u001B"," ").stripMargin.endsWith("Formula is satisfied.")
-      var satisfied = !res.split(" ").contains("NOT")
-      println("RES"+res)
-      var li = out.append("li")
-        .attr("class", "list-group-item lh-condensed")
+    outputBox.setResults(show)
 
-      var div = li.append("div")
-        .style("display","flex")
-        .style("justify-content","space-between")
-
-      var form = div.append("textarea")
-        .attr("id","formula"+i)
-        .attr("class", "formula-result").text(Show(o))
-
-      var extras = div.append("span")
-
-      //.style("align", "right")
-      extras.append("span")
-        .style("color",if(satisfied) "#008900" else "#972f65")
-        .style("margin","5px")
-        .text(if (satisfied) "✓" else "✗" )
-      extras.append("a")
-        .style("margin","5px")
-        .attr("title","Show expanded formula")
-        .attr("data-toggle","collapse")
-        .attr("data-target","#collapseFormula"+i)
-        .attr("class", "expand-formula").text("+")
-      extras.append("a")
-        .style("margin","5px")
-        .attr("title","Download Uppaal model used to verify this property")
-        .attr("id", "model"+i).text("m")
-
-
-
-      li.append("div")
-        .attr("class","collapse")
-        .attr("id","collapseFormula"+i)
-        .append("span") //textearea
-        .attr("id","expandedFormula"+i)
-        .attr("class","temporal-formula text-muted")
-//        .style("height","10px")
-        .text(uf)
-
-      Utils.codemirror("formula"+i,"text/x-temporal")
-      //Utils.codemirror("expandedFormula"+i,"text/x-temporal")
-
-      var model = dom.document.getElementById("model"+i).asInstanceOf[html.Element]
-        .onclick = {e: MouseEvent => download(um,s"uppaalModel${i}.xml")}
-
-    }
-
-
-
-//    box.append("textarea")
-//      .attr("id","uppaalHubModel")
-//      .style("white-space","pre-wrap")
-//      .text(uppaal)
-
-//    val codemirrorJS = scalajs.js.Dynamic.global.CodeMirror
-//    val lit = scalajs.js.Dynamic.literal(
-//      lineNumbers = false, matchBrackets = true, lineWrapping = true,
-//      readOnly = true, theme = "default", cursorBlinkRate = -1, mode="text/x-temporal")
-//    codemirrorJS.fromTextArea(dom.document.getElementsByClassName("temporal-formula"),lit)
   }
 
 

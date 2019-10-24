@@ -156,11 +156,11 @@ class VerifytaActor(out:ActorRef) extends Actor {
       UppaalBind.storeInFile(list.map(l=> l._2).mkString("\n"),queryPath) // store model in /tmp/uppaal$i_$id.xml
       // call to verifyta
       var verifytaOut = UppaalBind.verifyta(modelPath,queryPath,"-q")
-      println(verifytaOut._2.trim)
-      //if (verifytaOut._1 == 0)
-        (list.map(_._1) , verifytaOut._2.stripMargin)//"ok"+ verifytaOut._2)
-      //else
-     //   (list.map(_._1), verifytaOut._2.stripMargin)//"error:Verifyta fail: " + verifytaOut._2)
+      //println(verifytaOut._2.trim)
+      if (verifytaOut._1 == 0)
+        (list.map(_._1) , "ok:"+verifytaOut._2.stripMargin)//"ok"+ verifytaOut._2)
+      else
+        (list.map(_._1), "error:Verifyta failed:" +verifytaOut._2.stripMargin)//"error:Verifyta fail: " + verifytaOut._2)
     }
 
 //    responses.map(r=> )
