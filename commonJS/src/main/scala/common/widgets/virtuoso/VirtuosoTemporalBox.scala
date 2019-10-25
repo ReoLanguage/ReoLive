@@ -37,6 +37,7 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, errorB
     DSL.parseFormula(input) match {
       case Left(err) => errorBox.error(err)
       case Right(forms) =>
+        outputBox.clear()
         process(forms)
     }
   }
