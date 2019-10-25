@@ -36,8 +36,8 @@ object RemoteVirtuoso extends {
   var outputCs:OutputArea = _
 
   var verifyta:RemoteVerifytaBox = _
-  var verifytaOut:OutputArea =_
-  var verifytaExpanded:OutputArea =_
+  var verifytaOut:VerifytaOutputArea =_
+  var verifytaError:OutputArea =_
 
   @JSExportTopLevel("reolive.RemoteVirtuoso.main")
   def main(content: html.Div): Unit = {
@@ -71,8 +71,9 @@ object RemoteVirtuoso extends {
       override def setValue(msg: String): Unit = {clear(); super.setValue(msg)}
     }
 
-    verifytaOut = new OutputArea
-    verifytaExpanded = new OutputArea
+    verifytaError = new OutputArea
+    verifytaOut = new VerifytaOutputArea(verifytaError)
+
 
     inputBox = new VirtuosoBox(reload(),"port",errors)
     instantiate = new VirtuosoInstantiate(inputBox,errors)
@@ -82,9 +83,9 @@ object RemoteVirtuoso extends {
 //    csBox = new VirtuosoCSInputBox(reloadCsInfo())
     outputCs = new OutputArea
     csInfoBox = new VirtuosoCSInfoBox(instantiate,outputCs)
-    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csInfoBox)
     uppaal = new RemoteUppaalBox(instantiate,errors)
-    verifyta = new RemoteVerifytaBox(instantiate,inputBox,verifytaExpanded,verifytaOut,"")
+    verifyta = new RemoteVerifytaBox(instantiate,inputBox,verifytaError,verifytaOut,"")
+    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csInfoBox,verifyta)
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -98,9 +99,8 @@ object RemoteVirtuoso extends {
     csInfoBox.init(leftColumn,visible = true)
     infoBox.init(leftColumn,false)
     verifyta.init(leftColumn,true)
-    verifytaExpanded.init(leftColumn)
     verifytaOut.init(leftColumn)
-
+    verifytaError.init(leftColumn)
 
     reload()
 
@@ -117,14 +117,14 @@ object RemoteVirtuoso extends {
   private def softReload(): Unit = {
     errors.clear()
     csInfoBox.clear()
+    verifytaOut.clear()
+    verifytaError.clear()
     inputBox.update()
     instantiate.update()
     graphics.update()
     aut.update()
     uppaal.update()
     infoBox.update()
-    verifytaOut.clear()
-    verifytaExpanded.clear()
     verifyta.update()
 
   }
