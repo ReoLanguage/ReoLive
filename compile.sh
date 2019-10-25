@@ -45,8 +45,8 @@ echo "- Compiling everything - the first time may take a while.    -"
 echo "--------------------------------------------------------------"
 
 # Compile all JavaScript (JS), both in localJS and in remoteJS
-sbt fastOptJS server/compile
-# sbt fullOptJS server/compile
+sbt -mem 2048 fastOptJS server/compile
+# sbt -mem 2048 fullOptJS server/compile
 
 echo ""
 echo "Compilation done."
