@@ -2,8 +2,8 @@ package common.widgets.virtuoso
 
 import common.widgets.{ButtonsBox, Setable}
 
-class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Setable[String],csBox:Setable[String])
-  extends ButtonsBox(reload, List(msgBox, inputBox,csBox)){
+class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Setable[String],csBox:Setable[String],logicBox:Setable[String])
+  extends ButtonsBox(reload, List(msgBox, inputBox,csBox,logicBox)){
 
   override protected val buttons: Seq[List[String]] = Seq(
     "Port"::("<p><strong>Port Hub</strong></p>Forwards data from its source to its sink, acting" +
@@ -12,7 +12,9 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       " directly between the two tasks.")::
       """port """::
       "//minimum number of context switches\n//to read twice \n " +
-      "out^2".stripMargin::Nil,
+      "out^2".stripMargin::
+      """A[] in
+        |E<> in and not out""".stripMargin::Nil,
     "Port - 2 sources"
       ::"""<p><strong>Merging Port Hub</strong></p>
           | <p>Similar to the simple Port, but uses only one of its source points.</p>""".stripMargin
@@ -27,7 +29,8 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
          "Similar to the simplr Port, duplicates incoming data to all of its sink poins." +
          " It can only receive data once all its sources are ready to receive data.")
       :: "dupl"
-      ::"//minimum number of context switches\n//to write once\n" + "in"::Nil,
+      ::"//minimum number of context switches\n//to write once\n" + "in"::
+      """A[] out1 and out2""".stripMargin::Nil,
     "Semaphore"
       ::("<p><strong>Semaphore</strong></p>"+
       "Has two interaction points: to signal the semaphore and "+
@@ -66,6 +69,18 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       "and dequeue – signals data leaving the queue, which succeeds if the queue is not " +
       "empty. The presented Fifo can store at most 1 element - a general Fifo can store up to a fixed number N of elements.")
       :: "fifo "::Nil,
+    "Timer"
+      ::("<p><strong>Timer</strong></p>" +
+      "Has two waiting lists for two kind of requests: set – signals the " +
+      "entering of some data into the buffer, which succeeds if the buffer is not full. " +
+      "This resets a clock to 0 and specified a timeout in which the data can be read." +
+      "and timeout – signals data leaving the buffer, which succeed if the buffer is not empty and the clock evolved to the specified timeout." +
+      "Otherwise, the timer enters a deadlock.")
+      :: "timer(5) "::""::
+      """// fails because how 'in' is handled
+        |// needs work around
+        |A[] in and cl <= 5
+      """.stripMargin::Nil,
     "Blackboard"
       ::("<p><strong>Blackboard</strong></p>" +
       "Acts like a protected shared data area. A update waiting list " +
@@ -112,7 +127,13 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |}
       """.stripMargin::
       "//minimum number of context switches\n//to read twice \n " +
-      "get^2"::Nil,
+      "get^2"::
+      """A[] get
+        |E<> not get
+        |A[] (p1 and not p2) or (p2 and not p1)
+        |p2 until p1
+        |p1 until p2""".stripMargin
+        ::Nil,
   "RoundRobin tasks - with components"
     ::"Round robin between 2 tasks, sending to an actuator. Tasks are modelled as components always ready to interact."
     :: """t1 * t2;
