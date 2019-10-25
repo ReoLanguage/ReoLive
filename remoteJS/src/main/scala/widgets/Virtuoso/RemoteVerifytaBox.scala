@@ -2,11 +2,14 @@ package widgets.Virtuoso
 
 import java.util.Base64
 
-import common.widgets.{Box, CodeBox, OutputArea}
-import hub.DSL
+import common.widgets._
+import hub.analyse.{TemporalFormula, UppaalFormula, UppaalStFormula}
+import hub.{DSL, HubAutomata, Utils}
 import hub.backend.{Show, Simplify, Uppaal}
-import org.scalajs.dom.XMLHttpRequest
+import org.scalajs.dom
+import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 import preo.ast.CoreConnector
+import preo.backend.Automata
 import widgets.RemoteBox
 
 
@@ -15,15 +18,15 @@ import widgets.RemoteBox
   */
 
 
-class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],expandedBox:OutputArea, outputBox: OutputArea, defaultText:String = "") extends
-  Box[String]("Temporal Logic", List(connector)) with CodeBox  {
+class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],errorBox:OutputArea, outputBox: VerifytaOutputArea, defaultText:String = "") extends
+  Box[String]("Temporal Logic", List(connector)) with CodeBox with Setable[String] {
 
   override protected var input: String = defaultText
   override protected val boxId: String = "temporalLogicArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("glyphicon glyphicon-refresh")-> (()=>reload(),"Check if the property holds (shift-enter)"),
-      Left("&dArr;")-> (()=>download(), "Download query in temporal logic for Uppaal")
+      Right("glyphicon glyphicon-refresh")-> (()=>reload(),"Check if the property holds (shift-enter)")//,
+      //Left("&dArr;")-> (()=>download(), "Download query in temporal logic for Uppaal")
     )
 
 
@@ -33,7 +36,7 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
 
   private def doOperation(op:String): Unit = {
     outputBox.clear()
-    expandedBox.clear()
+    errorBox.clear()
     operation = op
     update()
     callVerifyta()
@@ -46,28 +49,12 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
     RemoteBox.remoteCall("verifyta",msg,process)
   }
 
-  def process(receivedData: String): Unit = {
-    if (receivedData.startsWith("error:")) outputBox.error(receivedData.drop(6)) //drop error:
-    else {
-//      DSL.parseFormula(input) match {
-//        case Left(err) => expandedBox.error(err)
-//        case Right(list) => expandedBox.message("Expanded Formulas:\n"+ list.map(f=>Show(Simplify(Uppaal.toVerifyta(f)))).mkString("\n"))
-//      }
-      outputBox.message(receivedData.drop(3) //drop ok:
-        //.replaceFirst("\\[2K","")
-        .replaceAll("\\[2K","")
-        .replaceAll("Verifying formula ([0-9]+) at \\/tmp\\/uppaal_([0-9]*)\\.q:[0-9]*","\n")
-        .replaceFirst("\\n","")
-        .split("\\n").zipWithIndex.map(f=> s"(${f._2+1}) ${f._1}").mkString("\n"))
-    }
-  }
-
   override protected val codemirror: String = "temporal"
 
   // todo: perhaps this should be a reusable method, e.g. in Utils, because many boxes use this.
-  private def download(): Unit = {
-    val enc = Base64.getEncoder.encode(get.toString.getBytes()).map(_.toChar).mkString
-    val filename = "UppaalQuery.q"
+  private def download(content:String,file:String): Unit = {
+    val enc = Base64.getEncoder.encode(content.getBytes()).map(_.toChar).mkString
+    val filename = file
     val url= "data:application/octet-stream;charset=utf-16le;base64,"+enc
     //
     val x = new XMLHttpRequest()
@@ -90,9 +77,66 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
         )
       }
       else if(x.status == 404){
-        outputBox.error(x.responseText)
+        errorBox.error(x.responseText)
       }
     }
     x.send()
   }
+
+  private def process(response:String):Unit = {
+    // parsed formulas
+    var formulas = DSL.parseFormula(input) match {
+      case Left(err) => errorBox.error(err); List()
+      case Right(list) => list
+    }
+
+    // get hub
+    val hub = Automata[HubAutomata](connector.get).serialize.simplify
+    // get a map from port number to shown name (from hub)
+    val interfaces:Map[Int,String] = (hub.getInputs ++ hub.getOutputs).map(p=>p->hub.getPortName(p)).toMap
+
+    // create an uppaal model for simple formulas
+    val ta = Set(Uppaal.mkTimeAutomata(hub))
+
+    // map each formula to a custom network of TA to verify such formula (simple formulas are maped to the same based TA
+    val formulas2nta:List[(TemporalFormula,Set[Uppaal])] =
+      formulas.map(f => if (f.hasUntil || f.hasBefore) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
+
+    // map each formula to its expanded formula for uppaal
+    val formula2nta2uf:List[(TemporalFormula,UppaalFormula,Set[Uppaal])] =
+      formulas2nta.map(f=>(f._1,Uppaal.toUppaalFormula(
+        f._1,
+        f._2.flatMap(ta=>ta.act2locs.map(a=> interfaces(a._1)->a._2)).toMap, interfaces.map(i => i._2->i._1)),
+        f._2))
+
+    // simplify formulas and convert them to a string suitable for uppaal
+    val formulasStr: List[(String,String,String)] =
+      formula2nta2uf.map(f => (Show(f._1),Show(Simplify(f._2)),Uppaal(f._3)))
+
+    // get groups of calls to verifyta (formulas, response)
+    val f2res:List[(String,String)] = Utils.parseMultipleVerifyta(response)
+//    println("Groups:\n"+f2res.mkString("\n"))
+    // map each formula to its corresponding result (when the call succeeded, otherwise output error
+    val parseResponses:Map[String,String] =
+      f2res.flatMap(r => Utils.parseVerifytaResponse(r._2) match {
+      case Left(err) => errorBox.error(err); List()
+      case Right(res) => r._1.split("\n").zip(res).toList
+    }).toMap
+
+
+    // show in order
+    var orderedResults:List[Option[Boolean]] = formulas.map(f=>
+      if (parseResponses.isDefinedAt(Show(f)))
+        Some(Utils.isSatisfiedVerifyta(parseResponses(Show(f))))
+      else None)
+
+    // show results with the extra information (show only results for ok verifyta call)
+
+    val show = formulasStr.zip(orderedResults).filter(r=>r._2.isDefined)
+
+    outputBox.setResults(show)
+
+  }
+
+
 }

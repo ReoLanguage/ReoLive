@@ -1,7 +1,7 @@
 package reolive
 
 import common.widgets.virtuoso._
-import common.widgets.{Box, GraphBox, OutputArea, Setable}
+import common.widgets._
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
 import preo.DSL
@@ -32,7 +32,8 @@ object Virtuoso extends{
   var outputCs:OutputArea = _
 
   var logicBox:VirtuosoTemporalBox = _
-  var logicOutBox:OutputArea = _
+  var logicOutBox:VerifytaOutputArea = _
+  var logicErrorBox:OutputArea = _
 
   @JSExportTopLevel("reolive.Virtuoso.main")
   def main(content: html.Div): Unit = {
@@ -71,7 +72,8 @@ object Virtuoso extends{
       override def setValue(msg: String): Unit = {clear(); super.setValue(msg)}
     }
 
-    logicOutBox = new OutputArea
+    logicErrorBox = new OutputArea
+    logicOutBox = new VerifytaOutputArea(logicErrorBox)
 
     inputBox = new VirtuosoBox(reload(),"port",errors)
     instantiate = new VirtuosoInstantiate(inputBox,errors)
@@ -81,9 +83,9 @@ object Virtuoso extends{
 //    csBox = new VirtuosoCSInputBox(reloadCsInfo())
     outputCs = new OutputArea
     csInfoBox = new VirtuosoCSInfoBox(instantiate,outputCs)
-    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csInfoBox)
     uppaal = new VirtuosoUppaalBox(instantiate,errors)
-    logicBox = new VirtuosoTemporalBox(instantiate,"",logicOutBox)
+    logicBox = new VirtuosoTemporalBox(instantiate,"",logicErrorBox,logicOutBox)
+    examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csInfoBox,logicBox)
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
@@ -98,6 +100,7 @@ object Virtuoso extends{
     infoBox.init(leftColumn,false)
     logicBox.init(leftColumn,true)
     logicOutBox.init(leftColumn)
+    logicErrorBox.init(leftColumn)
 
 
     reload()
@@ -127,6 +130,7 @@ object Virtuoso extends{
   private def softReload(): Unit = {
     errors.clear()
     csInfoBox.clear()
+    logicErrorBox.clear()
     logicOutBox.clear()
     inputBox.update()
     instantiate.update()
@@ -135,6 +139,7 @@ object Virtuoso extends{
     uppaal.update()
     infoBox.update()
     logicBox.update()
+
   }
 
 //  private def reloadCsInfo():Unit = {
