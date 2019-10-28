@@ -4,7 +4,7 @@ echo ""
 echo "## Removing previous standalone"
 rm -rf server/target/universal/server-1.0*
 echo "## Building standalone - assuming 'compile.sh' was executed beforehand."
-sbt dist
+sbt -mem 2048 dist
 echo "## Unzipping standalone"
 cd server/target/universal
 unzip server-1.0.zip
