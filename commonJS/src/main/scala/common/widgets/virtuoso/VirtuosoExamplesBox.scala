@@ -77,10 +77,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       "and timeout – signals data leaving the buffer, which succeed if the buffer is not empty and the clock evolved to the specified timeout." +
       "Otherwise, the timer enters a deadlock.")
       :: "timer(5) "::""::
-      """// fails because how 'in' is handled
-        |// needs work around
-        |A[] in and cl <= 5
-      """.stripMargin::Nil,
+      """A[] in imply cl <= 5""".stripMargin::Nil,
     "Blackboard"
       ::("<p><strong>Blackboard</strong></p>" +
       "Acts like a protected shared data area. A update waiting list " +
