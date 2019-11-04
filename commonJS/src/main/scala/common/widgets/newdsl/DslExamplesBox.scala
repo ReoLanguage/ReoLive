@@ -97,36 +97,55 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |out1 out2
         |""".stripMargin::
       "Replicator"::Nil,
+    "lossy"::
+      """lossy(x)
+        |""".stripMargin::
+      "Lossy channel"::Nil,
     "lossy-fifo"::
       """y:=lossy(x)
         |fifo(y)
         |""".stripMargin::
       "lossy-fifo"::Nil,
-    "lossy"::
-      """lossy(x)
-        |""".stripMargin::
-      "Lossy channel"::Nil,
     "sequence3"::
       """x1:=fifofull(x3) drain(o1,x1) out1(o1)
         |x2:=    fifo(x1) drain(o2,x2) out2(o2)
         |x3:=    fifo(x2) drain(o3,x3) out3(o3)
         |""".stripMargin::
       "Sequencer-3"::Nil,
-    "build & Zero"::
-      """x := Zero
-        |x := build(y,z)
+    "build & Constr"::
+      """x := SomeData
+        |x := build(
+        |    Zero,
+        |    Cons(Zero,Nil))
         |x
         |""".stripMargin::
-      "Merge a stream of zeros with an entry 'y'"::Nil,
+      "Build a streams of [Zero,Zero] and merge it with SomeData."::Nil,
     ///////////////////
-    "badInst"::
-      """def f(x) = {
-        |   fifo(x) lossy(x)
-        |}
-        |f(True)
-        |
-        |""".stripMargin::
-      "Fix: should not replace 'x'  by true -- link instead."::Nil,
+//    "fix"::
+//      """def conn(y) = {
+//        |   x := y
+//        |   fifo(x) lossy(x)
+//        |}
+//        |
+//        |y,o := conn(True)
+//        |y o""".stripMargin::
+//      "Fix: should not replace 'x'  by true -- link instead."::Nil,
+//    "badInst"::
+//      """def f(x) = {
+//        |   fifo(x) lossy(x)
+//        |}
+//        |f(True)
+//        |
+//        |""".stripMargin::
+//      "Fix: should not replace 'x'  by true -- link instead."::Nil,
+//    "badInst2"::
+//      """def f(x) = {
+//        |   fifo(x)
+//        |}
+//        |a:=lossy(b)
+//        |f(a)
+//        |""".stripMargin::
+//      "Fix: should link the fifo to the lossy."::Nil,
     ///////////////////////////
     "Misc data"::
       """data List<a> = Nil | Cons(a,List<a>)
