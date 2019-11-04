@@ -13,8 +13,12 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       """port """::
       "//minimum number of context switches\n//to read twice \n " +
       "out^2".stripMargin::
-      """A[] in
-        |E<> in and not out""".stripMargin::Nil,
+      """// always executing in or nothing else executes
+        |A[] doing in or nothing
+        |// out fires at the same time as in
+        |A[] @in imply @out
+        |// Is it possible to fire in and not out?
+        |E<> @in and not @out""".stripMargin::Nil,
     "Port - 2 sources"
       ::"""<p><strong>Merging Port Hub</strong></p>
           | <p>Similar to the simple Port, but uses only one of its source points.</p>""".stripMargin
@@ -30,7 +34,9 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
          " It can only receive data once all its sources are ready to receive data.")
       :: "dupl"
       ::"//minimum number of context switches\n//to write once\n" + "in"::
-      """A[] out1 and out2""".stripMargin::Nil,
+      """A[] @out1 imply @out2
+        | doing in --> @out1 and @out2
+      """.stripMargin::Nil,
     "Semaphore"
       ::("<p><strong>Semaphore</strong></p>"+
       "Has two interaction points: to signal the semaphore and "+
@@ -77,10 +83,15 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       "and timeout – signals data leaving the buffer, which succeed if the buffer is not empty and the clock evolved to the specified timeout." +
       "Otherwise, the timer enters a deadlock.")
       :: "timer(5) "::""::
-      """// fails because how 'in' is handled
-        |// needs work around
-        |A[] in and cl <= 5
-      """.stripMargin::Nil,
+      """// after doing in
+        |// and before doing any other action,
+        |// clock cl cannot grow beyond 5
+        |A[] doing in imply cl <= 5
+        |// For every in, out fires (before in again)
+        |@in --> not(@in) until @out
+        |// out executes at most 5
+        |// units of time after in fires.
+        |@in --> @out and in.t <=5""".stripMargin::Nil,
     "Blackboard"
       ::("<p><strong>Blackboard</strong></p>" +
       "Acts like a protected shared data area. A update waiting list " +
@@ -128,11 +139,12 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       """.stripMargin::
       "//minimum number of context switches\n//to read twice \n " +
       "get^2"::
-      """A[] get
-        |E<> not get
-        |A[] (p1 and not p2) or (p2 and not p1)
-        |p2 until p1
-        |p1 until p2""".stripMargin
+      """// always get fires or no other action does it
+        |A[] doing get or nothing
+        |// p1 and p2 never execute together
+        |A[] not (doing p1 and doing p2)
+        |// For every p1, p2 fires before p1 fires again
+        |@p1 --> not(@p1) until @p2""".stripMargin
         ::Nil,
   "RoundRobin tasks - with components"
     ::"Round robin between 2 tasks, sending to an actuator. Tasks are modelled as components always ready to interact."
