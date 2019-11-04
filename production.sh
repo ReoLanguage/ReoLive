@@ -4,7 +4,7 @@ echo ""
 echo "## Removing previous standalone"
 rm -rf server/target/universal/server-1.0*
 echo "## Building standalone - assuming 'compile.sh' was executed at least once to generate links."
-sbt fullOptJS server/compile dist
+sbt -mem 2048 fullOptJS server/compile dist
 echo "## Unzipping standalone"
 cd server/target/universal
 yes | unzip server-1.0.zip
