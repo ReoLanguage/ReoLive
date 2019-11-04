@@ -3,7 +3,7 @@ package common.widgets.newdsl
 import common.widgets.{Box, OutputArea}
 import dsl.DSL
 import dsl.analysis.syntax.Program
-import dsl.backend.Show
+import dsl.backend.{Net, Show}
 
 /**
   * Created by guillerminacledou on 2019-06-07
@@ -40,11 +40,11 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
 //        .text(s"${v._1}: ${Show(v._2)}")
 //    )
     list.append("li")
-      .text(dsl.backend.Net(prog).toString)
+      .text("Net:\n"+Net(prog)._1.pretty.toString)
+//    list.append("li")
+//      .text("----- Parsed:")
     list.append("li")
-      .text("------")
-    list.append("li")
-      .text(Show(prog))
+      .text("---- Parsed:\n"+Show(prog))
   } catch Box.checkExceptions(errorBox,"DSL Analysis")
 
 }

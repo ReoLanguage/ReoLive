@@ -186,7 +186,7 @@ object GraphsToJS {
                         d.group == "fifo" || d.group =="resource" || d.group == "event" || d.group == "blackboard"
                         || d.group == "dataEvent" || d.group == "drain" || d.group == "port"
                         || d.group == "eventFull" || d.group == "dataEventFull" || d.group == "fifoFull"
-                        || d.group == "blackboardFull");
+                        || d.group == "blackboardFull" || d.group == "await" || d.group == "timeout");
               }));
             var hub = hubs.enter();
             var rg = hub.append("g").attr("class","hub");

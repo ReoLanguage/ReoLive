@@ -500,7 +500,7 @@ object AutomataToJS {
   private def getInvNodes[A<:Automata](aut:A):String = aut match {
     case IftaAutomata(ifta,nifta,cons) =>
       aut.getTrans().flatMap(processNode(aut.getInit,_,ifta.cInv)).mkString("[",",","]")
-    case HubAutomata(ps,sts,init,trans,c,inv,v) =>
+    case HubAutomata(ps,sts,init,trans,c,inv,v,tp) =>
       aut.getTrans().flatMap(processNode(aut.getInit,_,inv)).mkString("[",",","]")
   }
 

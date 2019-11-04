@@ -20,3 +20,6 @@ server/logs/
 
 site/js/gen/
 server/public/
+
+
+*.DS_Store

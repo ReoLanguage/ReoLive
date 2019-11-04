@@ -64,21 +64,15 @@ object NewDSL {
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
     graph = new DslGraphBox(result,errors)
 
-    println(".1")
     inputBox.init(leftColumn, true)
-    println(".2")
     errors.init(leftColumn)
-    println(".3")
     graph.init(rightColumn,visible = true)
-    println(".4")
     result.init(rightColumn,visible = true)
-    println(".5")
     descr.init(leftColumn)
-    println(".6")
     examples.init(leftColumn,visible = true)
 
     // default button
-    if (examples.loadButton("alt")) {
+    if (examples.loadButton("fix")) {
       reload()
     }
 
@@ -94,15 +88,10 @@ object NewDSL {
     softReload()
   }
   private def softReload(): Unit = {
-    println(".r1")
     errors.clear()
-    println(".r2")
     inputBox.update()
-    println(".r3")
     result.update()
-    println(".r4")
     graph.update()
-    println(".r5")
   }
 
 

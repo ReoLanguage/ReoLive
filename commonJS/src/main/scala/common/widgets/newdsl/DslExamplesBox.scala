@@ -67,7 +67,87 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     *
     */
   protected val buttons: Seq[List[String]] = Seq(
-    "New Syntax"::
+    "alt"::
+      """def alt(i1,i2) = {
+        |  a:=in1(i1) b:=in2(i2)
+        |  drain(a, b)
+        |  x:=a x:=fifo(b)
+        |  out(x)
+        |}
+        |alt(x,y)
+        |""".stripMargin::"Alternator"::Nil,
+    "xor"::
+      """def exRouter(in) = {
+        |  out1 := lossy(in)
+        |  out2 := lossy(in)
+        |  m:=out1  m:=out2
+        |  drain(in,m)
+        |  out1 out2
+        |}
+        |exRouter(x)
+        |""".stripMargin::
+      "Exclusive router"::Nil,
+    "merger"::
+      """out:=in1 out:=in2
+        |out
+        |""".stripMargin::
+      "Merger"::Nil,
+    "dupl"::
+      """out1:=in out2:=in
+        |out1 out2
+        |""".stripMargin::
+      "Replicator"::Nil,
+    "lossy"::
+      """lossy(x)
+        |""".stripMargin::
+      "Lossy channel"::Nil,
+    "lossy-fifo"::
+      """y:=lossy(x)
+        |fifo(y)
+        |""".stripMargin::
+      "lossy-fifo"::Nil,
+    "sequence3"::
+      """x1:=fifofull(x3) drain(o1,x1) out1(o1)
+        |x2:=    fifo(x1) drain(o2,x2) out2(o2)
+        |x3:=    fifo(x2) drain(o3,x3) out3(o3)
+        |""".stripMargin::
+      "Sequencer-3"::Nil,
+    "build & Constr"::
+      """x := SomeData
+        |x := build(
+        |    Zero,
+        |    Cons(Zero,Nil))
+        |x
+        |""".stripMargin::
+      "Build a streams of [Zero,Zero] and merge it with SomeData."::Nil,
+    ///////////////////
+//    "fix"::
+//      """def conn(y) = {
+//        |   x := y
+//        |   fifo(x) lossy(x)
+//        |}
+//        |
+//        |y,o := conn(True)
+//        |y o""".stripMargin::
+//      "Fix: should not replace 'x'  by true -- link instead."::Nil,
+//    "badInst"::
+//      """def f(x) = {
+//        |   fifo(x) lossy(x)
+//        |}
+//        |f(True)
+//        |
+//        |""".stripMargin::
+//      "Fix: should not replace 'x'  by true -- link instead."::Nil,
+//    "badInst2"::
+//      """def f(x) = {
+//        |   fifo(x)
+//        |}
+//        |a:=lossy(b)
+//        |f(a)
+//        |""".stripMargin::
+//      "Fix: should link the fifo to the lossy."::Nil,
+    ///////////////////////////
+    "Misc data"::
       """data List<a> = Nil | Cons(a,List<a>)
         |data Bool = True | False
         |data Nat = Zero | Succ(Nat)
@@ -241,49 +321,16 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
       """data Bool = True | False
         |data Nat = Zero | Succ(Nat)
         |
-        |def conn = {
-        |	dupl;fifo*lossy
+        |def conn(y) = {
+        |   x := y
+        |   fifo(x) lossy(x)
         |}
         |
-        |y,o = conn(True)
-        |o1,o2 = conn(True)
-        |o3,o4 = conn(Zero)
-        |z,p = conn(Zero,out1,out2)""".stripMargin::
-      """Exmple of multiple assignment""".stripMargin::Nil,
-    "alt"::
-      """def alt(i1,i2) = {
-        |  a:=in1(i1) b:=in2(i2)
-        |  drain(a, b)
-        |  o:=a o:=fifo(b)
-        |  o
-        |}
-        |alt(x,y)
-        |""".stripMargin::"Alternator"::Nil,
-    "xor"::
-      """def exRouter(in) = {
-        |  out1 := lossy(in)
-        |  out2 := lossy(in)
-        |  m:=out1  m:=out2
-        |  drain(in,m)
-        |  out1 out2
-        |}
-        |exRouter(x)
-        |""".stripMargin::
-      "Exclusive router"::Nil,
-    "merger"::
-      """out:=in1 out:=in2
-        |out
-        |""".stripMargin::
-      "Merger"::Nil,
-    "dupl"::
-      """out1:=in out2:=in
-        |out1 out2
-        |""".stripMargin::
-      "Replicator"::Nil,
-    "lossy"::
-      """lossy(x)
-        |""".stripMargin::
-      "Lossy channel"::Nil
+        |y,o := conn(True)
+        |o1,o2 := conn(True)
+        |o3,o4 := conn(Zero)
+        |z,p := conn(Zero,out1,out2)""".stripMargin::
+      """Exmple of multiple assignment""".stripMargin::Nil
     //    "Virtuoso Data"::
 //      """
 //        |data Unit = U

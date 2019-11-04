@@ -193,16 +193,16 @@ CodeMirror.defineMode("temporal", function(_config, modeConfig) {
     }
 
     setType("keyword")( // where, ...
-      "deadlock","[","]","<",">");
+      "nothing","deadlock","[","]","<",">");
 
     setType("keyword")(
-      ".t", "-->","=",">=","<=","<",">","==");
+     "@", ".t", "-->","=",">=","<=","<",">","==");
 
     setType("builtin")( // types and constructors
       );
 
     setType("builtin")(
-      "until","before","not","or","and","imply","A","E"
+      "doing","can","until","before","not","or","and","imply","A","E"
       );
 
     var override = modeConfig.overrideKeywords;

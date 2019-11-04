@@ -128,11 +128,14 @@ class VerifytaActor(out:ActorRef) extends Actor {
     val formulas2nta:List[(TemporalFormula,Set[Uppaal])] =
       formulas.map(f => if (f.hasUntil || f.hasBefore) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
 
+    // get init location from main uppaal model (hub)
+    val formulas2ntaInit = formulas2nta.map(f => (f._1,f._2,f._2.find(t=> t.name=="Hub").get.init))
+
     // map each formula to its expanded formula for uppaal
     val formula2nta2uf:List[(TemporalFormula,UppaalFormula,Set[Uppaal])] =
-      formulas2nta.map(f=>(f._1,Uppaal.toUppaalFormula(
+      formulas2ntaInit.map(f=>(f._1,Uppaal.toUppaalFormula(
         f._1,
-        f._2.flatMap(ta=>ta.act2locs.map(a=> interfaces(a._1)->a._2)).toMap, interfaces.map(i => i._2->i._1)),
+        f._2.flatMap(ta=>ta.act2locs.map(a=> interfaces(a._1)->a._2)).toMap, interfaces.map(i => i._2->i._1),f._3),
         f._2))
 
     // simplify formulas and convert them to a string suitable for uppaal
@@ -191,6 +194,7 @@ class VerifytaActor(out:ActorRef) extends Actor {
     //responses.map(r => "Formulas:\n" + r._1.mkString("\n") + "Response:\n" + r._2).mkString("\n")
   } catch {
     case e: java.io.IOException => "error:IO exception: " + e.getMessage
+    case e=> e.getMessage
   }
 
 }
