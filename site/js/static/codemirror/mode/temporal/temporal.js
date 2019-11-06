@@ -202,7 +202,7 @@ CodeMirror.defineMode("temporal", function(_config, modeConfig) {
       );
 
     setType("builtin")(
-      "doing","can","until","before","not","or","and","imply","A","E"
+      "every","after","doing","can","until","before","not","or","and","imply","A","E"
       );
 
     var override = modeConfig.overrideKeywords;
