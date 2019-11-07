@@ -89,6 +89,11 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |A[] doing in imply cl <= 5
         |// For every in, out fires (before in again)
         |@in --> not(@in) until @out
+        |// alternative
+        |every in --> out
+        |// every in, out executes
+        |// and it waits at least 5 to do it
+        |every in --> out after 5
         |// out executes at most 5
         |// units of time after in fires.
         |@in --> @out and in.t <=5""".stripMargin::Nil,
