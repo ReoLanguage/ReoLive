@@ -74,48 +74,13 @@ class VerifytaActor(out:ActorRef) extends Actor {
     val formula = DSL.parseFormula(raw_form)
     val conn = ParserUtils.parseCoreConnector(raw_conn)
     (conn,formula) match {
-      case (Right(c),Right(f)) => newModelCheck(c,f)
+      case (Right(c),Right(f)) => modelCheck(c,f)
       case (Left(msg),_) => s"error:$msg"
       case (_,Left(msg)) => s"error:$msg"
     }
   }
 
-  private def modelCheck(conn: CoreConnector, formulas:List[TemporalFormula]): String = {
-    try {
-      // get hub
-      val hub = Automata[HubAutomata](conn).serialize.simplify
-      // converted to a network of Uppaal Ta
-      val tas = Uppaal.fromFormula(formulas.head,hub)
-      // get uppaal model
-      val uppaal = Uppaal(tas)
-      // get a map from port number to shown name (from hub)
-      val interfaces:Map[Int,String] = (hub.getInputs ++ hub.getOutputs).map(p=>p->hub.getPortName(p)).toMap
-      // get a map from port names to the locations after the port executed (based on uppaal ta (only the main hub will have maps)
-      val act2locs = tas.flatMap(ta=>ta.act2locs.map(a => interfaces(a._1)-> a._2)).toMap
-      // expand formulas (remove syntactic sugar)
-      //val expandedFormulas = formulas.map(f=>Uppaal.expandTemporalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
-      val expandedFormulas = formulas.map(f=>Uppaal.toUppaalFormula(f,act2locs,interfaces.map(i => i._2->i._1)))
-      // simplify formulas and convert them to string suitable fro uppaal
-      val formulasStr = expandedFormulas.map(f => Show(Simplify(f))).mkString("\n")
-      println("Expanded Formulas:\n"+formulasStr)
-
-      // store model and formulas
-      val id = Thread.currentThread().getId
-      val modelPath = s"/tmp/uppaal_$id.xml"
-      val queryPath = s"/tmp/uppaal_$id.q"
-      UppaalBind.storeInFile(uppaal,modelPath) // store model in /tmp/uppaal_$id.xml
-      UppaalBind.storeInFile(formulasStr,queryPath) // store model in /tmp/uppaal_$id.xml
-
-      // call to verifity
-      val verifytaOut = UppaalBind.verifyta(modelPath,queryPath,"-q")
-      if (verifytaOut._1 == 0) "ok:"+ verifytaOut._2
-      else "error:Verifyta fail: " + verifytaOut._2
-    }catch {
-      case e: java.io.IOException => "error:IO exception: " + e.getMessage
-    }
-  }
-
-  private def newModelCheck(conn: CoreConnector, formulas:List[TemporalFormula]): String = try {
+  private def modelCheck(conn: CoreConnector, formulas:List[TemporalFormula]): String = try {
     // get hub
     val hub = Automata[HubAutomata](conn).serialize.simplify
     // get a map from port number to shown name (from hub)
@@ -126,7 +91,7 @@ class VerifytaActor(out:ActorRef) extends Actor {
 
     // map each formula to a custom network of TA to verify such formula (simple formulas are maped to the same based TA
     val formulas2nta:List[(TemporalFormula,Set[Uppaal])] =
-      formulas.map(f => if (f.hasUntil || f.hasBefore) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
+      formulas.map(f => if (f.hasUntil || f.hasBefore || f.hasEvery) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
 
     // get init location from main uppaal model (hub)
     val formulas2ntaInit = formulas2nta.map(f => (f._1,f._2,f._2.find(t=> t.name=="Hub").get.init))

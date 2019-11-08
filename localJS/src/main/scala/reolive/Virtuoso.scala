@@ -96,7 +96,7 @@ object Virtuoso extends{
     uppaal.init(rightColumn,false)
 //    csBox.init(leftColumn,true)
     outputCs.init(leftColumn)
-    csInfoBox.init(leftColumn,visible = true)
+    csInfoBox.init(leftColumn,visible = false)
     infoBox.init(leftColumn,false)
     logicBox.init(leftColumn,true)
     logicOutBox.init(leftColumn)

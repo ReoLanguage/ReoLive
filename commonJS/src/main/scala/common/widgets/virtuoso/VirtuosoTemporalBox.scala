@@ -103,8 +103,8 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, errorB
 
     // map each formula to a custom network of TA to verify such formula (simple formulas are maped to the same based TA
     val formulas2nta:List[(TemporalFormula,Set[Uppaal])] =
-      formulas.map(f => if (f.hasUntil || f.hasBefore) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
-
+      formulas.map(f => if (f.hasUntil || f.hasBefore || f.hasEvery) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
+    println(formulas.map(f=> f + "---" + (if (f.hasUntil || f.hasBefore || f.hasEvery) "true" else "false")).mkString("\n"))
     // get init location from main uppaal model (hub)
     val formulas2ntaInit = formulas2nta.map(f => (f._1,f._2,f._2.find(t=> t.name=="Hub").get.init))
 
@@ -118,7 +118,6 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, errorB
     // simplify formulas and convert them to a string suitable for uppaal (formula,uppaalformula,model for such formula)
     val formulasStr: List[(String,String,String)] =
       formula2nta2uf.map(f => (Show(f._1),Show(Simplify(f._2)),Uppaal(f._3)))
-
 
     // show parsed results with the extra information
 

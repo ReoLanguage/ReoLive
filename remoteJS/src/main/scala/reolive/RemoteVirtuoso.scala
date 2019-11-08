@@ -96,7 +96,7 @@ object RemoteVirtuoso extends {
     uppaal.init(rightColumn,false)
 //    csBox.init(leftColumn,true)
     outputCs.init(leftColumn)
-    csInfoBox.init(leftColumn,visible = true)
+    csInfoBox.init(leftColumn,visible = false)
     infoBox.init(leftColumn,false)
     verifyta.init(leftColumn,true)
     verifytaOut.init(leftColumn)
