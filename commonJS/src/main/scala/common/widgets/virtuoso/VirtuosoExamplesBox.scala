@@ -96,7 +96,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |every in --> out after 5
         |// out executes at most 5
         |// units of time after in fires.
-        |in --> out and in.t <=5
+        |in --> out and not(in.t > 5)
         |// out waits at least 5 before refiring
         |A[] out waits atLeast 5""".stripMargin::Nil,
     "Blackboard"
