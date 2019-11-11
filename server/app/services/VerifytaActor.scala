@@ -3,7 +3,7 @@ package services
 import akka.actor.{Actor, ActorRef, Props}
 import hub.{DSL, HubAutomata}
 import hub.analyse.{TemporalFormula, UppaalFormula}
-import hub.backend.{Show, Simplify, Uppaal}
+import hub.backend._
 import play.api.libs.json._
 import preo.ast.CoreConnector
 import preo.backend.Automata
@@ -84,51 +84,54 @@ class VerifytaActor(out:ActorRef) extends Actor {
     // get hub
     val hub = Automata[HubAutomata](conn).serialize.simplify
     // get a map from port number to shown name (from hub)
-    val interfaces:Map[Int,String] = (hub.getInputs ++ hub.getOutputs).map(p=>p->hub.getPortName(p)).toMap
+//    val interfaces:Map[Int,String] = (hub.getInputs ++ hub.getOutputs).map(p=>p->hub.getPortName(p)).toMap
+//
+//    // create an uppaal model for simple formulas
+//    val ta = Set(Uppaal.mkTimeAutomata(hub))
+//
+//    // map each formula to a custom network of TA to verify such formula (simple formulas are maped to the same based TA
+//    val formulas2nta:List[(TemporalFormula,Set[Uppaal])] =
+//      formulas.map(f => if (f.isComplex) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
+//
+//    // get init location from main uppaal model (hub)
+//    val formulas2ntaInit = formulas2nta.map(f => (f._1,f._2,f._2.find(t=> t.name=="Hub").get.init))
+//
+//    // map each formula to its expanded formula for uppaal
+//    val formula2nta2uf:List[(TemporalFormula,List[UppaalFormula],Set[Uppaal])] =
+//      formulas2ntaInit.map(f=>(f._1,Uppaal.toUppaalFormula(
+//        f._1,
+//        f._2.flatMap(ta=>ta.act2locs.map(a=> interfaces(a._1)->a._2)).toMap, interfaces.map(i => i._2->i._1),f._3),
+//        f._2))
+//
+//    // simplify formulas and convert them to a string suitable for uppaal
+//    val formulasStr: List[(TemporalFormula,List[String],String)] =
+//      formula2nta2uf.map(f => (f._1,f._2.map(uf => Show(Simplify(uf))).toList,Uppaal(f._3)))
+//
+//    // group formulas by model
+//    val orderedFormulasStr:List[(String,List[(TemporalFormula,List[String],String)])] = formulasStr.groupBy(_._3).toList
 
-    // create an uppaal model for simple formulas
-    val ta = Set(Uppaal.mkTimeAutomata(hub))
-
-    // map each formula to a custom network of TA to verify such formula (simple formulas are maped to the same based TA
-    val formulas2nta:List[(TemporalFormula,Set[Uppaal])] =
-      formulas.map(f => if (f.isComplex) (f,Uppaal.fromFormula(f,hub)) else  (f,ta))
-
-    // get init location from main uppaal model (hub)
-    val formulas2ntaInit = formulas2nta.map(f => (f._1,f._2,f._2.find(t=> t.name=="Hub").get.init))
-
-    // map each formula to its expanded formula for uppaal
-    val formula2nta2uf:List[(TemporalFormula,UppaalFormula,Set[Uppaal])] =
-      formulas2ntaInit.map(f=>(f._1,Uppaal.toUppaalFormula(
-        f._1,
-        f._2.flatMap(ta=>ta.act2locs.map(a=> interfaces(a._1)->a._2)).toMap, interfaces.map(i => i._2->i._1),f._3),
-        f._2))
-
-    // simplify formulas and convert them to a string suitable for uppaal
-    val formulasStr: List[(TemporalFormula,String,String)] =
-      formula2nta2uf.map(f => (f._1,Show(Simplify(f._2)),Uppaal(f._3)))
-
-    // group formulas by model
-    val orderedFormulasStr:List[(String,List[(TemporalFormula,String,String)])] = formulasStr.groupBy(_._3).toList
+    val calls:Map[TemporalFormula,VerifytaCall] = Verifyta.createVerifytaCalls(formulas,hub)
 
     // accumulate responses from verifyta
-    var responses:List[(List[TemporalFormula],String)] = List()
+    var responses:List[(TemporalFormula,String)] = List()
     // get current thread id
     val id = Thread.currentThread().getId
     // store models and formulas per type, call to verifyta and accumulate responses
-    responses = for(((model,list),i) <-orderedFormulasStr.zipWithIndex) yield {
+//    responses = for(((model,list),i) <-orderedFormulasStr.zipWithIndex) yield {
+    responses = for(((tf,c),i) <-calls.toList.zipWithIndex) yield {
       // create paths
       var modelPath = s"/tmp/uppaal${i}_$id.xml"
       var queryPath = s"/tmp/uppaal${i}_$id.q"
       // store models
-      UppaalBind.storeInFile(model,modelPath) // store model in /tmp/uppaal$i_$id.xml
-      UppaalBind.storeInFile(list.map(l=> l._2).mkString("\n"),queryPath) // store model in /tmp/uppaal$i_$id.xml
+      UppaalBind.storeInFile(Uppaal(c.um),modelPath) // store model in /tmp/uppaal$i_$id.xml
+      UppaalBind.storeInFile(c.uf.map(f=> Show(f)).mkString("\n"),queryPath) // store model in /tmp/uppaal$i_$id.xml
       // call to verifyta
       var verifytaOut = UppaalBind.verifyta(modelPath,queryPath,"-q")
       //println(verifytaOut._2.trim)
       if (verifytaOut._1 == 0)
-        (list.map(_._1) , "ok:"+verifytaOut._2.stripMargin)//"ok"+ verifytaOut._2)
+        (tf , "ok:"+verifytaOut._2.stripMargin)//"ok"+ verifytaOut._2)
       else
-        (list.map(_._1), "error:Verifyta failed:" +verifytaOut._2.stripMargin)//"error:Verifyta fail: " + verifytaOut._2)
+        (tf, "error:Verifyta failed:" +verifytaOut._2.stripMargin)//"error:Verifyta fail: " + verifytaOut._2)
     }
 
 //    responses.map(r=> )
@@ -153,7 +156,7 @@ class VerifytaActor(out:ActorRef) extends Actor {
 //    // for each formula, return its response (in order)
 //    val res = formulas.map(f=> tf2res(f)).mkString("\n")
 //    // send responses
-    val res = responses.map(r => r._1.map(Show(_)).mkString("\n") + "~" + r._2).mkString("§")
+    val res = responses.map(r => Show(r._1) + "~" + r._2).mkString("§")
 //    println(res)
     res
     //responses.map(r => "Formulas:\n" + r._1.mkString("\n") + "Response:\n" + r._2).mkString("\n")

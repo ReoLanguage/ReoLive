@@ -96,7 +96,9 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |every in --> out after 5
         |// out executes at most 5
         |// units of time after in fires.
-        |in --> out and in.t <=5""".stripMargin::Nil,
+        |in --> out and in.t <=5
+        |// out waits at least 5 before refiring
+        |A[] out waits atLeast 5""".stripMargin::Nil,
     "Blackboard"
       ::("<p><strong>Blackboard</strong></p>" +
       "Acts like a protected shared data area. A update waiting list " +
@@ -149,7 +151,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |// p1 and p2 never execute together
         |A[] not (doing p1 and doing p2)
         |// For every p1, p2 fires before p1 fires again
-        |p1 --> not(p1) until p2""".stripMargin
+        |every p1 --> p2""".stripMargin
         ::Nil,
   "RoundRobin tasks - with components"
     ::"Round robin between 2 tasks, sending to an actuator. Tasks are modelled as components always ready to interact."

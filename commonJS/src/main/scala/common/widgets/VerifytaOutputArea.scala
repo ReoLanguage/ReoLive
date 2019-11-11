@@ -1,5 +1,7 @@
 package common.widgets
 
+import hub.analyse.TemporalFormula
+import hub.backend.{Show, Uppaal, Verifyta, VerifytaCall}
 import org.scalajs.dom
 import org.scalajs.dom.html
 import org.singlespaced.d3js.Selection
@@ -18,63 +20,143 @@ class VerifytaOutputArea(errorBox:OutputArea) {
 
   def init(div: Block): Unit = output = div.append("div").attr("class","alertContainer")
 
-  def setResults(results:List[((String,String,String),Option[Boolean])]):Unit = {
-    // initialize output
-    var out = output
-      .append("div").attr("class", "verifyta-result")
-      .append("ul").attr("class", "list-group list-group-flush mb-3")
+//  def setResults(results:List[((String,String,String),Option[Boolean])]):Unit = {
+//    // initialize output
+//    var out = output
+//      .append("div").attr("class", "verifyta-result")
+//      .append("ul").attr("class", "list-group list-group-flush mb-3")
+//
+//    for ((((o, uf, um), ok), i) <- results.zipWithIndex) {
+//      //var satisfied = res.replace("\\u001B"," ").stripMargin.endsWith("Formula is satisfied.")
+//      var satisfied = if (ok.isDefined) ok.get else false
+//
+//      var li = out.append("li")
+//        .attr("class", "list-group-item lh-condensed")
+//
+//      var div = li.append("div")
+//        .style("display", "flex")
+//        .style("justify-content", "space-between")
+//
+//      var form = div.append("textarea")
+//        .attr("id", "formula" + i)
+//        .attr("class", "formula-result").text(o)
+//
+//      var extras = div.append("span")
+//
+//      if (ok.isDefined) {
+//        extras.append("span")
+//          .style("color", if (satisfied) "#008900" else "#972f65")
+//          .style("margin", "5px")
+//          .text(if (satisfied) "✓" else "✗")
+//      }
+//      extras.append("a")
+//        .style("margin", "5px")
+//        .attr("title", "Show expanded formula")
+//        .attr("data-toggle", "collapse")
+//        .attr("data-target", "#collapseFormula" + i)
+//        .attr("class", "expand-formula").text("+")
+//      extras.append("a")
+//        .style("margin", "5px")
+//        .attr("title", "Download Uppaal model used to verify this property")
+//        .attr("id", "model" + i).text("m")
+//
+//
+//      li.append("div")
+//        .attr("class", "collapse")
+//        .attr("id", "collapseFormula" + i)
+//        .append("span") //textearea
+//        .attr("id", "expandedFormula" + i)
+//        .attr("class", "temporal-formula text-muted")
+//        //        .style("height","10px")
+//        .text(uf)
+//
+//      common.Utils.codemirror("formula" + i, "text/x-temporal")
+//      //Utils.codemirror("expandedFormula"+i,"text/x-temporal")
+//
+//      var model = dom.document.getElementById("model" + i).asInstanceOf[html.Element]
+//        .onclick = { e: MouseEvent => common.Utils.download(um, s"uppaalModel${i}.xml", errorBox) }
+//
+//    }
+//  }
 
-    for ( (((o,uf,um),ok),i) <- results.zipWithIndex) {
-      //var satisfied = res.replace("\\u001B"," ").stripMargin.endsWith("Formula is satisfied.")
-      var satisfied = if (ok.isDefined) ok.get else false
+    def setResults(results:List[(TemporalFormula,VerifytaCall,Option[Either[String,List[String]]])]):Unit = {
+      // initialize output
+      var out = output
+        .append("div").attr("class", "verifyta-result")
+        .append("ul").attr("class", "list-group list-group-flush mb-3")
 
-      var li = out.append("li")
-        .attr("class", "list-group-item lh-condensed")
+      for ( ((tf,call,errOrRes),i) <- results.zipWithIndex) {
 
-      var div = li.append("div")
-        .style("display", "flex")
-        .style("justify-content", "space-between")
+        var (satisfied,ufSatisfied) = if (errOrRes.isDefined) errOrRes.get match {
+          case Right(res) => (Verifyta.isSatisfiedVerifyta(res),res.map(Verifyta.isSatisfiedVerifyta))
+          case Left(err) => (false,List())
+        } else (false,List())
 
-      var form = div.append("textarea")
-        .attr("id", "formula" + i)
-        .attr("class", "formula-result").text(o)
 
-      var extras = div.append("span")
+        var li = out.append("li")
+          .attr("class", "list-group-item lh-condensed")
 
-      if (ok.isDefined) {
-        extras.append("span")
-          .style("color", if (satisfied) "#008900" else "#972f65")
+        var div = li.append("div")
+          .style("display", "flex")
+          .style("justify-content", "space-between")
+
+        var form = div.append("textarea")
+          .style("white-space","pre-wrap")
+          .attr("id", "formula" + i)
+          .attr("class", "formula-result").text(Show(tf))
+
+        var extras = div.append("span")
+
+        if (errOrRes.isDefined) {
+          extras.append("span")
+            .style("color", if (satisfied) "#008900" else "#972f65")
+            .style("margin", "5px")
+            .text(if (satisfied) "✓" else "✗")
+        }
+        extras.append("a")
           .style("margin", "5px")
-          .text(if (satisfied) "✓" else "✗")
+          .attr("title", "Show expanded formula")
+          .attr("data-toggle", "collapse")
+          .attr("data-target", "#collapseFormula" + i)
+          .attr("class", "expand-formula").text("+")
+        extras.append("a")
+          .style("margin", "5px")
+          .attr("title", "Download Uppaal model used to verify this property")
+          .attr("id", "model" + i).text("m")
+
+
+        var uppaalforms = li.append("div")
+          .attr("class", "collapse")
+          .attr("id", "collapseFormula" + i)
+          .append("div")
+          .attr("id", "expandedFormula" + i)
+          .attr("class", "temporal-formula text-muted")
+          //        .style("height","10px")
+//          .text(call.uf.zipWithIndex.map(f=> f._2 +". "+ Show(f._1)).mkString("\n"))
+
+        call.uf.zip(1 to call.uf.size).foreach(f => {
+          var uppaalform = uppaalforms.append("div")
+            .style("display", "flex")
+            .style("justify-content", "space-between")
+
+          uppaalform.append("span")
+            .text(f._2 + ". " + Show(f._1))
+
+          if (errOrRes.isDefined) {
+            uppaalform.append("span")
+              .style("color", if (ufSatisfied(f._2-1)) "#008900" else "#972f65")
+              .style("margin", "5px")
+              .text(if (ufSatisfied(f._2-1)) "✓" else "✗")
+          }
+        })
+
+        common.Utils.codemirror("formula" + i, "text/x-temporal")
+        //Utils.codemirror("expandedFormula"+i,"text/x-temporal")
+
+        var model = dom.document.getElementById("model" + i).asInstanceOf[html.Element]
+          .onclick = { e: MouseEvent => common.Utils.download(Uppaal(call.um), s"uppaalModel${i}.xml",errorBox) }
+
       }
-      extras.append("a")
-        .style("margin", "5px")
-        .attr("title", "Show expanded formula")
-        .attr("data-toggle", "collapse")
-        .attr("data-target", "#collapseFormula" + i)
-        .attr("class", "expand-formula").text("+")
-      extras.append("a")
-        .style("margin", "5px")
-        .attr("title", "Download Uppaal model used to verify this property")
-        .attr("id", "model" + i).text("m")
-
-
-      li.append("div")
-        .attr("class", "collapse")
-        .attr("id", "collapseFormula" + i)
-        .append("span") //textearea
-        .attr("id", "expandedFormula" + i)
-        .attr("class", "temporal-formula text-muted")
-        //        .style("height","10px")
-        .text(uf)
-
-      common.Utils.codemirror("formula" + i, "text/x-temporal")
-      //Utils.codemirror("expandedFormula"+i,"text/x-temporal")
-
-      var model = dom.document.getElementById("model" + i).asInstanceOf[html.Element]
-        .onclick = { e: MouseEvent => common.Utils.download(um, s"uppaalModel${i}.xml",errorBox) }
-
-    }
   }
 
   def clear(): Unit = output.text("")

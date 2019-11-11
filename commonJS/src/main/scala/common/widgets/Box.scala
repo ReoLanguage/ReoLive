@@ -154,6 +154,8 @@ object Box {
         errorBox.error(s"Overflow$by: " + e.getMessage)
       case e: hub.common.ParseException =>
         errorBox.error(s"ParseException$by: " + e.getMessage)
+      case e:hub.common.FormulaException =>
+        errorBox.error(s"FormulaException$by: " + e.getMessage)
       case e: hprog.common.ParserException =>
         errorBox.error(s"ParserException$by: " + e.getMessage)
       case e: LiveSageSolver.SolvingException =>
