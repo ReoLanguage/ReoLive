@@ -39,7 +39,9 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
     errorBox.clear()
     operation = op
     update()
-    callVerifyta()
+    if (input.nonEmpty) {
+      callVerifyta()
+    }
   }
 
   private def callVerifyta(): Unit = {
