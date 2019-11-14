@@ -88,17 +88,14 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |// clock cl cannot grow beyond 5
         |A[] doing in imply cl <= 5
         |// For every in, out fires (before in again)
-        |in --> not(in) until out
-        |// alternative
         |every in --> out
         |// every in, out executes
         |// and it waits at least 5 to do it
         |every in --> out after 5
-        |// out executes at most 5
-        |// units of time after in fires.
-        |in --> out and not(in.t > 5)
         |// out waits at least 5 before refiring
-        |A[] out waits atLeast 5""".stripMargin::Nil,
+        |A[] out waits atLeast 5""".stripMargin :: Nil,
+        //|// For every in, out fires (before in again)
+        //|in --> not(in) until out
     "Blackboard"
       ::("<p><strong>Blackboard</strong></p>" +
       "Acts like a protected shared data area. A update waiting list " +

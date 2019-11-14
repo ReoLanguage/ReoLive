@@ -32,13 +32,15 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, errorB
 
   override def reload(): Unit = try {
     update()
+    outputBox.clear()
     errorBox.clear()
-
-    DSL.parseFormula(input) match {
-      case Left(err) => errorBox.error(err)
-      case Right(forms) =>
-        outputBox.clear()
-        process(forms)
+    if (input.nonEmpty) {
+      DSL.parseFormula(input) match {
+        case Left(err) => errorBox.error(err)
+        case Right(forms) =>
+          outputBox.clear()
+          process(forms)
+      }
     }
   }
   catch Box.checkExceptions(errorBox, "Temporal-Logic")
