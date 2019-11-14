@@ -52,20 +52,31 @@ class VerifytaOutputArea(errorBox:OutputArea) {
         extras.append("span")
           .style("color", if (satisfied) "#008900" else "#972f65")
           .style("margin", "5px")
-          .text(if (satisfied) "✓" else "✗")
+          .text(if (satisfied) "✓" else if (ufSatisfied.isRight) "✗" else "!")
       }
-      extras.append("a")
+      val more = extras.append("a")
         .style("margin", "5px")
         .attr("title", "Show expanded formula")
         .attr("data-toggle", "collapse")
         .attr("data-target", "#collapseFormula" + i)
-        .attr("class", "expand-formula").text("+")
+        .attr("class", "expand-formula")//.text("+")
+
+      more.append("img")
+        .attr("width","24")
+        .attr("height","24")
+//        .attr("xlink:href","svg/showMore.svg")
+        .attr("src","svg/showMore.svg")
 
       val dwn = extras.append("a")
         .style("margin", "5px")
         .attr("title", "Download Uppaal model used to verify this property")
         .attr("id", "model" + i) //.text("m")
-      Box.downloadSvg(dwn)
+      //Box.downloadSvg(dwn)
+      dwn.append("img")
+        .attr("width","24")
+        .attr("height","24")
+        //        .attr("xlink:href","svg/showMore.svg")
+        .attr("src","svg/download.svg")
 
       var uppaalforms = li.append("div")
         .attr("class", "collapse")
@@ -86,18 +97,21 @@ class VerifytaOutputArea(errorBox:OutputArea) {
           uppaalform.append("span")
             .style("color", if (ufSatisfied.right.get(f._2-1)) "#008900" else "#972f65")
             .style("margin", "5px")
-            .text(
-                if (ufSatisfied.right.get(f._2-1)) "✓" else "✗"
-            )}
-        else if (errOrRes.isDefined && ufSatisfied.isLeft) {
-          uppaalform.append("span")
-            .style("color", "#972f65")
-            .style("margin", "5px")
-            .text("error")
-          uppaalforms.append("span").text(ufSatisfied.left.get)
-        }
+            .text(if (ufSatisfied.right.get(f._2-1)) "✓" else "✗")}
+//        else if (errOrRes.isDefined && ufSatisfied.isLeft) {
+//          uppaalform.append("span")
+//            .style("color", "#972f65")
+//            .style("margin", "5px")
+//            .text("error")
+//          uppaalforms.append("span").text(ufSatisfied.left.get)
+        //}
       })
-
+      if (ufSatisfied.isLeft) {
+        uppaalforms.append("p")
+        uppaalforms.append("span")
+          .style("color","#972f65")
+          .text(ufSatisfied.left.get)
+      }
       common.Utils.codemirror("formula" + i, "text/x-temporal")
       //Utils.codemirror("expandedFormula"+i,"text/x-temporal")
 
