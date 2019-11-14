@@ -30,7 +30,7 @@ class VirtuosoUppaalBox(connector:Box[CoreConnector], errorBox:OutputArea)
     * @param visible is true when this box is initially visible (i.e., expanded).
     */
   override def init(div: Block, visible: Boolean): Unit = {
-    box = panelBox(div, visible,buttons=List(Left("&dArr;")-> (()=>download(), "Download model as a TA in Uppaal")))
+    box = panelBox(div, visible,buttons=List(Right("download")-> (()=>download(), "Download model as a TA in Uppaal")))
       .append("div")
       .attr("id", "uppaalHubBox")
 

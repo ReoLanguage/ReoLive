@@ -13,7 +13,7 @@ class VirtuosoBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
     override protected val boxId: String = "virtuosoInputArea"
     override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
       List(
-        Right("glyphicon glyphicon-refresh") -> (() => reload, "Load the Hub (shift-enter)")
+        Right("refresh") -> (() => reload, "Load the Hub (shift-enter)")
       )
 
     override protected val codemirror: String = "virtuoso"

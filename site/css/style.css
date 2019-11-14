@@ -124,9 +124,13 @@
     font-weight: bold;
 }
 
-.my-panel-heading {padding: 5px 15px;}
+.my-panel-heading {padding: 5px 1px 5px 15px;}
 .my-panel-body {padding: 2px 2px;}
 .my-textarea {border: none ;}
+
+.svgIcon:hover {
+    fill: #2e6da4;
+}
 
 .container {
     /*padding: 0;*/

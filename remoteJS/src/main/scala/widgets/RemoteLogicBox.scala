@@ -120,8 +120,11 @@ class RemoteLogicBox(connectorStr: Box[String], default:String, connector: Box[C
 
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-            Right("glyphicon glyphicon-refresh")-> (()=>reload(),"Check if the property holds (shift-enter)"),
+
+//          Right("glyphicon glyphicon-refresh")-> (()=>reload(),"Check if the property holds (shift-enter)"),
             //Left("View")-> (()=>doOperation("view"),"View mCRL2 behaviour using ltsgraph"),
+            Right("refresh")-> (()=>reload(),"Check if the property holds (shift-enter)"),
+            Left("View")-> (()=>doOperation("view"),"View mCRL2 behaviour using ltsgraph"),
             Left("MA")   -> (()=> debugNames(), "Map actions in the formula to sets of actions in the mCRL2 specification")
           )
 

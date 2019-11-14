@@ -22,7 +22,7 @@ class RemoteModelBox(connector: Box[CoreConnector], errorBox: OutputArea)
 
   override def init(div: Block, visible: Boolean): Unit = {
     box = panelBox(div, visible, List("padding-right"->"90pt"),
-      buttons=List(Left("&dArr;")-> (()=>download(s"/model/$id"),"Download mCRL2 specification")
+      buttons=List(Right("download")-> (()=>download(s"/model/$id"),"Download mCRL2 specification")
                   ,Left("LPS")   -> (()=>download(s"/lps/$id"),"Download mCRL2 lps specification")
                   ,Left("LTS")   -> (()=>download(s"/lts/$id"),"Download mCRL2 lts specification")
 //                  ,Left("MA")   -> (()=> debugNames)

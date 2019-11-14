@@ -26,7 +26,8 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
   override def init(div: Block, visible: Boolean): Unit = {
     box = GraphBox.appendSvg(super.panelBox(div,visible,
       buttons = List(
-        Left("&dArr;")-> (() => saveSvg(),"Download image as SVG")
+//        Left("&dArr;")-> (() => saveSvg(),"Download image as SVG")
+        Right("download")-> (() => saveSvg(),"Download image as SVG")
       )),"circuit", path=path)
     dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = {e: MouseEvent => update()}

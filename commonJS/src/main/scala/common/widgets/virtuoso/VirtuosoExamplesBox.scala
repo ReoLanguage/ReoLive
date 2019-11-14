@@ -16,9 +16,9 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       """// always executing in or nothing else executes
         |A[] doing in or nothing
         |// out fires at the same time as in
-        |A[] @in imply @out
+        |A[] in imply out
         |// Is it possible to fire in and not out?
-        |E<> @in and not @out""".stripMargin::Nil,
+        |E<> in and not out""".stripMargin::Nil,
     "Port - 2 sources"
       ::"""<p><strong>Merging Port Hub</strong></p>
           | <p>Similar to the simple Port, but uses only one of its source points.</p>""".stripMargin
@@ -34,8 +34,8 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
          " It can only receive data once all its sources are ready to receive data.")
       :: "dupl"
       ::"//minimum number of context switches\n//to write once\n" + "in"::
-      """A[] @out1 imply @out2
-        | doing in --> @out1 and @out2
+      """A[] out1 imply out2
+        | doing in --> out1 and out2
       """.stripMargin::Nil,
     "Semaphore"
       ::("<p><strong>Semaphore</strong></p>"+
@@ -88,10 +88,14 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |// clock cl cannot grow beyond 5
         |A[] doing in imply cl <= 5
         |// For every in, out fires (before in again)
-        |@in --> not(@in) until @out
-        |// out executes at most 5
-        |// units of time after in fires.
-        |@in --> @out and in.t <=5""".stripMargin::Nil,
+        |every in --> out
+        |// every in, out executes
+        |// and it waits at least 5 to do it
+        |every in --> out after 5
+        |// out waits at least 5 before refiring
+        |A[] out waits atLeast 5""".stripMargin :: Nil,
+        //|// For every in, out fires (before in again)
+        //|in --> not(in) until out
     "Blackboard"
       ::("<p><strong>Blackboard</strong></p>" +
       "Acts like a protected shared data area. A update waiting list " +
@@ -144,7 +148,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
         |// p1 and p2 never execute together
         |A[] not (doing p1 and doing p2)
         |// For every p1, p2 fires before p1 fires again
-        |@p1 --> not(@p1) until @p2""".stripMargin
+        |every p1 --> p2""".stripMargin
         ::Nil,
   "RoundRobin tasks - with components"
     ::"Round robin between 2 tasks, sending to an actuator. Tasks are modelled as components always ready to interact."

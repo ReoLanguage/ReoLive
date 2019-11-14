@@ -65,19 +65,36 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
         .select("div")
         .append("button").attr("class", "btn btn-default btn-sm")
         .style("float","right")
-        .style("margin-top","-15pt")
-        .style("max-height","19pt")
+        .style("margin-top","-15.5pt")
+        .style("max-height","18pt")
         .style("margin-left","2pt")
         .style("display","flex")
       if (title.nonEmpty) button.attr("title",title)
-      name match {
-        case Left(str) => button.append("span").html(str)
-        case Right(str) => button.append("span").attr("class", "glyphicon glyphicon-refresh")
-      }
+
+      drawButton(button,name)
+
       button.on("click", {(e: EventTarget, a: Int, b:UndefOr[Int])=> { action() }})
     }
 
     res
+  }
+
+  private def drawButton(button:Block, info:Either[String,String]): Unit = {
+    info match {
+      case Left(str) =>
+        val b = button.append("span")
+        b.style("line-height","9pt")
+        b.html(str)
+      case Right("download") =>
+        Box.downloadSvg(button)
+//        val svg = button.append("img")
+//          .attr("src","assets/content/svg/cloud_download.svg")
+//          .style("width","15pt")
+              case Right("refresh") =>
+        button.append("span").attr("class", "glyphicon glyphicon-refresh")
+      case Right("oldDownload") => drawButton(button,Left("&dArr;"))
+      case Right(s) => drawButton(button,Left(s))
+    }
   }
 
   def isVisible: Boolean = {
@@ -130,6 +147,23 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
 object Box {
   type Block = Selection[dom.EventTarget]
 
+  def downloadSvg(block: Block): Unit = {
+    val svg = block.append("svg")
+      .attr("xmlns","http://www.w3.org/2000/svg")
+      .attr("width","20")
+      .attr("height","20")
+      .attr("viewBox","0 0 24 24")
+      .attr("class", "svgIcon")
+    svg.style("margin","-3pt -2pt 0pt -2pt")
+    //svg.style("fill","#505050")
+    svg.append("path")
+      .attr("d","M0 0h24v24H0z")
+      .attr("fill","none")
+    svg.append("path")
+      .attr("d","M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z")
+
+  }
+
   /**
     * Default function that catches exceptions and produces an error message based on the type of exception.
     * @param errorBox is the placeholder where the exception will be appended to.
@@ -154,6 +188,8 @@ object Box {
         errorBox.error(s"Overflow$by: " + e.getMessage)
       case e: hub.common.ParseException =>
         errorBox.error(s"ParseException$by: " + e.getMessage)
+      case e:hub.common.FormulaException =>
+        errorBox.error(s"FormulaException$by: " + e.getMessage)
       case e: hprog.common.ParserException =>
         errorBox.error(s"ParserException$by: " + e.getMessage)
       case e: LiveSageSolver.SolvingException =>

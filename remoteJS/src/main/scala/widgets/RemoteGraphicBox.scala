@@ -24,7 +24,7 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], e
   override def init(div: Block, visible: Boolean): Unit = {
     box = super.panelBox(div,visible,
       buttons = List(
-        Right("glyphicon glyphicon-refresh")-> (()=>redraw(None,hideCont = true),"Reset zoom and redraw (shift-enter)"),
+        Right("refresh")-> (()=>redraw(None,hideCont = true),"Reset zoom and redraw (shift-enter)"),
         Left("resample")  -> (() => resample(hideCont = true), "Resample: draw again the image, using the current zooming window"),
         Left("all jumps") -> (() => resample(hideCont = false),"Resample and include all boundary nodes")
 //        Left("&dArr;")-> (() => saveSvg(),"Download image as SVG")

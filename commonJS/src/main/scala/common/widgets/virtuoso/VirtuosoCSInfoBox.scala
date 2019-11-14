@@ -36,7 +36,7 @@ class VirtuosoCSInfoBox(connector:Box[CoreConnector], errorBox: OutputArea)
 //      .attr("id", "csInfoBox")
     csInfo = panelBox(div,visible,
       buttons = List(
-        Right("glyphicon glyphicon-refresh") -> (() => update(), "Estimate minimum number of context switches for a sequence of actions (Shift-enter)")
+        Right("refresh") -> (() => update(), "Estimate minimum number of context switches for a sequence of actions (Shift-enter)")
       ))
       //.append("div")
       //.attr("id", "csInfoBox")

@@ -120,6 +120,24 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |x
         |""".stripMargin::
       "Build a streams of [Zero,Zero] and merge it with SomeData."::Nil,
+    "counter"::
+      """data Nat = Zero | Succ(Nat)
+        |
+        |// counts ticks (to check)
+        |def counter(tick): Nat = {
+        |  drain(tick,n)
+        |  succ:=build(nil,n) // build<Nat>
+        |  next:=fifo(succ)
+        |  iter:=fifofull(next) // filled with Zero
+        |  n,res:=xor(iter)
+        |  zero:=Zero
+        |  drain(res,zero)
+        |  succ:=zero
+        |  res
+        |}
+        |
+        |counter(a)""".stripMargin::
+      "Gets clicks, outputs number of clicks since last request."::Nil,
     ///////////////////
 //    "fix"::
 //      """def conn(y) = {
