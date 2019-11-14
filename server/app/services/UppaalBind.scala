@@ -18,17 +18,18 @@ object UppaalBind {
 
 
   //private val timeout = "timeout 10" // linux
-  private val timeout = "gtimeout 10" // macOs
+  //private val timeout = "gtimeout 10" // macOs
 
   def verifyta(modelPath:String,queryPath:String,opt:String): (Int, String) = {
     // get verifyta path
     val props: Properties = new Properties
     props.load(new FileInputStream("global.properties"))
-    val verifytaPath = props.getProperty("verifytaPath")
+    val verifytaCmd = props.getProperty("verifytaCmd")
+    val timeoutCmd = props.getProperty("timeoutCmd")
 
     val stdout = new StringBuilder
     val stderr = new StringBuilder
-    val status = s"$timeout $verifytaPath $opt $modelPath $queryPath".!(ProcessLogger(stdout append _, stderr append _))
+    val status = s"$timeoutCmd 10 $verifytaCmd $opt $modelPath $queryPath".!(ProcessLogger(stdout append _, stderr append _))
     if(status == 0) (status, stdout.toString)
     else (status, stderr.toString)
   }

@@ -22,7 +22,7 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, errorB
   override protected val boxId: String = "temporalInputArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("glyphicon glyphicon-refresh") -> (() => reload, "Load the logical formula (shift-enter)")//,
+      Right("refresh") -> (() => reload, "Load the logical formula (shift-enter)")//,
 //      Left("&dArr;")-> (()=>expandAnddownload(), "Download query in temporal logic for Uppaal")
     )
 

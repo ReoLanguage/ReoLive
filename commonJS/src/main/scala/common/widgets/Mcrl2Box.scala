@@ -15,7 +15,7 @@ class Mcrl2Box(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def get: Model = model
 
   override def init(div: Block, visible: Boolean): Unit = {
-    box = panelBox(div, visible,buttons=List(Left("&dArr;")-> (()=>download(), "Download mCRL2 specification")))
+    box = panelBox(div, visible,buttons=List(Right("download")-> (()=>download(), "Download mCRL2 specification")))
       .append("div")
       .attr("id", "mcrl2Box")
       .style("white-space","pre-wrap")

@@ -46,6 +46,7 @@ class VerifytaOutputArea(errorBox:OutputArea) {
         .attr("class", "formula-result").text(Show(tf))
 
       var extras = div.append("span")
+      extras.style("text-align","right")
 
       if (errOrRes.isDefined) {
         extras.append("span")
@@ -59,11 +60,11 @@ class VerifytaOutputArea(errorBox:OutputArea) {
         .attr("data-toggle", "collapse")
         .attr("data-target", "#collapseFormula" + i)
         .attr("class", "expand-formula").text("+")
-      extras.append("a")
+      val dwn = extras.append("a")
         .style("margin", "5px")
         .attr("title", "Download Uppaal model used to verify this property")
-        .attr("id", "model" + i).text("m")
-
+        .attr("id", "model" + i) //.text("m")
+      Box.downloadSvg(dwn)
 
       var uppaalforms = li.append("div")
         .attr("class", "collapse")

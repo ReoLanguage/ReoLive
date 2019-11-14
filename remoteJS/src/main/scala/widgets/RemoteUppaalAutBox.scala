@@ -34,7 +34,7 @@ class RemoteUppaalAutBox(connector:Box[CoreConnector], errorBox:OutputArea)
     * @param visible is true when this box is initially visible (i.e., expanded).
     */
   override def init(div: Block, visible: Boolean): Unit = {
-    box = panelBox(div, visible,buttons=List(Left("&dArr;")-> (()=>download(), "Download IFTA model as a TA with variability in Uppaal")))
+    box = panelBox(div, visible,buttons=List(Right("download")-> (()=>download(), "Download IFTA model as a TA with variability in Uppaal")))
       .append("div")
       .attr("id", "uppaalAutBox")
     dom.document.getElementById("Uppaal TA model")

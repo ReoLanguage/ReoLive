@@ -13,7 +13,7 @@ class LogicBox(connector: Box[CoreConnector], default: String, outputBox: Output
   override protected val boxId: String = "modalInputArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-          Right("glyphicon glyphicon-refresh") -> (() => reload, "Load the logical formula (shift-enter)"),
+          Right("refresh") -> (() => reload, "Load the logical formula (shift-enter)"),
           Left("MA") -> (() => debugNames, "Map actions in the formula to sets of actions in the mCRL2 specification")
         )
 

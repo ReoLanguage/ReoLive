@@ -19,7 +19,7 @@ class VirtuosoCSInputBox(reloadCsInfo: => Unit)
   override protected val boxId: String = "csInputArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("glyphicon glyphicon-refresh") -> (() => reload, "Load the pattern formula (shift-enter)")
+      Right("refresh") -> (() => reload, "Load the pattern formula (shift-enter)")
     )
 
   override protected val codemirror: String = "cs"

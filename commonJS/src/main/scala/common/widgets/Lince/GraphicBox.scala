@@ -22,7 +22,7 @@ class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
     box = super.panelBox(div,visible,
       buttons = List(
 //        Right("glyphicon glyphicon-refresh")-> (()=>update(),"Load the program (shift-enter)"),
-          Right("glyphicon glyphicon-refresh") -> (() => draw(None,true), "Draw again the image"),
+          Right("refresh") -> (() => draw(None,true), "Draw again the image"),
           Left("resample") -> (() => redraw(true), "Resample: draw again the image, using the current zooming window"),
           Left("all jumps") -> (() => redraw(false), "Resample and include all boundary nodes")
         //        Left("&dArr;")-> (() => saveSvg(),"Download image as SVG")
