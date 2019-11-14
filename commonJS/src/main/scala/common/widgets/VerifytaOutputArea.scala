@@ -60,6 +60,7 @@ class VerifytaOutputArea(errorBox:OutputArea) {
         .attr("data-toggle", "collapse")
         .attr("data-target", "#collapseFormula" + i)
         .attr("class", "expand-formula").text("+")
+
       val dwn = extras.append("a")
         .style("margin", "5px")
         .attr("title", "Download Uppaal model used to verify this property")
@@ -101,7 +102,7 @@ class VerifytaOutputArea(errorBox:OutputArea) {
       //Utils.codemirror("expandedFormula"+i,"text/x-temporal")
 
       var model = dom.document.getElementById("model" + i).asInstanceOf[html.Element]
-        .onclick = { e: MouseEvent => common.Utils.download(Uppaal(call.um), s"uppaalModel${i}.xml",errorBox) }
+        .onclick = { e: MouseEvent => common.Utils.download(Uppaal(call.um,call.uf), s"uppaalModel${i}.xml",errorBox) }
     }
 }
 
