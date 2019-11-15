@@ -103,7 +103,11 @@ object Virtuoso extends{
     logicErrorBox.init(leftColumn)
 
 
-    reload()
+//    reload()
+    // load default button
+    if (!examples.loadButton("Port")) {
+      reload()
+    }
 
   }
 
