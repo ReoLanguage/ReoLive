@@ -121,87 +121,142 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |   event(a,b) event(c,d) eventFull(e,f)
           |   dupl(b,c,x) dupl(d,e,y) dupl(f,a,z)
           |}""".stripMargin::Nil,
-  "RoundRobin tasks"
-    ::"Round robin between 2 tasks, sending to an actuator. Tasks are not modelled - only the coordinator."
-    :: """s1 * p1 * s2 * p2;
-        |coord;
-        |get
-        |{
-        |  dupl3(a?,b!,c!,d!) =
-        |    dupl(a,b,a2)
-        |    dupl(a2,c,d)
-        |  ,
-        |  coord(s1?,p1?,s2?,p2?,get!) =
-        |    dupl3(p1,d11,d12,d13)
-        |    dupl3(p2,d21,d22,d23)
-        |    drain(s1,d21) drain(s2,d11)
-        |    drain(d12,d42) drain(d22,d32)
-        |    dupl(e1,d41,d42) dupl(e2,d32,d31)
-        |    event(d31,e1) eventFull(d41,e2)
-        |    merger(d13,d23,get)
-        |}
-      """.stripMargin::
-      "//minimum number of context switches\n//to read twice \n " +
-      "get^2"::
-      """// always get fires or no other action does it
-        |A[] doing get or nothing
-        |// p1 and p2 never execute together
-        |A[] not (doing p1 and doing p2)
-        |// For every p1, p2 fires before p1 fires again
-        |every p1 --> p2""".stripMargin
-        ::Nil,
-  "RoundRobin tasks - with components"
-    ::"Round robin between 2 tasks, sending to an actuator. Tasks are modelled as components always ready to interact."
-    :: """t1 * t2;
-          |coord;
-          |act
+//  "RoundRobin tasks"
+//    ::"Round robin between 2 tasks, sending to an actuator. Tasks are not modelled - only the coordinator."
+//    :: """s1 * p1 * s2 * p2;
+//        |coord;
+//        |get
+//        |{
+//        |  dupl3(a?,b!,c!,d!) =
+//        |    dupl(a,b,a2)
+//        |    dupl(a2,c,d)
+//        |  ,
+//        |  coord(s1?,p1?,s2?,p2?,get!) =
+//        |    dupl3(p1,d11,d12,d13)
+//        |    dupl3(p2,d21,d22,d23)
+//        |    drain(s1,d21) drain(s2,d11)
+//        |    drain(d12,d42) drain(d22,d32)
+//        |    dupl(e1,d41,d42) dupl(e2,d32,d31)
+//        |    event(d31,e1) eventFull(d41,e2)
+//        |    merger(d13,d23,get)
+//        |}
+//      """.stripMargin::
+//      "//minimum number of context switches\n//to read twice \n " +
+//      "get^2"::
+//      """// always get fires or no other action does it
+//        |A[] doing get or nothing
+//        |// p1 and p2 never execute together
+//        |A[] not (doing p1 and doing p2)
+//        |// For every p1, p2 fires before p1 fires again
+//        |every p1 --> p2""".stripMargin
+//        ::Nil,
+//  "RoundRobin tasks - with components"
+//    ::"Round robin between 2 tasks, sending to an actuator. Tasks are modelled as components always ready to interact."
+//    :: """t1 * t2;
+//          |coord;
+//          |act
+//          |{
+//          |  dupl3(a?,b!,c!,d!) =
+//          |    dupl(a,b,a2)
+//          |    dupl(a2,c,d)
+//          |  ,
+//          |  coord(s1?,p1?,s2?,p2?,get!) =
+//          |    dupl3(p1,d11,d12,d13)
+//          |    dupl3(p2,d21,d22,d23)
+//          |    drain(s1,d21) drain(s2,d11)
+//          |    drain(d12,d42) drain(d22,d32)
+//          |    dupl(e1,d41,d42) dupl(e2,d32,d31)
+//          |    event(d31,e1) eventFull(d41,e2)
+//          |    merger(d13,d23,get),
+//          |  [hide] t1 = writer*writer,
+//          |  [hide] t2 = writer*writer,
+//          |  [hide] act = reader
+//          |}
+//        """.stripMargin::Nil,
+    "Tasks in sequence (in paper)"
+      ::"Two tasks executing in sequence, publishing data to an actuator task."
+      ::"""mainW // try different scenarios
           |{
           |  dupl3(a?,b!,c!,d!) =
-          |    dupl(a,b,a2)
-          |    dupl(a2,c,d)
-          |  ,
-          |  coord(s1?,p1?,s2?,p2?,get!) =
-          |    dupl3(p1,d11,d12,d13)
-          |    dupl3(p2,d21,d22,d23)
+          |    dupl(a,b,ab) dupl(ab,c,d)
+          |    ,
+          |  seq(s1?,p1?,s2?,p2?,get!) =
+          |    dupl3(p1,d11,d12,d13)  dupl3(p2,d21,d22,d23)
           |    drain(s1,d21) drain(s2,d11)
           |    drain(d12,d42) drain(d22,d32)
           |    dupl(e1,d41,d42) dupl(e2,d32,d31)
           |    event(d31,e1) eventFull(d41,e2)
-          |    merger(d13,d23,get),
-          |  [hide] t1 = writer*writer,
-          |  [hide] t2 = writer*writer,
-          |  [hide] act = reader
-          |}
-        """.stripMargin::Nil,
-    "Simpler RoundRobin - with components"
+          |    merger(d13,d23,get)
+          |    ,
+          |  // Scenarios
+          |  mainW() = // waits (possibly for ever)
+          |    task<t1>(W p1!,W s1!) //   'put1' goes first
+          |    task<t2>(W s2!,W p2!) // 'start2' goes first
+          |    task<act>(W get?)
+          |    seq(s1,p1,s2,p2,get)
+          |    ,
+          |  mainNW() = // more states!
+          |    task<t1>(NW p1!,NW s1!) every 3
+          |    task<t2>(NW s2!,NW p2!) every 3
+          |    task<act>(W get?)
+          |    seq(s1,p1,s2,p2,get)
+          |    ,
+          |  mainTO() = // with timeouts (timeout without 'every)
+          |    task<t1>(3 p1!,3 s1!) every 6
+          |    task<t2>(3 s2!,3 p2!) every 6
+          |    task<act>(W get?)
+          |    seq(s1,p1,s2,p2,get)
+          |    ,
+          |  mainBad() = // deadlocks
+          |    task<t1>(W p1!,NW s1!)
+          |    task<t2>(W s2!,W p2!)
+          |    task<act>(W get?)
+          |    seq(s1,p1,s2,p2,get)
+          |}""".stripMargin
+      ::""::
+      """// Task 2 can send data to the actuator
+        |E<> p2 and get
+        |// Task 2 can always start
+        |A<> s2
+        |// Task 1 can start only if
+        |//    Task 2 was the last one to run, and
+        |//    when Task 2 is not running.
+        |/////// A[] s1 imply ((p1.t>p2.t) and (s2.t>p2.t))
+        |// When put1 fires, put2 must eventually fire
+        |// before put1 again, and wait at least 2
+        |// time units before firing put2.
+        |every p1 --> p2 after 2
+        |// Task 2 can only start 4 time units after
+        |// finishing a previous round.
+        |/////// A[] s2 imply (p2.t > 4) or not(p2.done)
+        |""".stripMargin::Nil,
+    "2 tasks and semaphores"
       ::"Round robin between 2 tasks, without an actuator."
       ::"""rr {
-          | [hide] tk1(i?,o!) = writer(o) reader(i),
-          | [hide] tk2(i?,o!) = writer(o) reader(i),
-          |
           | rr() =
-          |   tk1(r1,w1) tk2(r2,w2)
+          |   task<tk1>(W r1?, W w1!)
+          |   task<tk2>(W w2?, W r2!)
           |   semaphore(w1,r2) semaphore(w2,r1)
           |}""".stripMargin::Nil,
-    "Simpler RoundRobin - with tasks"
-      ::"Round robin between 2 tasks, without an actuator."
-      ::"""rr {
-          | rr() =
-          |   task<tk1>(W r1?,W w1!)
-          |   task<tk2>(W r2?,W w2!)
-          |   semaphore(w1,r2) semaphore(w2,r1)
-          |}""".stripMargin::Nil,
-    "Tasks (preo)"
-      ::"Examples of task using preo syntax."
-      ::"""t1 {
-          | t1 = task(NW!),
-          | t2 = task(NW?),
-          | t3 = task(W!),
-          | t4 = task(W?),
-          | t5 = task(5!),
-          | t6 = task(10?),
-          | t7 = task(NW!,W?,5!)
-          |}""".stripMargin::Nil
+//    "Simpler RoundRobin - with tasks"
+//      ::"Round robin between 2 tasks, without an actuator."
+//      ::"""rr {
+//          | rr() =
+//          |   task<tk1>(W r1?,W w1!)
+//          |   task<tk2>(W r2?,W w2!)
+//          |   semaphore(w1,r2) semaphore(w2,r1)
+//          |}""".stripMargin::Nil,
+//    "Tasks (preo)"
+//      ::"Examples of task using preo syntax."
+//      ::"""t1 {
+//          | t1 = task(NW!),
+//          | t2 = task(NW?),
+//          | t3 = task(W!),
+//          | t4 = task(W?),
+//          | t5 = task(5!),
+//          | t6 = task(10?),
+//          | t7 = task(NW!,W?,5!)
+//          |}""".stripMargin::Nil
 //      """// Round robin between 2 tasks, sending to an actuator
 //        |t1 * t2;
 //        |coord;
