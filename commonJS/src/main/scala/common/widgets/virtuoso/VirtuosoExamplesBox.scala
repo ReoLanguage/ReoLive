@@ -214,8 +214,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |    seq(s1,p1,s2,p2,get)
           |}""".stripMargin
       ::""::
-      """
-      |// Task 2 can always start
+      """// Task 2 can always start
       |A<> s2
       |// Task 2 can send data to the actuator
       |E<> p2 and get
@@ -229,8 +228,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       |every p1 --> p2 after 2
       |// Task 2 can only start 4 time units after
       |// finishing a previous round.
-      |A[] s2 imply (p2.t > 4) or not(p2.done)
-      |""".stripMargin::Nil,
+      |A[] s2 imply (p2.t > 4) or not(p2.done)""".stripMargin::Nil,
     "2 tasks and semaphores"
       ::"Round robin between 2 tasks, without an actuator."
       ::"""rr {
