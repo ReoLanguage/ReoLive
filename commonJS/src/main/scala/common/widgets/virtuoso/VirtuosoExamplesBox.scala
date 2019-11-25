@@ -222,13 +222,13 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       |//    Task 2 was the last one to run, and
       |//    when Task 2 is not running.
       |A[] s1 imply ((p1.t>p2.t) and (s2.t>p2.t))
-      |// When put1 fires, put2 must eventually fire
-      |// before put1 again, and wait at least 2
-      |// time units before firing put2.
+      |// Evertime put1 fires, put2 must fire (after >2)
       |every p1 --> p2 after 2
       |// Task 2 can only start 4 time units after
       |// finishing a previous round.
-      |A[] s2 imply (p2.t > 4) or not(p2.done)""".stripMargin::Nil,
+      |A[] s2 imply (p2.t > 4) or not(p2.done)
+      |// maximum time before repeating s2
+      |A[] s2 waits atMost 9""".stripMargin::Nil,
     "2 tasks and semaphores"
       ::"Round robin between 2 tasks, without an actuator."
       ::"""rr {
