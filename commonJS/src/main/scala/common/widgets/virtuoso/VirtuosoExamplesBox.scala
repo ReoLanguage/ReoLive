@@ -185,7 +185,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |    drain(s1,d21) drain(s2,d11)
           |    drain(d12,d42) drain(d22,d32)
           |    dupl(e1,d41,d42) dupl(e2,d32,d31)
-          |    event(d31,e1) eventFull(d41,e2)
+          |    eventFull(d31,e1) event(d41,e2)
           |    merger(d13,d23,get)
           |    ,
           |  // Scenarios
