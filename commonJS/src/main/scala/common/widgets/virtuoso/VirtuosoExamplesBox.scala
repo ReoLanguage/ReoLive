@@ -195,6 +195,12 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |    task<act>(W get?)
           |    seq(s1,p1,s2,p2,get)
           |    ,
+          |  mainWE() = // waits (possibly for ever)
+          |    task<t2>(W s2!,W p2!) every 3
+          |    task<t1>(W p1!,W s1!) every 3
+          |    task<act>(W get?)
+          |    seq(s1,p1,s2,p2,get)
+          |    ,
           |  mainNW() = // more states!
           |    task<t1>(NW p1!,NW s1!) every 3
           |    task<t2>(NW s2!,NW p2!) every 3
@@ -202,8 +208,8 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |    seq(s1,p1,s2,p2,get)
           |    ,
           |  mainTO() = // with timeouts (timeout without 'every)
-          |    task<t1>(3 p1!,3 s1!) every 6
-          |    task<t2>(3 s2!,3 p2!) every 6
+          |    task<t1>(2 p1!,2 s1!) every 6
+          |    task<t2>(2 s2!,2 p2!) every 6
           |    task<act>(W get?)
           |    seq(s1,p1,s2,p2,get)
           |    ,
@@ -221,12 +227,12 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       |// Task 1 can start only if
       |//    Task 2 was the last one to run, and
       |//    when Task 2 is not running.
-      |A[] s1 imply ((p1.t>p2.t) and (s2.t>p2.t))
+      |A[] s1 imply ((p1.t>=p2.t) and (s2.t>=p2.t))
       |// Evertime put1 fires, put2 must fire (after >2)
       |every p1 --> p2 after 2
       |// Task 2 can only start 4 time units after
       |// finishing a previous round.
-      |A[] s2 imply (p2.t > 4) or not(p2.done)
+      |A[] s2 imply (p2.t >= 2) or not(p2.done)
       |// maximum time before repeating s2
       |A[] s2 waits atMost 9""".stripMargin::Nil,
     "2 tasks and semaphores"
