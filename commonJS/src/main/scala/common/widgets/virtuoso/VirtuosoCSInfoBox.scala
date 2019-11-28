@@ -97,7 +97,7 @@ class VirtuosoCSInfoBox(connector:Box[CoreConnector], errorBox: OutputArea)
               //                .text(s"${trace.size} transition(s) involved \n")
               trace.foreach(t =>
                 listt.append("li")
-                  .text(s"${t._1} --> ${t._2._1} by ${t._2._2.map(p => aut.getPortName(p)).mkString(",")}: ${t._2._2.size * 2} cs ")
+                  .text(s"${t._1} --> ${t._2._1} by ${t._2._3.map(p => aut.getPortName(p)).mkString(",")}: ${t._2._3.size * 2} cs ")
               )
 
               // Pattern used
