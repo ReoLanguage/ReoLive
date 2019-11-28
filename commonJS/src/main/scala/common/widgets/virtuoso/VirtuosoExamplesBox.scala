@@ -241,11 +241,18 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
 
       "2 tasks and semaphores"
       ::"Round robin between 2 tasks, without an actuator."
-      ::"""rr {
-          | rr() =
+      ::"""rr1 {
+          | rr1() =
           |   task<tk1>(W r1?, W w1!)
           |   task<tk2>(W w2?, W r2!)
           |   semaphore(w1,r2) semaphore(w2,r1)
+          |   ,
+          | rr2() =
+          |   task<t1>(W tb?,NW p1!,10 pa!)
+          |   task<t2>(10 pb!,W ta?,NW p2!)
+          |   task<act>(W get?)
+          |   semaphore(pb,tb) semaphore(pa,ta)
+          |   merger(p1,p2,get)
           |}""".stripMargin::Nil,
 //    "Simpler RoundRobin - with tasks"
 //      ::"Round robin between 2 tasks, without an actuator."

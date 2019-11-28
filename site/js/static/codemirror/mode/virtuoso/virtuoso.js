@@ -191,7 +191,7 @@ CodeMirror.defineMode("virtuoso", function(_config, modeConfig) {
     }
 
     setType("keyword")( // where, ...
-      );
+      "every");
 
     setType("keyword")(
       "=", "<-");
