@@ -244,7 +244,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       ::"""rr1 {
           | rr1() =
           |   task<tk1>(W r1?, W w1!)
-          |   task<tk2>(W w2?, W r2!)
+          |   task<tk2>(W w2!, W r2?)
           |   semaphore(w1,r2) semaphore(w2,r1)
           |   ,
           | rr2() =
