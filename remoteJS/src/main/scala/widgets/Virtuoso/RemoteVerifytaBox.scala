@@ -45,7 +45,8 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
   }
 
   private def callVerifyta(): Unit = {
-    val msg = s"""{ "query": "$input","""+
+    val strInput = input.replaceAll("\\t"," ")
+    val msg = s"""{ "query": "$strInput","""+
       s""" "connector" : "${connectorStr.get}", """+
       s""" "operation" : "$operation" }"""
     RemoteBox.remoteCall("verifyta",msg,process)

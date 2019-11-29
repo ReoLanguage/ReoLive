@@ -102,8 +102,11 @@ object RemoteVirtuoso extends {
     verifytaOut.init(leftColumn)
     verifytaError.init(leftColumn)
 
-    reload()
-
+//    reload()
+    // load default button
+    if (!examples.loadButton("Port")) {
+      reload()
+    }
   }
 
   /**

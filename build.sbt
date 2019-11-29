@@ -1,8 +1,8 @@
-ThisBuild / scalaVersion := "2.12.6"
+ThisBuild / scalaVersion := "2.12.10" //12.6
 val circeVersion = "0.9.3"
 
 lazy val common_settings = Seq(
-  scalaVersion := "2.12.4",
+  scalaVersion := "2.12.10", // 12.4
   libraryDependencies ++= Seq(
     "junit" % "junit" % "4.12",
     "org.choco-solver" % "choco-solver" % "4.0.6",

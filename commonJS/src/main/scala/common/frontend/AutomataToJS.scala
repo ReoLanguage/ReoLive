@@ -1,6 +1,6 @@
 package common.frontend
 
-import hub.HubAutomata
+import hub.{CCons, HubAutomata}
 import preo.backend.Network.Mirrors
 import ifta.analyse.Simplify
 import ifta.{CTrue, ClockCons}
@@ -501,7 +501,7 @@ object AutomataToJS {
     case IftaAutomata(ifta,nifta,cons) =>
       aut.getTrans().flatMap(processNode(aut.getInit,_,ifta.cInv)).mkString("[",",","]")
     case HubAutomata(ps,sts,init,trans,c,inv,v,tp) =>
-      aut.getTrans().flatMap(processNode(aut.getInit,_,inv)).mkString("[",",","]")
+      aut.getTrans().flatMap(processHNode(aut.getInit,_,inv)).mkString("[",",","]")//todo:temporary fix different fun. Probably better Update ifta to work with CCons
   }
 
 
@@ -509,6 +509,17 @@ object AutomataToJS {
 
   private def getLinks[A<:Automata](aut: A,name:String,portNames:Boolean=false, ms: Mirrors): String =
     aut.getTrans(portNames).flatMap(t => processEdge(expandMirrors(t,ms),name)).mkString("[",",","]")
+
+  private def processHNode(initAut:Int,trans:(Int,Any,String,Int),nodeInvariant:Map[Int,CCons]=Map()): Set[String] = trans match{
+    case (from,lbl,id,to) =>
+      val toInv   = hub.backend.Show(hub.backend.Simplify(nodeInvariant.getOrElse(to,hub.CTrue)))
+      val fromInv = hub.backend.Show(hub.backend.Simplify(nodeInvariant.getOrElse(from,hub.CTrue)))
+      val (gfrom,gto,gp1,gp2) = nodeGroups(initAut,from,to)
+      Set(s"""{"id": "$from", "group": $gfrom ,"inv":"${if (fromInv == "true") "" else fromInv}"}""",
+        s"""{"id": "$to", "group": $gto ,"inv":"${if (toInv == "true") "" else toInv }"}""",
+        s"""{"id": "$from-1-$to-$id", "group": "$gp1","inv":""}""",
+        s"""{"id": "$to-2-$from-$id", "group": "$gp2" ,"inv":""}""")
+  }
 
   private def processNode(initAut:Int,trans:(Int,Any,String,Int),nodeInvariant:Map[Int,ClockCons]=Map()): Set[String] = trans match{
     case (from,lbl,id,to) =>
