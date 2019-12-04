@@ -48,8 +48,8 @@ class ReoActor(out: ActorRef) extends Actor {
 
           try {
             val model = preo.frontend.mcrl2.Model(coreConnector)
-            //println(model)
-            println("MAs1:\n - "+model.getMultiActionsMap.keys.mkString("\n - "))
+            // println(s"[RA] mCRL2: $model")
+            // println("[RA] MAs1:\n - "+model.getMultiActionsMap.keys.mkString("\n - "))
 //            println("Multiactions in the model:\n"+model.getMultiActionsMap
 //              .map(kv => "'" + kv._1 + "'" + ":" + kv._2.map("\n - " + _.mkString(", ")).mkString(""))
 //              .mkString("\n"))
