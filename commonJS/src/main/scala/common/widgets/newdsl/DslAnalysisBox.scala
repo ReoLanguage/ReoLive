@@ -45,6 +45,13 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
 //      .text("----- Parsed:")
     list.append("li")
       .text("---- Parsed:\n"+Show(prog))
+    list.append("li")
+      .text("---- Types:\n")
+    var types = DSL.typeCheck(DSL.parse(program.get))
+        types.map(v =>
+          list.append("li")
+            .text(s"${v._1}: ${Show(v._2)}")
+        )
   } catch Box.checkExceptions(errorBox,"DSL Analysis")
 
 }
