@@ -210,7 +210,7 @@ CodeMirror.defineMode("dsl", function(_config, modeConfig) {
       "noSrc","noSnk",
       "xor","xors",
       "node","ids","mergers","dupls","vdupls","vmergers","exrouters","loop","swap",
-      "writer","reader"
+      "writer","reader","build","match"
       );
 
     var override = modeConfig.overrideKeywords;
