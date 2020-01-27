@@ -192,7 +192,7 @@ CodeMirror.defineMode("dsl", function(_config, modeConfig) {
     }
 
     setType("keyword")( // where, ...
-      "data","def");
+      "data","def","import");
 
     setType("keyword")(
       "=", "<-","if","then","else");
