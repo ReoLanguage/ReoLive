@@ -10,7 +10,7 @@ import scala.scalajs.js.UndefOr
   */
 
 
-class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("Dsl Examples", Nil) {
+class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("DSL Examples", Nil) {
   override def get: Unit = Unit
 
   /**
@@ -68,7 +68,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     */
   protected val buttons: Seq[List[String]] = Seq(
     "alt"::
-      """import conn.prim
+      """import Conn.Prim
         |
         |def alt(i1,i2) = {
         |  a:=in1(i1) b:=in2(i2)
@@ -79,7 +79,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |alt(x,y)
         |""".stripMargin::"Alternator"::Nil,
     "xor"::
-      """import conn.prim.{lossy,drain}
+      """import Conn.Prim.{lossy,drain}
         |
         |def exRouter(in) = {
         |  out1 := lossy(in)
@@ -102,19 +102,19 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |""".stripMargin::
       "Replicator"::Nil,
     "lossy"::
-      """import conn.prim.{lossy}
+      """import Conn.Prim.lossy
         |
         |lossy(x)
         |""".stripMargin::
       "Lossy channel"::Nil,
     "lossy-fifo"::
-      """import conn.prim.{lossy,fifo}
+      """import Conn.Prim.{lossy,fifo}
         |y:=lossy(x)
         |fifo(y)
         |""".stripMargin::
       "lossy-fifo"::Nil,
     "sequence3"::
-      """import conn.prim.{lossy,fifo,drain}
+      """import Conn.Prim.{lossy,fifo,drain}
         |x1:=fifofull(x3) drain(o1,x1) out1(o1)
         |x2:=    fifo(x1) drain(o2,x2) out2(o2)
         |x3:=    fifo(x2) drain(o3,x3) out3(o3)
@@ -129,7 +129,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |""".stripMargin::
       "Build a streams of [Zero,Zero] and merge it with SomeData."::Nil,
     "counter"::
-      """import conn.prim
+      """import Conn.Prim
         |
         |data Nat = Zero | Succ(Nat)
         |data Unit = U

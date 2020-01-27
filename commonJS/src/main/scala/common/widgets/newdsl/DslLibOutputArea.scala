@@ -31,13 +31,14 @@ class DslLibOutputArea  extends Setable[String] {
 
     //header
     out.append("div")
-      .attr("class","panel-heading")
-      .text("Library Information")
+      .attr("class","panel-heading my-panel-heading")
+      .append("h5").text("Library Information")
+      .style("margin","0px")
 
     // body
     var body = out.append("div")
       .attr("class","panel-body")
-      .style("padding","0")
+      .style("padding","0px")
 
 //    body.append("h5").attr("class","card-title")
 

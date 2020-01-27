@@ -10,7 +10,7 @@ import scala.scalajs.js.UndefOr
   */
 
 
-class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("Dsl Library", Nil) {
+class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("DSL Library", Nil) {
   override def get: Unit = Unit
 
   /**
@@ -67,14 +67,14 @@ class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]
     *
     */
   protected val buttons: Seq[List[String]] = Seq(
-    "types"::
+    "Types"::
       """data List<a> = Nil | Cons(a,List<a>)
         |data Bool = True | False
         |data Nat = Zero | Succ(Nat)
         |data Pair<a,b> = P(a,b)
         |data Either<a,b> = Left(a) | Right(b)
         |data Unit = U""".stripMargin::"Primitive Data Types"::Nil,
-    "conn.prim"::
+    "Conn.Prim"::
       """fifo:A->A
         |fifofull<A>:A->A
         |sync:A->A
@@ -87,9 +87,9 @@ class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]
         |writer:()->A
         |reader:A->()""".stripMargin::
       "Primitive Connectors"::Nil,
-    "conn.math"::
-      """import types.{Nat,Unit}
-        |import conn.prim
+    "Conn.Math"::
+      """import Types.{Nat,Unit}
+        |import Conn.Prim
         |
         |// counts ticks (to check)
         |def counter(tick): Nat = {
@@ -134,9 +134,9 @@ class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]
         |  a
         |}""".stripMargin::
       "Math Connectors"::Nil,
-    "conn.controlFlow"::
-      """import types.{Bool,Unit}
-        |import conn.prim
+    "Conn.ControlFlow"::
+      """import Types.{Bool,Unit}
+        |import Conn.Prim
         |// If Then Else
         |def ite(b:Bool,then:A,else:A): A = {
         |    t,f := match(b)
