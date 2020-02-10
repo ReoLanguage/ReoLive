@@ -49,7 +49,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
     list.append("li")
       .text("---- Types:\n")
 
-    var typeCtx = DSL.typeCheck(prog)
+    var (typedProgram,typeCtx) = DSL.typeCheck(prog)
     var types = typeCtx.functions.map(f=>f._1->f._2.tExp) ++ typeCtx.ports.map(p=>p._1->p._2.head.tExp)
 
     types.filterNot(t=> DSL.prelude.primitiveFunctionNames().contains(t._1)).map(v =>
@@ -58,7 +58,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
     )
     list.append("li")
       .text("---- Stream Builders:\n")
-    var (sb,sbOuts,sbCtx) = DSL.encode(prog,typeCtx)
+    var (sb,sbOuts,sbCtx) = DSL.encode(typedProgram,typeCtx)
       list.append("li")
           .text(s"Program: ${Show(sb)} " +
             s"\nOutput sequence: ${sbOuts.mkString(",")}")
