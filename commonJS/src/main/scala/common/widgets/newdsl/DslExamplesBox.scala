@@ -154,7 +154,22 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |//def boolmatch(z:Bool) = {match(z)}
         |
         |natmatch(w)""".stripMargin::
-      "Gets clicks, outputs number of clicks since last request."::Nil,
+      ""::Nil,
+    "display"::
+      """import Types.{Bool,Unit}
+        |
+        |def display(showMouse:Bool,mouseCoord,time) = {
+        |  last <~ showMouse
+        |  t,f := match(last)
+        |  drain(t,mouseCoord)
+        |  drain(f,time)
+        |  toDisplay := mouseCoord
+        |  toDisplay := time
+        |  toDisplay
+        |}
+        |
+        |display(sm,mc,t)
+      """.stripMargin::""::Nil,
     ///////////////////
 //    "fix"::
 //      """def conn(y) = {
