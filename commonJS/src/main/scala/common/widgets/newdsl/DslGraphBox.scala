@@ -2,6 +2,7 @@ package common.widgets.newdsl
 
 import common.frontend.GraphsToJS
 import common.widgets.{Box, GraphBox, OutputArea}
+import dsl.DSL._
 import dsl.analysis.syntax.Program
 import dsl.backend.Net
 import dsl.backend.Net.{Connector, IPort}
@@ -19,7 +20,8 @@ extends GraphBox(null, errorBox, path, "Circuit of the Connector"){
   override def drawGraph(): Unit = try{
     val program = programBox.get
     //println(s"[prog] - Drawing graph - $program")
-    val (net1,maxPort1) = Net(program)
+    val (typedProgram,_) = typeCheck(program)
+    val (net1,maxPort1) = Net(typedProgram)
     //println(s"[net] - Drawing graph (max=$maxPort1):\n$net1")
     val (net2,maxPort2) = addNodes(net1,Some(maxPort1+1))
     //println(s"[net] - Added Nodes (max=$maxPort2):\n$net2")

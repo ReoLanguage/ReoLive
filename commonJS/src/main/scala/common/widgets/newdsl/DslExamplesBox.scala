@@ -139,6 +139,22 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |
         |counter(a)""".stripMargin::
       "Gets clicks, outputs number of clicks since last request."::Nil,
+    "matches"::
+      """data List<a> = Nil | Cons(a,List<a>)
+        |data Bool = True | False
+        |data Nat = Zero | Succ(Nat)
+        |data Pair<a,b> = P(a,b)
+        |data Either<a,b> = Left(a) | Right(b)
+        |data Unit = U
+        |
+        |def natmatch(x:Nat) = {match(x)}
+        |
+        |def listmatch(y:List<a>) = {match(y)}
+        |
+        |//def boolmatch(z:Bool) = {match(z)}
+        |
+        |natmatch(w)""".stripMargin::
+      "Gets clicks, outputs number of clicks since last request."::Nil,
     ///////////////////
 //    "fix"::
 //      """def conn(y) = {
