@@ -8,7 +8,7 @@ import hprog.frontend.solver.StaticSageSolver
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
 
-class RemoteEvalBox(program: Box[String], errorBox: OutputArea, default:String = "")
+class RemoteEvalBox(program: Box[String], errorBox: OutputArea, bounds: Box[String], default:String = "")
   extends Box[Unit]("Symbolic Evaluation", List(program)) {
 
   private var box : Block = _
@@ -71,7 +71,7 @@ class RemoteEvalBox(program: Box[String], errorBox: OutputArea, default:String =
       outEval.text("<waiting>")
       errorBox.clear()
       errorBox.message("Waiting for SageMath...")
-      RemoteBox.remoteCall("linceWS", s"E$input§${program.get}", eval)
+      RemoteBox.remoteCall("linceWS", s"E§${bounds.get}§$input§${program.get}", eval)
     }
   }
 
