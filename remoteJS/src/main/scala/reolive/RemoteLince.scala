@@ -61,8 +61,8 @@ object RemoteLince {
       perturbation = new InputBox(softReload(),"0","perturbation",1,
         title = "Perturbations up-to  (experimental)",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
-      bounds = new InputBox(softReload(),"100.0  1000","bounds",1,
-        title = "Plot limit",
+      bounds = new InputBox(softReload(),"15 // maximum time in the plot","bounds",1,
+        title = "Plot length",
         refreshLabel = "\"t\" or \"t l\": Maximum time \"t\" when drawing the plot, and maximum \"l\" number of while loop unfolds (default 1000).")
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
       eval   = new RemoteEvalBox(inputBox, errors, bounds, "")

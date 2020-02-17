@@ -204,12 +204,14 @@ class LinceActor(out: ActorRef) extends Actor{
     }
   }
 
-  private def getBounds(str:String): (Double,Int) =
-    "[0-9]+(\\.[0-9]+)?".r.findAllIn(str).toList match {
+  private def getBounds(str:String): (Double,Int) = {
+    val trimmed = "[^/]*".r.findFirstIn(str).getOrElse("")
+    "[0-9]+(\\.[0-9]+)?".r.findAllIn(trimmed).toList match {
       case List(s) => (s.toDouble,1000)
       case List(t,l) => (t.toDouble,l.toDouble.toInt)
       case _ => (100,1000)
     }
+  }
 
   private def debug(str: () => String): Unit = {
     //println("[Server] "+str())
