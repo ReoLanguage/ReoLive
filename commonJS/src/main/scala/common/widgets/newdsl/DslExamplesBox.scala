@@ -10,7 +10,7 @@ import scala.scalajs.js.UndefOr
   */
 
 
-class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("Dsl Examples", Nil) {
+class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("DSL Examples", Nil) {
   override def get: Unit = Unit
 
   /**
@@ -122,11 +122,12 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
       "Build a streams of [Zero,Zero] and merge it with SomeData."::Nil,
     "counter"::
       """data Nat = Zero | Succ(Nat)
+        |data Unit = U
         |
         |// counts ticks (to check)
         |def counter(tick): Nat = {
         |  drain(tick,n)
-        |  succ:=build(nil,n) // build<Nat>
+        |  succ:=build(U,n) // build<Nat>
         |  next:=fifo(succ)
         |  iter:=fifofull(next) // filled with Zero
         |  n,res:=xor(iter)
@@ -138,6 +139,37 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |
         |counter(a)""".stripMargin::
       "Gets clicks, outputs number of clicks since last request."::Nil,
+    "matches"::
+      """data List<a> = Nil | Cons(a,List<a>)
+        |data Bool = True | False
+        |data Nat = Zero | Succ(Nat)
+        |data Pair<a,b> = P(a,b)
+        |data Either<a,b> = Left(a) | Right(b)
+        |data Unit = U
+        |
+        |def natmatch(x:Nat) = {match(x)}
+        |
+        |def listmatch(y:List<a>) = {match(y)}
+        |
+        |//def boolmatch(z:Bool) = {match(z)}
+        |
+        |natmatch(w)""".stripMargin::
+      ""::Nil,
+    "display"::
+      """import Types.{Bool,Unit}
+        |
+        |def display(showMouse:Bool,mouseCoord,time) = {
+        |  last <~ showMouse
+        |  t,f := match(last)
+        |  drain(t,mouseCoord)
+        |  drain(f,time)
+        |  toDisplay := mouseCoord
+        |  toDisplay := time
+        |  toDisplay
+        |}
+        |
+        |display(sm,mc,t)
+      """.stripMargin::""::Nil,
     ///////////////////
 //    "fix"::
 //      """def conn(y) = {
@@ -235,120 +267,120 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |  drain(bDone,lockAll)
         |  drain(bDone,res)
         |  res
-        |}""".stripMargin::""::Nil,
-    "Various types"::
-      """data List<a> = Nil | Cons(a,List<a>)
-        |data Bool = True | False
-        |data Nat = Zero | Succ(Nat)
-        |data Pair<a,b> = P(a,b)
-        |data Either<a,b> = Left(a) | Right(b)
-        |data Unit = U
-        |
-        |x = Cons(Zero,Nil)
-        |y = Cons(Zero,x)
-        |z = Cons(Succ(Succ(Zero)),y)
-        |w = True""".stripMargin::""::Nil,
-    "Nil case 1"::
-      """data List<a> = Nil | Cons(a,List<a>)
-        |data Bool = True | False
-        |
-        |x = Nil
-        |y = Nil
-        |z = Cons(True,x)""".stripMargin::
-      """<strong>x</strong> wil be forced to be of type <strong> List&lt;Bool&gt; </strong>
-        |<strong>y</strong> will be of type <strong> List&lt;a&gt; </strong>
-      """.stripMargin::Nil,
-    "Nil case 2"::
-      """data List<a> = Nil | Cons(a,List<a>)
-        |data Bool = True | False
-        |data Nat = Zero | Succ(Nat)
-        |
-        |x = Nil
-        |z = Cons(True,x)
-        |w = Cons(Zero,x)""".stripMargin::
-      """fails because <strong>x</strong> was consider of type <strong>List&lt;Bool&gt; first</strong>""".stripMargin::Nil,
-    "Conn Def"::
-      """data List<a> = Nil | Cons(a,List<a>)
-        |data Bool = True | False
-        |data Nat = Zero | Succ(Nat)
-        |
-        |def conn = {
-        |	dupl;fifo*lossy
-        |}
-        |
-        |def alt = {
-        |	alt {
-        | alt(i1?,i2?,o!) =
-        |   in1(i1,a) in2(i2,b) drain(a, b)
-        |   sync(a, c) fifo(b, c) out(c,o)
-        |  }
-        |}
-        |
-        |x = True
-        |y,z = conn(Nil)
-        |w = alt(Nil,x)
-        |
-        |//
-        |// Some discussed ideas
-        |//
-        |// 1) where o1 and o2 serve as variables,
-        |// don't need to be specified before
-        |// if they are actual params for outputs:
-        |// z = conn(x,o1,o2)
-        |// 2) (NO) unspecified could mean some kind of Unit type -
-        |// no data is sent or don't care about data:
-        |// z = conn
-        |// 3) outputs are declared on the lhs,
-        |// inputs on the rhs
-        |// (o1,o2) = conn(x)""".stripMargin::
-      """Ideas for connectors expressions""".stripMargin::Nil,
-    "Conn Infer"::
-      """data List<a> = Nil | Cons(a,List<a>)
-        |data Bool = True | False
-        |data Nat = Zero | Succ(Nat)
-        |
-        |def conn = {
-        |	dupl;fifo*lossy
-        |}
-        |
-        |def alt = {
-        |	alt {
-        | alt(i1?,i2?,o!) =
-        |   in1(i1,a) in2(i2,b) drain(a, b)
-        |   sync(a, c) fifo(b, c) out(c,o)
-        |  }
-        |}
-        |
-        |def noOutput = {
-        |	(\x.fifo^x) ;
-        |    (\n.drain^n)
-        |}
-        |
-        |def closed = {
-        |	writer^8 ; merger! ;
-        |	merger! ; reader!
-        |}
-        |
-        |true = True
-        |zero = Zero
-        |nil = Nil
-        |y,o = conn(true)
-        |w = alt(true,zero)""".stripMargin::
-      """Checking some connectors expression""".stripMargin::Nil,
-    "Multi Assign"::
-      """data Bool = True | False
-        |data Nat = Zero | Succ(Nat)
-        |
-        |def conn(y) = {
-        |   x := y
-        |   fifo(x) lossy(x)
-        |}
-        |
-        |y,o := conn(True)
-        |o1,o2 := conn(True)
-        |o3,o4 := conn(Zero)
-        |z,p := conn(Zero,out1,out2)""".stripMargin::
-      """Exmple of multiple assignment""".stripMargin::Nil
+        |}""".stripMargin::""::Nil
+//    "Various types"::
+//      """data List<a> = Nil | Cons(a,List<a>)
+//        |data Bool = True | False
+//        |data Nat = Zero | Succ(Nat)
+//        |data Pair<a,b> = P(a,b)
+//        |data Either<a,b> = Left(a) | Right(b)
+//        |data Unit = U
+//        |
+//        |x = Cons(Zero,Nil)
+//        |y = Cons(Zero,x)
+//        |z = Cons(Succ(Succ(Zero)),y)
+//        |w = True""".stripMargin::""::Nil,
+//    "Nil case 1"::
+//      """data List<a> = Nil | Cons(a,List<a>)
+//        |data Bool = True | False
+//        |
+//        |x = Nil
+//        |y = Nil
+//        |z = Cons(True,x)""".stripMargin::
+//      """<strong>x</strong> wil be forced to be of type <strong> List&lt;Bool&gt; </strong>
+//        |<strong>y</strong> will be of type <strong> List&lt;a&gt; </strong>
+//      """.stripMargin::Nil,
+//    "Nil case 2"::
+//      """data List<a> = Nil | Cons(a,List<a>)
+//        |data Bool = True | False
+//        |data Nat = Zero | Succ(Nat)
+//        |
+//        |x = Nil
+//        |z = Cons(True,x)
+//        |w = Cons(Zero,x)""".stripMargin::
+//      """fails because <strong>x</strong> was consider of type <strong>List&lt;Bool&gt; first</strong>""".stripMargin::Nil,
+//    "Conn Def"::
+//      """data List<a> = Nil | Cons(a,List<a>)
+//        |data Bool = True | False
+//        |data Nat = Zero | Succ(Nat)
+//        |
+//        |def conn = {
+//        |	dupl;fifo*lossy
+//        |}
+//        |
+//        |def alt = {
+//        |	alt {
+//        | alt(i1?,i2?,o!) =
+//        |   in1(i1,a) in2(i2,b) drain(a, b)
+//        |   sync(a, c) fifo(b, c) out(c,o)
+//        |  }
+//        |}
+//        |
+//        |x = True
+//        |y,z = conn(Nil)
+//        |w = alt(Nil,x)
+//        |
+//        |//
+//        |// Some discussed ideas
+//        |//
+//        |// 1) where o1 and o2 serve as variables,
+//        |// don't need to be specified before
+//        |// if they are actual params for outputs:
+//        |// z = conn(x,o1,o2)
+//        |// 2) (NO) unspecified could mean some kind of Unit type -
+//        |// no data is sent or don't care about data:
+//        |// z = conn
+//        |// 3) outputs are declared on the lhs,
+//        |// inputs on the rhs
+//        |// (o1,o2) = conn(x)""".stripMargin::
+//      """Ideas for connectors expressions""".stripMargin::Nil,
+//    "Conn Infer"::
+//      """data List<a> = Nil | Cons(a,List<a>)
+//        |data Bool = True | False
+//        |data Nat = Zero | Succ(Nat)
+//        |
+//        |def conn = {
+//        |	dupl;fifo*lossy
+//        |}
+//        |
+//        |def alt = {
+//        |	alt {
+//        | alt(i1?,i2?,o!) =
+//        |   in1(i1,a) in2(i2,b) drain(a, b)
+//        |   sync(a, c) fifo(b, c) out(c,o)
+//        |  }
+//        |}
+//        |
+//        |def noOutput = {
+//        |	(\x.fifo^x) ;
+//        |    (\n.drain^n)
+//        |}
+//        |
+//        |def closed = {
+//        |	writer^8 ; merger! ;
+//        |	merger! ; reader!
+//        |}
+//        |
+//        |true = True
+//        |zero = Zero
+//        |nil = Nil
+//        |y,o = conn(true)
+//        |w = alt(true,zero)""".stripMargin::
+//      """Checking some connectors expression""".stripMargin::Nil,
+//    "Multi Assign"::
+//      """data Bool = True | False
+//        |data Nat = Zero | Succ(Nat)
+//        |
+//        |def conn(y) = {
+//        |   x := y
+//        |   fifo(x) lossy(x)
+//        |}
+//        |
+//        |y,o := conn(True)
+//        |o1,o2 := conn(True)
+//        |o3,o4 := conn(Zero)
+//        |z,p := conn(Zero,out1,out2)""".stripMargin::
+//      """Exmple of multiple assignment""".stripMargin::Nil
     //    "Virtuoso Data"::
 //      """
 //        |data Unit = U

@@ -21,6 +21,7 @@ object RemoteLince {
     var errors: OutputArea = _
     var descr: OutputArea = _
     var perturbation: InputBox = _
+    var bounds: InputBox = _
 
 
     @JSExportTopLevel("reolive.RemoteLince.main")
@@ -60,17 +61,35 @@ object RemoteLince {
       perturbation = new InputBox(softReload(),"0","perturbation",1,
         title = "Perturbations up-to  (experimental)",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
-      graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, errors)
-      eval   = new RemoteEvalBox(inputBox, errors, "")
+      bounds = new InputBox(softReload(),"100.0  1000","bounds",1,
+        title = "Plot limit",
+        refreshLabel = "\"t\" or \"t l\": Maximum time \"t\" when drawing the plot, and maximum \"l\" number of while loop unfolds (default 1000).")
+      graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
+      eval   = new RemoteEvalBox(inputBox, errors, bounds, "")
 
       inputBox.init(leftColumn, visible = true)
       errors.init(leftColumn)
       examples.init(leftColumn, visible = true)
       descr.init(leftColumn)
       perturbation.init(leftColumn,visible = false)
+      bounds.init(leftColumn,visible = false)
       //information.init(rightColumn,true)
       graphic.init(rightColumn, visible = true)
       eval.init(rightColumn,visible = false)
+
+      val moreInfo = rightColumn.append("div")
+        .attr("class","panel-group")
+        .append("p")
+      moreInfo
+        .style("font-size","larger")
+        .style("text-align","center")
+        .style("padding-top","18px")
+      moreInfo
+        .text("More information on the project: ")
+        .append("a")
+          .attr("href","https://github.com/arcalab/lince")
+          .attr("target","#")
+          .text("https://github.com/arcalab/lince")
 
 
       // load default button
@@ -97,6 +116,7 @@ object RemoteLince {
       inputBox.update()
       //information.update()
       perturbation.update()
+      bounds.update()
       graphic.update()
       eval.update()
     }

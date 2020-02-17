@@ -7,7 +7,7 @@ import hprog.frontend.Deviator
 import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.solver.{Solver, StaticSageSolver}
 
-class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], errorBox: OutputArea)
+class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], bounds: Box[String], errorBox: OutputArea)
     extends Box[Unit]("Trajectories", List(program)) {
   var box : Block = _
   private var lastSolver:Option[StaticSageSolver] = None
@@ -118,7 +118,9 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], e
 //        val traj = prog.traj(Map())
 //          .addWarnings(solver.getWarnings)
 
-        val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy)
+        val bs = getBounds(bounds.get)
+        //println(s"[GBox] bounds = $bs")
+        val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)
         traj.addWarnings(solver.getWarnings)
 
 //        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings
@@ -141,7 +143,7 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], e
 
   private def callSage() = {
     errorBox.message("Waiting for SageMath...")
-    RemoteBox.remoteCall("linceWS",s"G${eps.get}§${program.get}",draw)
+    RemoteBox.remoteCall("linceWS",s"G§${bounds.get}§${eps.get}§${program.get}",draw)
   }
 
   def resample(hideCont:Boolean): Unit = {
@@ -167,6 +169,13 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], e
       errorBox.error(e.getMessage)
       0.0
   }
+
+  private def getBounds(str:String): (Double,Int) =
+    "[0-9]+(\\.[0-9]+)?".r.findAllIn(str).toList match {
+      case List(s) => (s.toDouble,1000)
+      case List(t,l) => (t.toDouble,l.toDouble.toInt)
+      case _ => (100,1000)
+    }
 
 }
 

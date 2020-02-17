@@ -7,7 +7,7 @@ import akka.actor._
 import hprog.ast.SymbolicExpr.SyExprAll
 import hprog.ast.{SVal, Syntax}
 import hprog.backend.Show
-import hprog.common.{ParserException, TimeoutException}
+import hprog.common.{ParserException, TimeOutOfBoundsException, TimeoutException}
 import hprog.frontend.CommonTypes.Valuation
 import hprog.frontend.solver.LiveSageSolver
 import hprog.frontend.{Distance, Eval, Traj}
@@ -61,19 +61,44 @@ class LinceActor(out: ActorRef) extends Actor{
 
 
       // first part is the epsilon
-      val splitted = progAndEps.split("§",2)
-      val arg = splitted(0) //.toDouble
-      val prog = splitted(1)
+      progAndEps.split("§",4) match {
+        case Array(command,boundsStr,input,prog) =>
 
-      val syntax = hprog.DSL.parse(prog)
+          //println(s"command: $command, bounds: $boundsStr, input: $input")
+          val bounds = getBounds(boundsStr)
+          //println(s"new bounds: $bounds")
+          val syntax = hprog.DSL.parse(prog)
+          solver = new LiveSageSolver(sagePath)
 
-      solver = new LiveSageSolver(sagePath)
+          command match {
+            case "G" => getSolver(bounds,input.toDouble,solver,syntax)
+            case "E" => getEval(bounds,input,solver,syntax)
+            case _ => s"Error: unrecognised argument ${command}"
+          }
+        case _ =>
+          s"Error: unrecognised message by Lince's server: $progAndEps"
 
-      arg.headOption match {
-        case Some('G') => getSolver(arg.drop(1).toDouble,solver,syntax)
-        case Some('E') => getEval(arg.drop(1),solver,syntax)
-        case _ => s"Error: unrecognised argument ${arg}"
       }
+
+
+
+//      val arg = splitted(0) //.toDouble
+//      val bounds = splitted(1)
+//      val prog = splitted(2)
+//
+
+//      solver = new LiveSageSolver(sagePath)
+
+//      arg.split("§",2) match {
+//        case Array(hd,tl) if hd.headOption.contains('G') =>
+//          getSolver(arg.drop(1).toDouble,solver,syntax)
+//      }
+
+//      arg.headOption match {
+//        case Some('G') => getSolver(arg.drop(1).toDouble,solver,syntax)
+//        case Some('E') => getEval(arg.drop(1),solver,syntax)
+//        case _ => s"Error: unrecognised argument ${arg}"
+//      }
 
     }
     catch {
@@ -84,6 +109,8 @@ class LinceActor(out: ActorRef) extends Actor{
       case t:TimeoutException =>
         if (solver != null) {solver.closeWithoutWait()}
         s"Error: ${t.getMessage}"
+      case t:TimeOutOfBoundsException =>
+        s"Error: ${t.getMessage}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
 //        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
@@ -91,10 +118,10 @@ class LinceActor(out: ActorRef) extends Actor{
     }
   }
 
-  private def getSolver(eps:Double, solver: LiveSageSolver, syntax: Syntax): String = {
+  private def getSolver(bounds: (Double,Int), eps:Double, solver: LiveSageSolver, syntax: Syntax): String = {
 
-    val traj = new Traj(syntax, solver, new Distance(eps))
-    traj.doFullRun() // fill caches of the solver + warnings & notes
+    val traj = new Traj(syntax, solver, new Distance(eps),bounds)
+    traj.doFullRun // fill caches of the solver + warnings & notes
 
     traj.getWarnings
         .foreach(warns => solver.addWarnings(warns.toList))
@@ -109,19 +136,19 @@ class LinceActor(out: ActorRef) extends Actor{
     replySage
   }
 
-  private def getEval(expr:String, solver: LiveSageSolver, syntax: Syntax): String = {
+  private def getEval(bounds: (Double,Int), expr:String, solver: LiveSageSolver, syntax: Syntax): String = {
 
-    val traj = new Traj(syntax,solver, new Distance(0.0))
+    val traj = new Traj(syntax,solver, new Distance(0.0),bounds)
     val sexpr = hprog.DSL.parseExpr(expr)
-    val dur = traj.getDur
+//    val dur = traj.getDur
 
     val t    = Eval(sexpr,0,Map())
     val texp = Eval.update(sexpr, SVal(0), Map():Valuation)
-    val d    = dur.map(Eval(_))
+//    val d    = dur.map(Eval(_))
 
-    if (t < 0.0 || (d.nonEmpty && d.get < t)) { // comparisons still not in the Solver
+    if (t < 0.0) { // || (d.nonEmpty && d.get < t)) { // comparisons still not in the Solver
       solver.closeWithoutWait()
-      s"Error: time value $t out of bounds."
+      s"Error: time value $t must be non-negative."
     }
     else {
       val point = traj.eval(texp).get //  traj(texp)(solver)
@@ -176,6 +203,13 @@ class LinceActor(out: ActorRef) extends Actor{
       res
     }
   }
+
+  private def getBounds(str:String): (Double,Int) =
+    "[0-9]+(\\.[0-9]+)?".r.findAllIn(str).toList match {
+      case List(s) => (s.toDouble,1000)
+      case List(t,l) => (t.toDouble,l.toDouble.toInt)
+      case _ => (100,1000)
+    }
 
   private def debug(str: () => String): Unit = {
     //println("[Server] "+str())

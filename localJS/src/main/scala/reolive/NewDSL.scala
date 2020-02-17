@@ -1,7 +1,7 @@
 package reolive
 
 import common.widgets.{ButtonsBox, OutputArea}
-import common.widgets.newdsl.{DslAnalysisBox, DslBox, DslExamplesBox, DslGraphBox}
+import common.widgets.newdsl._
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
 
@@ -19,20 +19,23 @@ object NewDSL {
   var examples: DslExamplesBox = _
   var graph: DslGraphBox = _
   var descr: OutputArea = _
+  var dsllib:DslLibBox = _
+  var dsllibout:DslLibOutputArea = _
 
 
   @JSExportTopLevel("reolive.NewDSL.main")
   def main(content: html.Div): Unit = {
 
     val program =
-      """data List<a> = Nil | Cons(a,List<a>)
-        |data Bool = True | False
-        |data Nat = Zero | Succ(Nat)
+      """import conn.prim
         |
-        |x = Cons(Zero,Nil)
-        |y = Cons(Zero,x)
-        |z = Cons(Succ(Succ(Zero)),y)
-        |w = True""".stripMargin
+        |def alt(i1,i2) = {
+        |  a:=in1(i1) b:=in2(i2)
+        |  drain(a, b)
+        |  x:=a x:=fifo(b)
+        |  out(x)
+        |}
+        |alt(x,y)""".stripMargin
 
     // Creating outside containers:
     val contentDiv = d3.select(content).append("div")
@@ -58,21 +61,25 @@ object NewDSL {
 
     descr = new OutputArea
     errors = new OutputArea //(id="Lince")
+    dsllibout = new DslLibOutputArea
 
     inputBox = new DslBox(reload(),program,errors)
     result = new DslAnalysisBox(inputBox,errors)
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
     graph = new DslGraphBox(result,errors)
+    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
 
     inputBox.init(leftColumn, true)
     errors.init(leftColumn)
     graph.init(rightColumn,visible = true)
     result.init(rightColumn,visible = true)
     descr.init(leftColumn)
+    dsllib.init(leftColumn,visible = true)
+    dsllibout.init(leftColumn)
     examples.init(leftColumn,visible = true)
 
     // default button
-    if (examples.loadButton("fix")) {
+    if (examples.loadButton("alt")) {
       reload()
     }
 
@@ -85,6 +92,7 @@ object NewDSL {
     */
   private def reload(): Unit = {
     descr.clear()
+    dsllibout.clear()
     softReload()
   }
   private def softReload(): Unit = {
