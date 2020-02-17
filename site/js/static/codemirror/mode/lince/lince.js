@@ -193,7 +193,7 @@ CodeMirror.defineMode("lince", function(_config, modeConfig) {
     }
 
     setType("keyword")( // where, ...
-      "while","repeat","if","then","else","for","until","until_"
+      "while","do","repeat","if","then","else","for","until","until_"
       );
 
     setType("keyword")(

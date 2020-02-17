@@ -57,7 +57,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     ////
     ,"Naive particle positioning" ->
       """x:= -1; v:= 0; a:= 1;
-        |repeat 100 {
+        |while true do {
         |	if x <= 0 then a:= 1 else {a:=-1 };
         |    	x' = v, v' = a  for 0.5
         |}""".stripMargin ->
@@ -66,17 +66,17 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     ////
     ,"Landing system" ->
       """y := 10000; v := -1000; a:= 0; g:= 10;
-        |while (y >= 1000) {
+        |while (y >= 1000) do {
         |	if v <= -100 then { a := (100 - g) }
         |              else { a:= -g } ;
         |    y' = v, v' = a for 1
         |} ;
-        |while (y >= 25) {
+        |while (y >= 25) do {
         |	if v <= -20 then { a := (20 - g) }
         |             else { a:= -g } ;
         |    y' = v, v' = a  for 1
         |} ;
-        |while (y >= 1) {
+        |while (y >= 1) do {
         |	if v <= -1 then { a := (15 - g) }
         |            else { a:= -g } ;
         |    y' = v, v' = a  for 0.05
@@ -100,7 +100,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     ,"Bouncing ball (ED)"->
     """// Bouncing ball example
           |v:=5; p:=10; c:=0;
-          |while (c<4) {
+          |while (c<4) do {
           |  v'=-9.8, p'=v until_0.001 p<0 /\ v<0;
           |  v:=-0.5*v; c:=c+1
           |}""".stripMargin ->
