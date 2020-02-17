@@ -2,10 +2,13 @@ package common.widgets.newdsl
 
 import common.widgets.{Box, OutputArea}
 import dsl.DSL
+import dsl.analysis.semantics.{And, Guard}
 import dsl.analysis.semantics.StreamBuilder.StreamBuilderEntry
 import dsl.analysis.syntax.Program
 import dsl.analysis.types.{Context, TExp}
 import dsl.backend.{Net, Show}
+import org.scalajs.dom.EventTarget
+import org.singlespaced.d3js.Selection
 
 /**
   * Created by guillerminacledou on 2019-06-07
@@ -111,15 +114,44 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
         .style("justify-content", "fix-start")
         .style("margin", "2px 10px 0px 10px")
       sbs.append("span").text("Guarded Commands:")
-      var gcdiv = sbs.append("div")
-        .style("margin-left", "5px")
-
+//      val gcdiv = sbs.append("div")
+//        .attr("class","container-fluid")
+//        .style("margin-left", "5px")
+        val gcdiv = info.append("div")
+        //.attr("class", "list-group list-group-flush ")
+        .style("margin","5px 5px 5px 10px")
       // for each guarded command:
       for (gc <- sb.gcs) {
-        gcdiv.append("li")
-          .style("list-style-type","none")
-          .text(s"${Show(gc)}")
+        val row = gcdiv.append("div")
+          .style("display", "flex")
+          .style("margin", "5px")
+          .style("justify-content", "fix-start")
+
+        row.append("div")
+          .style("margin", "auto 5px")
+          .attr("class", "alert alert-info")
+          .style("padding","5px")
+          .text(Show(gc.guard))
+        row.append("div")
+          .style("margin", "auto 5px")
+          .style("text-align", "center")
+          .style("padding","5px")
+          .text("→")
+        row.append("div")
+          .style("margin", "auto 5px")
+          .attr("class", "alert alert-success")
+          .style("padding","5px")
+          .style("background-color","white")
+          .text(gc.cmd.map(c=>Show(c)).mkString(", "))
       }
+       // .style("margin-left", "5px")
+
+//      // for each guarded command:
+//      for (gc <- sb.gcs) {
+//        gcdiv.append("li")
+//          .style("list-style-type","none")
+//          .text(s"${Show(gc)}")
+//      }
     }
   } catch Box.checkExceptions(errorBox,"DSL Analysis")
 

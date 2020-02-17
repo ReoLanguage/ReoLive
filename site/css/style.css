@@ -25,6 +25,12 @@
     margin-right: 0px;
 }
 
+/* bootstrap default */
+.compactrow {
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
 .body {
     color: #5c5c5c;
     font-size: 14px;
