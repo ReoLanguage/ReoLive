@@ -9,6 +9,7 @@ import hprog.frontend.solver.{Solver, StaticSageSolver}
 
 class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
   extends Box[Unit]("Trajectories", List(program)) {
+  // TODO: add bounds to arguments
   var box : Block = _
   override def get: Unit = {}
   private var trajectory: Option[Traj] = None
@@ -59,7 +60,7 @@ class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
       //      println("a")
       //      val (traj,_) = hprog.ast.Trajectory.hprogToTraj(Map(),prog)
 //      val prog = hprog.frontend.Semantics.syntaxToValuationTaylor(syntax)
-      val traj = new hprog.frontend.Traj(syntax,new StaticSageSolver,Deviator.dummy)
+      val traj = new hprog.frontend.Traj(syntax,new StaticSageSolver,Deviator.dummy, (1000,1000))
       //hprog.frontend.Semantics.syntaxToValuationTaylor(syntax)
 
       // tests: to feed to Sage
