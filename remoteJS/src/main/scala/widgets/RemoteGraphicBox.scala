@@ -170,12 +170,14 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
       0.0
   }
 
-  private def getBounds(str:String): (Double,Int) =
-    "[0-9]+(\\.[0-9]+)?".r.findAllIn(str).toList match {
-      case List(s) => (s.toDouble,1000)
-      case List(t,l) => (t.toDouble,l.toDouble.toInt)
-      case _ => (100,1000)
+  private def getBounds(str:String): (Double,Int) = {
+    val trimmed = "[^/]*".r.findFirstIn(str).getOrElse("")
+    "[0-9]+(\\.[0-9]+)?".r.findAllIn(trimmed).toList match {
+      case List(s) => (s.toDouble, 1000)
+      case List(t, l) => (t.toDouble, l.toDouble.toInt)
+      case _ => (100, 1000)
     }
+  }
 
 }
 
