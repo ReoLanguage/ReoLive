@@ -17,7 +17,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 //          |""".stripMargin ->
        """// Cruise control
           |p:=0; v:=2;
-          |repeat 15 {
+          |while true do {
           |  if v<=10
           |  then p'=v,v'=5  for 1
           |  else p'=v,v'=-2 for 1
