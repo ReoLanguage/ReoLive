@@ -21,7 +21,7 @@ object NewDSL {
   var descr: OutputArea = _
   var dsllib:DslLibBox = _
   var dsllibout:DslLibOutputArea = _
-//  var sb:SBOutputArea = _
+  var aut:DslAutomataBox = _
 
 
   @JSExportTopLevel("reolive.NewDSL.main")
@@ -69,12 +69,12 @@ object NewDSL {
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
     graph = new DslGraphBox(result,errors)
     dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
-//    sb = new SBOutputArea(inputBox)
+    aut = new DslAutomataBox(inputBox,errors)
 
     inputBox.init(leftColumn, true)
     errors.init(leftColumn)
     graph.init(rightColumn,visible = true)
-//    sb.init(rightColumn,visible = true)
+    aut.init(rightColumn,visible = false)
     result.init(rightColumn,visible = true)
     descr.init(leftColumn)
     dsllib.init(leftColumn,visible = true)
@@ -83,7 +83,7 @@ object NewDSL {
 
 
     // default button
-    if (examples.loadButton("alt")) {
+    if (examples.loadButton("lossy")) {
       reload()
     }
 
@@ -104,7 +104,7 @@ object NewDSL {
     inputBox.update()
     result.update()
     graph.update()
-//    sb.update()
+    aut.update()
   }
 
 

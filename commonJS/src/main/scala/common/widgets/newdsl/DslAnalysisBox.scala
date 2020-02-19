@@ -2,7 +2,7 @@ package common.widgets.newdsl
 
 import common.widgets.{Box, OutputArea}
 import dsl.DSL
-import dsl.analysis.semantics.{Guard}
+import dsl.analysis.semantics.{Guard, SBAutomata}
 import dsl.analysis.semantics.StreamBuilder.StreamBuilderEntry
 import dsl.analysis.syntax.Program
 import dsl.analysis.types.{Context, TExp}
@@ -23,9 +23,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
   override def get: Program = prog
 
   override def init(div: Block, visible: Boolean): Unit = {
-    box = super.panelBox(div, visible,
-      buttons = List(
-      ))
+    box = super.panelBox(div, visible, buttons = List())
       .append("div")
       .attr("id", "newdlsRes")
       .style("white-space", "pre-wrap")
