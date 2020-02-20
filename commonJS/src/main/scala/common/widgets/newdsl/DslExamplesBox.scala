@@ -69,18 +69,18 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
   protected val buttons: Seq[List[String]] = Seq(
     "alt"::
       """def alt(i1,i2) = {
-        |  a:=in1(i1) b:=in2(i2)
+        |  a<-in1(i1) b<-in2(i2)
         |  drain(a, b)
-        |  x:=a x:=fifo(b)
+        |  x<-a x<-fifo(b)
         |  out(x)
         |}
         |alt(x,y)
         |""".stripMargin::"Alternator"::Nil,
     "xor"::
       """def exRouter(in) = {
-        |  out1 := lossy(in)
-        |  out2 := lossy(in)
-        |  m:=out1  m:=out2
+        |  out1 <- lossy(in)
+        |  out2 <- lossy(in)
+        |  m<-out1  m<-out2
         |  drain(in,m)
         |  out1 out2
         |}
@@ -88,12 +88,12 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |""".stripMargin::
       "Exclusive router"::Nil,
     "merger"::
-      """out:=in1 out:=in2
+      """out<-in1 out<-in2
         |out
         |""".stripMargin::
       "Merger"::Nil,
     "dupl"::
-      """out1:=in out2:=in
+      """out1<-in out2<-in
         |out1 out2
         |""".stripMargin::
       "Replicator"::Nil,
@@ -102,19 +102,19 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |""".stripMargin::
       "Lossy channel"::Nil,
     "lossy-fifo"::
-      """y:=lossy(x)
+      """y<-lossy(x)
         |fifo(y)
         |""".stripMargin::
       "lossy-fifo"::Nil,
     "sequence3"::
-      """x1:=fifofull(x3) drain(o1,x1) out1(o1)
-        |x2:=    fifo(x1) drain(o2,x2) out2(o2)
-        |x3:=    fifo(x2) drain(o3,x3) out3(o3)
+      """x1<-fifofull(x3) drain(o1,x1) out1(o1)
+        |x2<-    fifo(x1) drain(o2,x2) out2(o2)
+        |x3<-    fifo(x2) drain(o3,x3) out3(o3)
         |""".stripMargin::
       "Sequencer-3"::Nil,
     "build & Constr"::
-      """x := SomeData
-        |x := build(
+      """x <- SomeData
+        |x <- build(
         |    Zero,
         |    Cons(Zero,Nil))
         |x
@@ -127,13 +127,13 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |// counts ticks (to check)
         |def counter(tick): Nat = {
         |  drain(tick,n)
-        |  succ:=build(U,n) // build<Nat>
-        |  next:=fifo(succ)
-        |  iter:=fifofull(next) // filled with Zero
-        |  n,res:=xor(iter)
-        |  zero:=Zero
+        |  succ<-build(U,n) // build<Nat>
+        |  next<-fifo(succ)
+        |  iter<-fifofull(next) // filled with Zero
+        |  n,res<-xor(iter)
+        |  zero<-Zero
         |  drain(res,zero)
-        |  succ:=zero
+        |  succ<-zero
         |  res
         |}
         |
@@ -160,11 +160,11 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |
         |def display(showMouse:Bool,mouseCoord,time) = {
         |  last <~ showMouse
-        |  t,f := match(last)
+        |  t,f <- match(last)
         |  drain(t,mouseCoord)
         |  drain(f,time)
-        |  toDisplay := mouseCoord
-        |  toDisplay := time
+        |  toDisplay <- mouseCoord
+        |  toDisplay <- time
         |  toDisplay
         |}
         |
@@ -173,11 +173,11 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     ///////////////////
 //    "fix"::
 //      """def conn(y) = {
-//        |   x := y
+//        |   x <- y
 //        |   fifo(x) lossy(x)
 //        |}
 //        |
-//        |y,o := conn(True)
+//        |y,o <- conn(True)
 //        |y o""".stripMargin::
 //      "Fix: should not replace 'x'  by true -- link instead."::Nil,
 //    "badInst"::
@@ -192,7 +192,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
 //      """def f(x) = {
 //        |   fifo(x)
 //        |}
-//        |a:=lossy(b)
+//        |a<-lossy(b)
 //        |f(a)
 //        |""".stripMargin::
 //      "Fix: should link the fifo to the lossy."::Nil,
@@ -205,21 +205,21 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |data Either<a,b> = Left(a) | Right(b)
         |data Unit = U
         |
-        |x := Cons(Zero,Nil)
-        |y := Cons(Zero,x)
-        |z := Cons(Succ(Succ(Zero)),y)
-        |w := True
-        |a,b,c := dupl3(x)
+        |x <- Cons(Zero,Nil)
+        |y <- Cons(Zero,x)
+        |z <- Cons(Succ(Succ(Zero)),y)
+        |w <- True
+        |a,b,c <- dupl3(x)
         |
         |def alt(i1,i2) = {
-        |  a:=in1(i1) b:=in2(i2)
+        |  a<-in1(i1) b<-in2(i2)
         |  drain(a, b)
-        |  o:=a o:=fifo(b)
+        |  o<-a o<-fifo(b)
         |  o
         |}
         |// If Then Else
         |def ite(b:Bool,then:A,else:A): A = {
-        |    t,f := match(b)
+        |    t,f <- match(b)
         |    drain(t,ok)
         |    drain(f,ko)
         |    ok
@@ -228,41 +228,41 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |
         |// fibbonaci
         |def fib(): Nat = {
-        |  b:=fifoFull_Succ_Zero(a)
-        |  c:=fifo(b)
-        |  a := add(b,c)
+        |  b<-fifoFull_Succ_Zero(a)
+        |  c<-fifo(b)
+        |  a <- add(b,c)
         |  a
         |}
         |
         |// counts ticks (to check)
         |def counter(tick): Nat = {
         |  drain(tick,n)
-        |  succ:=build(nil,n)
-        |  next:=fifo(succ)
-        |  iter:=fifoFull_Zero(next)
-        |  n,res:=xor(iter)
-        |  zero:=Zero
+        |  succ<-build(nil,n)
+        |  next<-fifo(succ)
+        |  iter<-fifoFull_Zero(next)
+        |  n,res<-xor(iter)
+        |  zero<-Zero
         |  drain(res,zero)
-        |  succ:=zero
+        |  succ<-zero
         |  res
         |}
         |
         |// Addition of naturals (to check)
         |def add(a, b): Nat = {
         |  drain(a,b)
-        |  lockAll:=fifo(a)
-        |  lockA:=fifo(a)
-        |  waitB:=fifo(b)
-        |  next:=a
-        |  toMatch:=fifo(next)
-        |  zero,succ:=match(toMatch)
-        |  next:=fifo(succ)
-        |  res:=counter(succ)
-        |  aDone,bDone:=xor(zero)
+        |  lockAll<-fifo(a)
+        |  lockA<-fifo(a)
+        |  waitB<-fifo(b)
+        |  next<-a
+        |  toMatch<-fifo(next)
+        |  zero,succ<-match(toMatch)
+        |  next<-fifo(succ)
+        |  res<-counter(succ)
+        |  aDone,bDone<-xor(zero)
         |  drain(aDone,lockA)
         |  drain(aDone,waitB)
-        |  next:=waitB
-        |  lockB:=fito(waitB)
+        |  next<-waitB
+        |  lockB<-fito(waitB)
         |  drain(bDone,lockB)
         |  drain(bDone,lockAll)
         |  drain(bDone,res)
@@ -372,14 +372,14 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
 //        |data Nat = Zero | Succ(Nat)
 //        |
 //        |def conn(y) = {
-//        |   x := y
+//        |   x <- y
 //        |   fifo(x) lossy(x)
 //        |}
 //        |
-//        |y,o := conn(True)
-//        |o1,o2 := conn(True)
-//        |o3,o4 := conn(Zero)
-//        |z,p := conn(Zero,out1,out2)""".stripMargin::
+//        |y,o <- conn(True)
+//        |o1,o2 <- conn(True)
+//        |o3,o4 <- conn(Zero)
+//        |z,p <- conn(Zero,out1,out2)""".stripMargin::
 //      """Exmple of multiple assignment""".stripMargin::Nil
     //    "Virtuoso Data"::
 //      """
