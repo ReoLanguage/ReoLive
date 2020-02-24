@@ -25,14 +25,12 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
 
   override def init(div: Block, visible: Boolean): Unit = {
     //svg= GraphBox.appendSvg(panelBox(div, visible),"sbautomata")
-    svg =  super.panelBox(div, visible, buttons = List(
-      Left("closed")      -> (()=> if (isVisible) drawAutomata(ClosedMode) else (),"Closed for push/pull from the environment"),
+    svg =  GraphBox.appendSvg(panelBox(div, visible, buttons = List(
       Left("push")      -> (()=> if (isVisible) drawAutomata(PushMode) else (),"Environment can push streams"),
       Left("pull")      -> (()=> if (isVisible) drawAutomata(PullMode) else (),"Environment can pull streams"),
-      Left("all")      -> (()=> if (isVisible) drawAutomata(AllMode) else (),"Environment can push/pull streams")))
-      .append("div")
-      .attr("id", "newdlsRes")
-      .style("white-space", "pre-wrap")
+      Left("all")       -> (()=> if (isVisible) drawAutomata(AllMode) else (),"Environment can push/pull streams"),
+      Left("none")      -> (()=> if (isVisible) drawAutomata(NoneMode) else (),"Environment cannot push/pull streams")))
+      ,"sbAutomata")
     dom.document.getElementById("Automaton of the program").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = {e: MouseEvent => if(!isVisible) drawAutomata() else deleteAutomaton()}
   }
@@ -40,16 +38,25 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
   override def update(): Unit = if(isVisible) drawAutomata()
 
 
-  private def drawAutomata(buildMode:BuildMode=ClosedMode): Unit =
-    try{
-      this.svg.text("")
+  private def drawAutomata(buildMode:BuildMode=PushMode): Unit = try{
+      deleteAutomaton()
+
       val prog = DSL.parse(program.get)
       val (tprog,tctx) = DSL.typeCheck(prog)
       val sbCtx = DSL.encode(tprog,tctx)
       val sbProgram = sbCtx("Program")
-      svg.text(Show(SBAutomata(sbProgram._1,mode=buildMode)))
+      automaton = SBAutomata(sbProgram._1,mode=buildMode)
+
+      val sizeAut = automaton.sts.size
+      val factorAut = Math.sqrt(sizeAut * 10000 / (densityAut * widthAutRatio * heightAutRatio))
+      val width = (widthAutRatio * factorAut).toInt
+      val height = (heightAutRatio * factorAut).toInt
+      svg.attr("viewBox", s"00 00 $width $height")
+//      println(automaton.sts)
+      scalajs.js.eval(AutomataToJS(automaton, "sbAutomata"))
+//      svg.text(Show(SBAutomata(sbProgram._1,mode=buildMode)))
     }
-    catch Box.checkExceptions(errorBox,"Automata")
+    catch Box.checkExceptions(errorBox,"sbAutomata")
 
   private def deleteAutomaton(): Unit = {
     svg.selectAll("g").html("")

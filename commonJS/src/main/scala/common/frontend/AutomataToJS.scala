@@ -1,5 +1,6 @@
 package common.frontend
 
+import dsl.analysis.semantics.{SBAutomata, SBState, SBTrans, UpdTrans}
 import hub.{CCons, HubAutomata}
 import preo.backend.Network.Mirrors
 import ifta.analyse.Simplify
@@ -26,8 +27,12 @@ object AutomataToJS {
 //  }
 
 
+  def apply(aut:SBAutomata, boxName:String):String =
+    generateJS(getNodes(aut),getLinks(aut,boxName),boxName)
+
+
   /*todo: refactor in different methods or classes to avoid booolean virtuoso, or pass automata for
-   * better customization for each type of automata, reo, ifta, hub*/
+   * better customization for each type of automata, reo, ifta, hub,sb*/
   private def generateJS(nodes: String, edges: String, name:String): String = {
     // println(nodes)
     // println(edges)
@@ -76,7 +81,7 @@ object AutomataToJS {
                   .merge(node)
                   .attr("r", function(d){
                     if(d.group == 0 || d.group == 1){
-                      return radiusAut + 0.75;m
+                      return radiusAut + 0.75;
                     }
                     else{
                       return 0;
@@ -221,8 +226,7 @@ object AutomataToJS {
 
                   .text(function (d) {
                     return d.type.split("~")[0];
-                  })
-                  ;
+                  });
             } else if (${name == "virtuosoAutomata"}) {
               var textpath = d3.select(".labels${name}")
                     .selectAll(".edgelabel")
@@ -305,6 +309,71 @@ object AutomataToJS {
                     .text(function (d) {
                       var r = d.type.split("~")[4] ;
                       return (r != "" && r!== undefined) ? " " + r : "";
+                    });
+            } else if (${name == "sbAutomata"}) {
+                  var textpath = d3.select(".labels${name}")
+                    .selectAll(".edgelabel")
+                    .append('textPath')
+                    .call(d3.drag()
+                      .on("start", dragstartedAut)
+                      .on("drag", draggedAut)
+                      .on("end", dragendedAut))
+                    .attr('xlink:href', function (d, i) {return '#edge${name}path' + i})
+                    .style("text-anchor", "middle")
+                    // .style("pointer-events", "none")
+                    .attr("startOffset", "50%")
+                    .on("mouseenter", function(d) {
+                      d3.select(this).style("font-size","14px");
+                        var ports = d.type.split("~");
+                        ports.shift();
+                        ports.forEach(function(el) {
+                          var p = document.getElementById("gr_"+el);
+                          //console.log("port "+el);
+                          if (p!=null && p.style.fill!="#00aaff") {
+                            p.style.backgroundColor = p.style.fill;
+                            p.style.fill = "#00aaff";
+                            p.style.fontWeight = "bold";
+                          }
+                        });
+                      })
+                    .on("mouseleave", function(d) {
+                      d3.select(this).style("font-size", "10px");
+                        var ports = d.type.split("~");
+                        ports.shift();
+                        ports.forEach(function(el) {
+                          var p = document.getElementById("gr_"+el);
+                          //console.log("port "+el);
+                          if (p!=null) {
+                            if (p.style.backgroundColor == "")
+                              {p.style.fill = "black";}
+                            else
+                              {p.style.fill = p.style.backgroundColor;}
+                            p.style.fontWeight = "normal";
+                           }
+                        });
+                      });
+                  textpath.append("tspan")
+                    .attr("class", "guards")
+                    .style("fill","#008900")
+                    .text(function (d) {
+                      var g = d.type.split("~")[0] ;
+                      return g;
+                    });
+                  textpath.append("tspan")
+                    .attr("class", "acts")
+                    .style("fill","#3B01E9")
+                    .text(function (d) {
+                      var g = d.type.split("~")[0] ;
+                      var a = d.type.split("~")[1] ;
+                      var acts = (a !== undefined) ? a : ""
+                      return (g != "" && acts!= "")? " " + acts : acts;
+                    }) ;
+                  textpath.append("tspan")
+                    .attr("class", "updates")
+                    .style("fill","#0F024F")
+                    .text(function (d) {
+                      var u = d.type.split("~")[2] ;
+                      return (u != "" && u!== undefined) ? " " + u : "";
                     });
             } else { //iftaAutomata
                 var textpath = d3.select(".labels${name}")
@@ -491,6 +560,33 @@ object AutomataToJS {
       """
   }
 
+  private def getNodes(aut:SBAutomata):String = {
+    aut.trans.flatMap(processNode(aut.init,_)).mkString("[",",","]")
+  }
+  private def processNode(init:SBState,t:SBTrans):Set[String] = {
+      val from = t.from.hashCode().toString
+      val to = t.to.hashCode().toString
+      val id = t.hashCode().toString
+    val res = Set(s"""{"id": "$from", "group": ${if (t.from==init) "0" else "1"} ,"inv":""}""",
+      s"""{"id": "$to", "group": ${if (t.to==init) "0" else "1"} ,"inv":""}""",
+      s"""{"id": "$from-1-$to-$id", "group": "2","inv":""}""",
+      s"""{"id": "$to-2-$from-$id", "group": "2" ,"inv":""}""")
+    println(res)
+    res
+  }
+  private def getLinks(aut:SBAutomata,name:String) = {
+    aut.trans.flatMap(processEdge(_,name)).mkString("[",",","]")
+  }
+  private def processEdge(t:SBTrans,name:String):Set[String] = {
+      val id = t.hashCode().toString
+      val from = t.from.hashCode().toString
+      val to = t.to.hashCode().toString
+      val lbl = t.label
+      Set(s"""{"id": "${id}" , "source": "$from", "target": "$from-1-$to-$id", "type":"", "start":"start", "end": "end"}""",
+        s"""{"id": "${id}" , "source": "$from-1-$to-$id", "target": "$to-2-$from-$id", "type":"$lbl", "start":"start", "end": "end"}""",
+        s"""{"id": "${id}" , "source": "$to-2-$from-$id", "target": "$to", "type":"", "start":"start", "end": "endarrowout${name}"}""")
+  }
+
   private def getNodes[A<:Automata](aut: A): String =
     aut.getTrans().flatMap(processNode(aut.getInit, _)).mkString("[",",","]")
 
@@ -503,7 +599,6 @@ object AutomataToJS {
     case HubAutomata(ps,sts,init,trans,c,inv,v,tp) =>
       aut.getTrans().flatMap(processHNode(aut.getInit,_,inv)).mkString("[",",","]")//todo:temporary fix different fun. Probably better Update ifta to work with CCons
   }
-
 
 
 
