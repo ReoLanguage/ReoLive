@@ -83,7 +83,7 @@ object NewDSL {
 
 
     // default button
-    if (examples.loadButton("test")) {
+    if (examples.loadButton("xor")) {
       reload()
     }
 
