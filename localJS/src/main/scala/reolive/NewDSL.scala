@@ -83,7 +83,7 @@ object NewDSL {
 
 
     // default button
-    if (examples.loadButton("merger")) {
+    if (examples.loadButton("test")) {
       reload()
     }
 
