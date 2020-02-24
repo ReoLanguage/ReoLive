@@ -31,9 +31,9 @@ object NewDSL {
       """import conn.prim
         |
         |def alt(i1,i2) = {
-        |  a:=in1(i1) b:=in2(i2)
+        |  a<-in1(i1) b<-in2(i2)
         |  drain(a, b)
-        |  x:=a x:=fifo(b)
+        |  x<-a x<-fifo(b)
         |  out(x)
         |}
         |alt(x,y)""".stripMargin
@@ -83,7 +83,7 @@ object NewDSL {
 
 
     // default button
-    if (examples.loadButton("lossy")) {
+    if (examples.loadButton("merger")) {
       reload()
     }
 
