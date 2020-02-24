@@ -1,7 +1,7 @@
 package reolive
 
 import common.widgets.{ButtonsBox, OutputArea}
-import common.widgets.newdsl._
+import common.widgets.arx._
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
 
@@ -12,7 +12,7 @@ import scala.scalajs.js.annotation.JSExportTopLevel
   */
 
 
-object NewDSL {
+object ARx {
   var inputBox: DslBox = _
   var errors: OutputArea = _
   var result: DslAnalysisBox = _
@@ -24,7 +24,7 @@ object NewDSL {
   var aut:DslAutomataBox = _
 
 
-  @JSExportTopLevel("reolive.NewDSL.main")
+  @JSExportTopLevel("reolive.ARx.main")
   def main(content: html.Div): Unit = {
 
     val program =

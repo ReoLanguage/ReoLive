@@ -1,4 +1,4 @@
-package common.widgets.newdsl
+package common.widgets.arx
 
 import common.widgets.Setable
 import org.scalajs.dom

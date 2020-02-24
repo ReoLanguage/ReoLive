@@ -1,4 +1,4 @@
-package common.widgets.newdsl
+package common.widgets.arx
 
 import common.widgets.{Box, GraphBox, OutputArea}
 import dsl.analysis.semantics._
