@@ -70,6 +70,18 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     "test"::"x1<-fifofull(x2) x1\nx2<-    fifo(x1) x2"::Nil,
     "test2"::"x<-a x<-fifo(b) x"::Nil,
     "alt"::
+      """drain(a,b)
+        |x<-a
+        |x<-fifo(b)
+        |x""".stripMargin::"Alternator"::Nil,
+    "xor"::
+      """out1 <- lossy(in)
+        |out2 <- lossy(in)
+        |x<-out1  x<-out2
+        |drain(in,x)
+        |out1 out2""".stripMargin::
+      "Exclusive router"::Nil,
+    "def-alt"::
       """def alt(i1,i2) = {
         |  a<-in1(i1) b<-in2(i2)
         |  drain(a, b)
@@ -78,17 +90,27 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |}
         |alt(x,y)
         |""".stripMargin::"Alternator"::Nil,
-    "xor"::
-      """def exRouter(in) = {
-        |  out1 <- lossy(in)
-        |  out2 <- lossy(in)
-        |  m<-out1  m<-out2
-        |  drain(in,m)
-        |  out1 out2
-        |}
-        |exRouter(x)
-        |""".stripMargin::
-      "Exclusive router"::Nil,
+      "alt2"::
+        """// alternate a,b
+          |def seqDrain(a,b) = {
+          |  s1 <- fifofull(s2)
+          |  s2 <- fifo(s1)
+          |  drain(s1,a) drain(s2,b)
+          |}
+          |seqDrain(a,b)
+          |m<-a  m<-b
+          |fifo(m)""".stripMargin::"Alternator - variation"::Nil,
+//    "xor"::
+//      """def exRouter(in) = {
+//        |  out1 <- lossy(in)
+//        |  out2 <- lossy(in)
+//        |  m<-out1  m<-out2
+//        |  drain(in,m)
+//        |  out1 out2
+//        |}
+//        |exRouter(x)
+//        |""".stripMargin::
+//      "Exclusive router"::Nil,
     "merger"::
       """out<-in1 out<-in2
         |out
@@ -108,6 +130,12 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |fifo(y)
         |""".stripMargin::
       "lossy-fifo"::Nil,
+    "lossyFifoVar"::
+      """b<-fifo(a)  c<-fifo(b)
+        |drain(next,a)
+        |next,out<-xor(c)
+        |next<-fifofull(out)
+        |out""".stripMargin::"Lossy Fifo - keeps the most recent value."::Nil,
     "sequence3"::
       """x1<-fifofull(x3) drain(o1,x1) out1(o1)
         |x2<-    fifo(x1) drain(o2,x2) out2(o2)
