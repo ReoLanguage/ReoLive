@@ -158,7 +158,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
           .style("padding","5px")
           .style("background-color","white")
           .style("color","#0F024F")
-          .text(gc.cmd.map(c=>Show(c)).mkString(", "))
+          .text(if (gc.cmd.isEmpty) "∅" else gc.cmd.map(c=>Show(c)).mkString(", "))
       }
        // .style("margin-left", "5px")
 
