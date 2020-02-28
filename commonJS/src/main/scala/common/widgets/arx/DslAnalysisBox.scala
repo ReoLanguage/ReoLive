@@ -16,7 +16,7 @@ import org.singlespaced.d3js.Selection
 
 
 class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
-  extends Box[Program]("DSL Analysis", List(program)) {
+  extends Box[Program]("Analysis of the program", List(program)) {
   var box: Block = _
   var prog: Program = _
 

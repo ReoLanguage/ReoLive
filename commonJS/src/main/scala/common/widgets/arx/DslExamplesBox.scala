@@ -10,7 +10,7 @@ import scala.scalajs.js.UndefOr
   */
 
 
-class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("DSL Examples", Nil) {
+class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("ARx Examples", Nil) {
   override def get: Unit = Unit
 
   /**

@@ -11,7 +11,7 @@ import preo.backend.Network.Mirrors
 import preo.backend.{Circuit, Network}
 
 class DslGraphBox(programBox: Box[Program], errorBox: OutputArea, path: String=".")
-extends GraphBox(null, errorBox, path, "Circuit of the Connector"){
+extends GraphBox(null, errorBox, path, "Circuit of the program"){
 
   override def init(div: Block, visible: Boolean): Unit = {
 
