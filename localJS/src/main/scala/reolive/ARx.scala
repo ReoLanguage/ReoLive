@@ -1,7 +1,7 @@
 package reolive
 
 import common.widgets.{ButtonsBox, OutputArea}
-import common.widgets.newdsl._
+import common.widgets.arx._
 import org.scalajs.dom.html
 import org.singlespaced.d3js.d3
 
@@ -12,7 +12,7 @@ import scala.scalajs.js.annotation.JSExportTopLevel
   */
 
 
-object NewDSL {
+object ARx {
   var inputBox: DslBox = _
   var errors: OutputArea = _
   var result: DslAnalysisBox = _
@@ -21,18 +21,19 @@ object NewDSL {
   var descr: OutputArea = _
   var dsllib:DslLibBox = _
   var dsllibout:DslLibOutputArea = _
+  var aut:DslAutomataBox = _
 
 
-  @JSExportTopLevel("reolive.NewDSL.main")
+  @JSExportTopLevel("reolive.ARx.main")
   def main(content: html.Div): Unit = {
 
     val program =
       """import conn.prim
         |
         |def alt(i1,i2) = {
-        |  a:=in1(i1) b:=in2(i2)
+        |  a<-in1(i1) b<-in2(i2)
         |  drain(a, b)
-        |  x:=a x:=fifo(b)
+        |  x<-a x<-fifo(b)
         |  out(x)
         |}
         |alt(x,y)""".stripMargin
@@ -68,18 +69,21 @@ object NewDSL {
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
     graph = new DslGraphBox(result,errors)
     dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
+    aut = new DslAutomataBox(inputBox,errors)
 
     inputBox.init(leftColumn, true)
     errors.init(leftColumn)
     graph.init(rightColumn,visible = true)
+    aut.init(rightColumn,visible = false)
     result.init(rightColumn,visible = true)
     descr.init(leftColumn)
     dsllib.init(leftColumn,visible = true)
     dsllibout.init(leftColumn)
     examples.init(leftColumn,visible = true)
 
+
     // default button
-    if (examples.loadButton("alt")) {
+    if (examples.loadButton("xor")) {
       reload()
     }
 
@@ -100,6 +104,7 @@ object NewDSL {
     inputBox.update()
     result.update()
     graph.update()
+    aut.update()
   }
 
 
