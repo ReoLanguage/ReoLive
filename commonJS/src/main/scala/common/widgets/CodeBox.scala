@@ -53,7 +53,8 @@ trait CodeBox
   private def buildCodeArea(txt: String) = {
     val codemirrorJS = scalajs.js.Dynamic.global.CodeMirror
     val lit = scalajs.js.Dynamic.literal(
-      lineNumbers = true, matchBrackets = true, theme = theme, id="strangeID"+boxId, mode=codemirror)
+      lineNumbers = true, matchBrackets = true, theme = theme,
+      tabMode="spaces",tabSize=2,id="strangeID"+boxId, mode=codemirror)
     code = codemirrorJS.fromTextArea(dom.document.getElementById(boxId),lit)
     code.setValue(txt)
   }

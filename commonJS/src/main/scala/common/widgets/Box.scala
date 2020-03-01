@@ -184,6 +184,8 @@ object Box {
         errorBox.error(s"Timeout$by: " + e.getMessage)
       case e: ifta.common.TimeoutException =>
         errorBox.error(s"Timeout$by: " + e.getMessage)
+      case e: dsl.common.TimeoutException =>
+        errorBox.error(s"Timeout$by: " + e.getMessage)
       case e: FExpOverflowException =>
         errorBox.error(s"Overflow$by: " + e.getMessage)
       case e: hub.common.ParseException =>
