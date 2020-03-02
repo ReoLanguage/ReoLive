@@ -83,8 +83,8 @@ object ARx {
 
 
     // default button
-    if (examples.loadButton("test")) {
-      reload()
+    if (examples.loadButton("alt")) {
+      softReload()
     }
 
   }
