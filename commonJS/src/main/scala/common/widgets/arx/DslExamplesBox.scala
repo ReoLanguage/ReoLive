@@ -69,6 +69,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
   protected val buttons: Seq[List[String]] = Seq(
 //    "test"::"x1<-fifofull(x2) x1\nx2<-    fifo(x1) x2"::Nil,
 //    "test2"::"x<-a x<-fifo(b) x"::Nil,
+    "test"::"data Nat = Zero | Succ(Nat)\ndata Unit = U\n\nsucc <- Zero\n//succ<-build(U,n)\nfifo(succ)\nsucc<-build(U,n)\n"::Nil,
     "alt"::
       """drain(a,b)
         |x<-a

@@ -83,7 +83,7 @@ object ARx {
 
 
     // default button
-    if (examples.loadButton("xor")) {
+    if (examples.loadButton("test")) {
       reload()
     }
 
