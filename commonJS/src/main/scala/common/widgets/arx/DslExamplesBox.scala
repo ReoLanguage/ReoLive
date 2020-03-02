@@ -68,7 +68,8 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     */
   protected val buttons: Seq[List[String]] = Seq(
 //    "test"::"x1<-fifofull(x2) x1\nx2<-    fifo(x1) x2"::Nil,
-//    "test2"::"x<-a x<-fifo(b) x"::Nil,
+//    "test"::"x<-a\nx<-fifo(b)\nx"::Nil,
+//    "test2"::"m<-a  m<-b fifo(m)"::Nil,
     "alt"::
       """drain(a,b)
         |x<-a
@@ -154,20 +155,17 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
       """data Nat = Zero | Succ(Nat)
         |data Unit = U
         |
-        |// counts ticks (to check)
-        |def counter(tick): Nat = {
-        |  drain(tick,n)
-        |  succ<-build(U,n) // build<Nat>
-        |  next<-fifo(succ)
-        |  iter<-fifofull(next) // filled with Zero
-        |  n,res<-xor(iter)
-        |  zero<-Zero
-        |  drain(res,zero)
-        |  succ<-zero
-        |  res
+        |def counter(tick):Nat = {
+        |  a,b<-xor(tick)
+        |  drain(a,c) drain(b,d)
+        |  o<-build(c,d)
+        |  o1<-fifo(o)
+        |  e<-fifofull0(o1)
+        |  c,d<-match(e)
+        |  o
         |}
-        |
-        |counter(a)""".stripMargin::
+        |counter(x)
+        |""".stripMargin::
       "Gets clicks, outputs number of clicks since last request."::Nil,
     "matches"::
       """data List<a> = Nil | Cons(a,List<a>)

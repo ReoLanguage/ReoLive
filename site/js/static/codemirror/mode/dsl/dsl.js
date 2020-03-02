@@ -207,7 +207,7 @@ CodeMirror.defineMode("dsl", function(_config, modeConfig) {
 
     setType("builtin")(
       "fifo","fifofull","lossy","timer","drain","id","sync","merger","vmerger","dupl","vdupl","exrouter",
-      "noSrc","noSnk",
+      "nowriter","noreader",
       "xor","xors",
       "node","ids","mergers","dupls","vdupls","vmergers","exrouters","loop","swap",
       "writer","reader","build","match"

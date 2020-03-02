@@ -85,7 +85,9 @@ class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]
         |merger:A*A->A
         |xor:A->A*A
         |writer:()->A
-        |reader:A->()""".stripMargin::
+        |reader:A->()
+        |nowriter:()->A
+        |noreader:A->()""".stripMargin::
       "Primitive Connectors"::Nil,
     "Conn.Math"::
       """import Types.{Nat,Unit}
