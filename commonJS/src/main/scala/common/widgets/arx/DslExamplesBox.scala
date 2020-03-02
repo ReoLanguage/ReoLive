@@ -155,20 +155,17 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
       """data Nat = Zero | Succ(Nat)
         |data Unit = U
         |
-        |// counts ticks (to check)
-        |def counter(tick): Nat = {
-        |  drain(tick,n)
-        |  succ<-build(U,n) // build<Nat>
-        |  next<-fifo(succ)
-        |  iter<-fifofull(next) // filled with Zero
-        |  n,res<-xor(iter)
-        |  zero<-Zero
-        |  drain(res,zero)
-        |  succ<-zero
-        |  res
+        |def counter(tick):Nat = {
+        |  a,b<-xor(tick)
+        |  drain(a,c) drain(b,d)
+        |  o<-build(c,d)
+        |  o1<-fifo(o)
+        |  e<-fifofull0(o1)
+        |  c,d<-match(e)
+        |  o
         |}
-        |
-        |counter(a)""".stripMargin::
+        |counter(x)
+        |""".stripMargin::
       "Gets clicks, outputs number of clicks since last request."::Nil,
     "matches"::
       """data List<a> = Nil | Cons(a,List<a>)
