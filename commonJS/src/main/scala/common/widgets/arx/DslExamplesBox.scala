@@ -156,13 +156,13 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |data Unit = U
         |
         |def counter(tick):Nat = {
-        |  a,b<-xor(tick)
-        |  drain(a,c) drain(b,d)
-        |  o<-build(c,d)
-        |  o1<-fifo(o)
-        |  e<-fifofull0(o1)
-        |  c,d<-match(e)
-        |  o
+        |  first,rest<-xor(tick)
+        |  drain(first,zero) drain(rest,more)
+        |  succ<-build(zero,more)
+        |  buff<-fifo(succ) 
+        |  next<-fifofull<Zero>(buff)
+        |  zero,more<-match(next)
+        |  succ
         |}
         |counter(x)
         |""".stripMargin::
@@ -179,7 +179,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |
         |def listmatch(y:List<a>) = {match(y)}
         |
-        |//def boolmatch(z:Bool) = {match(z)}
+        |def boolmatch(z:Bool) = {match(z)}
         |
         |natmatch(w)""".stripMargin::
       ""::Nil,
