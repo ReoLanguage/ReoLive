@@ -159,7 +159,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |  first,rest<-xor(tick)
         |  drain(first,zero) drain(rest,more)
         |  succ<-build(zero,more)
-        |  buff<-fifo(succ) 
+        |  buff<-fifo(succ)
         |  next<-fifofull<Zero>(buff)
         |  zero,more<-match(next)
         |  succ
