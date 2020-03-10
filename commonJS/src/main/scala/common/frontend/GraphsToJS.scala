@@ -220,6 +220,8 @@ object GraphsToJS {
                      return 'url(#boxfullmarkercircuit)'
                   } else if (d.type === "timer") {
                      return 'url(#timermarkercircuit)'
+                  } else if (d.type === "rid") {
+                     return 'url(#wavemarkercircuit)'
                   } else {
                    return ("");
                 }})
@@ -272,7 +274,7 @@ object GraphsToJS {
                 .attr("startOffset", "50%")
                 .text(function (d) {
                   if(d.type === "drain" || d.type === "lossy" || d.type === "merger" ||
-                     d.type === "sync" || d.type === "fifo" || d.type
+                     d.type === "sync" || d.type === "fifo" || d.type === "rid" || d.type
                      === "fifofull" || d.type === "timer" ||
                      d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw"""/^\d/.test(d.type)) {""" +s"""
                       return "";

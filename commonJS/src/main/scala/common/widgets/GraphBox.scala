@@ -261,6 +261,35 @@ object GraphBox {
       .attr("width","60")
       .attr("height","30")
 
+    val wave = svg.append("defs")
+      .append("marker")
+      .attr("id","wavemarker"+name)
+      .attr("viewBox","0 0 110 40")//"0 0 60 30")
+      .attr("refX","55")
+      .attr("refY","20")
+      .attr("markerUnits","strokeWidth")
+      .attr("markerWidth","18")
+      .attr("markerHeight","9")
+      .attr("stroke","black")
+      .attr("stroke-width","6")
+      .attr("fill","white")
+      .attr("orient","auto")
+      wave.append("rect")
+      .attr("x","5")
+      .attr("y","0")
+      .attr("width","100")
+      .attr("height","40")
+      .attr("stroke","white")
+      wave.append("svg:path")
+      .attr("d","M 0 20 A 50 100 0 0 1 55 20 A 50 100 0 0 0 110 20")
+//      .attr("d",
+//        """
+//          |M 0 15
+//          |Q 15 30 0 30
+//          |T 60 15""".stripMargin)
+      .attr("fill", "white")
+      .style("stroke","black")
+
     svg.append("defs")
       .append("marker")
       .attr("id","boxfullmarker"+name)
