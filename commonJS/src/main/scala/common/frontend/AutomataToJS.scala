@@ -113,7 +113,7 @@ object AutomataToJS {
                     }
                 });
 
-                // add invariants to timed automata nodes (ifta,hub)
+                // add invariants to timed automata nodes (ifta,hub) or state information to arx automata
                 var nodelabel = nd.append("text")
                   .style("font-size","6px")
                   .style("fill","#A742A8")
@@ -567,8 +567,9 @@ object AutomataToJS {
       val from = t.from.hashCode().toString
       val to = t.to.hashCode().toString
       val id = t.hashCode().toString
-    val res = Set(s"""{"id": "$from", "group": ${if (t.from==init) "0" else "1"} ,"inv":""}""",
-      s"""{"id": "$to", "group": ${if (t.to==init) "0" else "1"} ,"inv":""}""",
+      val fromSt = dsl.backend.Show(t.from)
+    val res = Set(s"""{"id": "$from", "group": ${if (t.from==init) "0" else "1"} ,"inv":"${dsl.backend.Show(t.from)}"}""",
+      s"""{"id": "$to", "group": ${if (t.to==init) "0" else "1"} ,"inv":"${dsl.backend.Show(t.to)}"}""",
       s"""{"id": "$from-1-$to-$id", "group": "2","inv":""}""",
       s"""{"id": "$to-2-$from-$id", "group": "2" ,"inv":""}""")
     println(res)

@@ -45,8 +45,10 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
 
     val primFuns= DSL.prelude.primitiveFunctionNames()
 
+    // filter out primitive functions and 1-1 undefined functions
     val functionsInfo:Map[String,(TExp,StreamBuilderEntry)] =
-      tctx.functions.filterNot(f=>primFuns.contains(f._1)).map(f=> f._1 -> (f._2.tExp,sbCtx(f._1)))
+      tctx.functions.filterNot(f=>primFuns.contains(f._1) || !sbCtx.contains(f._1))
+        .map(f=> f._1 -> (f._2.tExp,sbCtx(f._1)))
 
     for( (fun,(texp,(sb,inSeq,outSeq))) <- functionsInfo) {
 
