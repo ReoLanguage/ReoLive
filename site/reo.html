@@ -7,10 +7,10 @@
     <!-- <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'https://github.io'"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="Online Tools by the ARCA research group using JavaScript">
+    <meta name="description" content="Reo Online Tools by the ARCA research group using JavaScript">
     <meta name="author" content=""> 
 
-    <title>Online Tools by the ARCA research group</title>
+    <title>Reo Online Tools by the ARCA research group</title>
 
     <!-- icons -->
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -48,16 +48,16 @@
 
   <body class="full">
 
-  <div class="navbar navbar-arca"> <!-- navbar-fixed-top -->
+  <div class="navbar navbar-reo"> <!-- navbar-fixed-top -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#arcatools" data-toggle="tab" data-target="#arcatools" onclick='load_home("arcatools")'>
+      <a class="navbar-brand" href="#reo" data-toggle="tab" data-target="#reo" onclick='load_WS("reo")'>
         <!-- <img id="reolivelogo" src="....png" alt="ReoLive logo"> -->
-      ArcaTools
+      Reo
     </a>
     </div>
     <div class="navbar-collapse collapse navbar-responsive-collapse">
@@ -65,27 +65,17 @@
         <!--~~~~~~~~~~~~~~~~~
           CHANGE TABS HERE
         ~~~~~~~~~~~~~~~~~~-->
-        <li><a href="reo.html">Reo</a>
-        <li><a href="lince.html">Lince</a>
-        <li><a href="virtuoso.html">Hubs</a>
-
-        <!-- <li style="display: hidden;"><a href="#reo" data-toggle="tab" onclick='load_WS("reo")'>Reo</a> -->
-
         <!-- <li><a href="#families" data-toggle="tab" aria-expanded="true">Reo Families</a></li> -->
         <!-- <li><a href="#lince" data-toggle="tab" aria-expanded="false">Hybrid Programs</a></li> -->
         <!-- <li><a href="#about" data-toggle="tab" aria-expanded="false">About</a></li> -->
-        <!-- <li><a href="#reo" data-toggle="tab" onclick='load_WS("reo")'>Reo</a> -->
-        <!-- <li><a href="#reo" data-toggle="tab" onclick='load_WS("reo")'>Reo</a> -->
-        <!-- <li><a href="#lwReo" data-toggle="tab" onclick='load_home("lwReo")'>LW Reo</a> -->
-        <!-- <li style="display:none;"><a href="#reo2" data-toggle="tab" onclick='load_WS("reo2")'>Online Reo2</a> -->
-        <!-- <li><a href="#lince" data-toggle="tab" onclick='load_WS("lince")'>Lince</a> -->
-        <!-- <li><a href="#lwLince" data-toggle="tab" onclick='load_home("lwLince")'>LW Lince</a> -->
-        <!-- <li><a href="#virtuoso" data-toggle="tab" onclick='load_home("virtuoso")'>LW VirtuosoNext</a> -->
-        <!-- <li><a href="#hubs" data-toggle="tab" onclick='load_WS("hubs")'>VirtuosoNext</a> -->
-        <!-- <li><a href="#treo" data-toggle="tab" onclick='load_WS("treo")'>Treo</a> -->
-        <!-- <li><a href="#arx" data-toggle="tab" onclick='load_home("arx")'>ARx</a> -->
+        <li><a href="#reo" data-toggle="tab" onclick='load_WS("reo")'>Preo</a>
+        <li><a href="#lwReo" data-toggle="tab" onclick='load_home("lwReo")'>LW Preo</a>
+        <li style="display:none;"><a href="#reo2" data-toggle="tab" onclick='load_WS("reo2")'>Online Reo2</a>
+        <li><a href="#treo" data-toggle="tab" onclick='load_WS("treo")'>Treo</a>
+        <li><a href="#arx" data-toggle="tab" onclick='load_home("arx")'>ARx</a>
         <!-- <li><a href="#arcatools" data-toggle="tab" onclick='load_home("arcatools")'>HomeTest</a> -->
-        <li style="display: none;"><a href="#about" data-toggle="tab" onclick='load_home("about")'>About</a></li>
+        <!-- <li style="display: none;"><a href="#about" data-toggle="tab" onclick='load_home("about")'>About</a></li> -->
+        <li><a href="index.html">Back to ArcaTools</a>
         <!--~~~~~~~~~~~~~~-->
 
       </ul>
@@ -102,7 +92,7 @@
 
   <div class="panel-footer" id="wrapper-footer">
     <div id="footer">
-      Copyright 2017-2019 – <a href="http://arca.di.uminho.pt">ARCA.di.uminho.pt</a>
+      Copyright 2017-2020 – <a href="http://arca.di.uminho.pt">ARCA.di.uminho.pt</a>
     </div>
   </div>
 
@@ -117,17 +107,12 @@
       // ACTIVATING TABS BASED ON URL
       ////////////////////
       $(function () {
-      /////////////////
-        switch(location.hash) {
-          case "#reo":
-            window.location.replace("reo.html"); break;
-          case "#lince":
-            window.location.replace("lince.html"); break;
-          case "#arx":
-            window.location.replace("reo.html#arx"); break;
-          default:
-            load_home("arcatools");
-        }
+       var lhash = location.hash;
+       if (lhash=="") { lhash = "#reo";}
+       var activeTab = $('[href=' + lhash + ']');
+    //    activeTab && activeTab.tab('show');
+       activeTab.tab('show');
+       activeTab.click();
       });
 
   </script>

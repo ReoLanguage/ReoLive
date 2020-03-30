@@ -103,6 +103,8 @@ object WebReo extends{
     mcrl2Box.init(rightside,visible = false)
     mcrl2IftaBox.init(rightside,visible = false)
 
+    common.Utils.moreInfo(rightside,"https://github.com/ReoLanguage/Preo")
+
     // default button
     if (args.isEmpty && !buttonsDiv.loadButton("dupl;lossy*fifo")) {
       reload()
