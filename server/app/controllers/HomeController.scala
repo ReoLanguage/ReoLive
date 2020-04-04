@@ -24,6 +24,18 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Found("/assets/index.html")
   }
 
+  def reo = Action {
+    Found("/assets/reo.html")
+  }
+
+  def lince = Action {
+    Found("/assets/lince.html")
+  }
+
+  def hubs = Action {
+    Found("/assets/virtuoso.html")
+  }
+
 //  def about = Action {
 //    Ok(views.html.about())
 //  }

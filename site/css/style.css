@@ -103,9 +103,14 @@
     color: white;
 }
 .navbar-nav>li>a:hover, .navbar-nav>li>a:focus { /*hovered items insections*/
+    font-weight: bold;
+    background-color: initial;
+    text-decoration: underline;
+}
+.navbar-nav-tools>li>a:hover, .navbar-nav>li>a:focus { /*hovered items insections*/
     color: #36569c;
     background-color: #cadcf3;
-    font-weight: bold;
+    text-decoration: none;
 }
 /*a:focus, a:hover {
     color: red;
