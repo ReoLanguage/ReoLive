@@ -17,9 +17,8 @@ object VirtuosoParser {
 
 trait VirtuosoParser extends preo.lang.Parser {
 
-  override def preo: Parser[Connector] =
-    prog ^^ {p => TreoLite.treoASTToTreo(p,inferPrim)}
-
+//  override def preo: Parser[Connector] = treo
+//    prog(trConnsEmpty) ^^ {p => TreoLite.treoASTToTreo(p,inferPrim)}
 
   override def inferPrim(s: String): Connector = s match {
     case "dupl"     => Prim("dupl",1,2)
