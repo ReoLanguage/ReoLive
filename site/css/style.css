@@ -99,7 +99,7 @@
 .navbar-brand:focus { /*brand name (arcatools)*/
     color: white;
 }
-.navbar-nav>li>a { /*items in sections*/
+.navbar-nav>li>a, .navbar-nav>li>ul>li>a { /*items in sections*/
     color: white;
 }
 .navbar-nav>li>a:hover, .navbar-nav>li>a:focus { /*hovered items insections*/
