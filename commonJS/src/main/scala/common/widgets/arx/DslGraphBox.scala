@@ -18,6 +18,7 @@ extends GraphBox(null, errorBox, path, "Circuit of the program"){
     super.init(div,visible)
   }
   override def drawGraph(): Unit = try{
+    clear()
     val program = programBox.get
     //println(s"[prog] - Drawing graph - $program")
     val (typedProgram,_) = typeCheck(program)
@@ -47,6 +48,9 @@ extends GraphBox(null, errorBox, path, "Circuit of the program"){
   }
   catch Box.checkExceptions(errorBox)
 
+  protected def clear(): Unit = {
+    box.selectAll("g").html("")
+  }
 
   /** For each connector c:ins->outs, replace boundary interfaces with nodes  */
   private def addNodes(net:Net,newseed:Option[IPort]=None): (Net,IPort) = {

@@ -122,6 +122,8 @@ object RemoteReo extends{
     uppaalAut.init(rightside,visible = false)
     uppaalNet.init(rightside,visible = false)
 
+    common.Utils.moreInfo(rightside,"https://github.com/ReoLanguage/Preo")
+
     // default button
     if (args.isEmpty && buttonsDiv.loadButton("dupl;lossy*fifo")) {
       //println("args: " + args.mkString("-"))

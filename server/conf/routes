@@ -6,19 +6,27 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
-# GET     /about                      controllers.HomeController.about
+GET     /reo                        controllers.HomeController.reo
 
-# GET     /remote                     controllers.HomeController.remote
+GET     /lince                      controllers.HomeController.lince
 
-GET     /reo                  controllers.HomeController.onlineReo
+GET     /hubs                       controllers.HomeController.hubs
 
-GET     /reo2                  controllers.HomeController.onlineReo2
+# GET     /                         controllers.Assets.versioned(path="/public", file="index.html")
 
-GET     /lince                      controllers.HomeController.onlineLince
+# GET     /about                    controllers.HomeController.about
 
-GET     /treo                      controllers.HomeController.onlineTreo
+# GET     /remote                   controllers.HomeController.remote
 
-GET     /hubs                  controllers.HomeController.onlineVirtuoso
+GET     /preo                       controllers.HomeController.onlineReo
+
+GET     /preo2                      controllers.HomeController.onlineReo2
+
+GET     /fulllince                  controllers.HomeController.onlineLince
+
+GET     /treo                       controllers.HomeController.onlineTreo
+
+GET     /fullhubs                   controllers.HomeController.onlineVirtuoso
 
 
 # Map static resources from the /public folder to the /assets URL path

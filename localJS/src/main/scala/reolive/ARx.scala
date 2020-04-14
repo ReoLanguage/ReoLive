@@ -82,6 +82,8 @@ object ARx {
     examples.init(leftColumn,visible = true)
 
 
+    common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/arx")
+
     // default button
     if (examples.loadButton("alt")) {
       softReload()

@@ -87,6 +87,8 @@ object RemoteTreo {
     //    typeInfo.init(colDiv1,true)
 
 
+    common.Utils.moreInfo(rightColumn,"https://github.com/ReoLanguage/Reo")
+
     // load default button
     if (!examples.loadButton("Alternator")) {
       reload()

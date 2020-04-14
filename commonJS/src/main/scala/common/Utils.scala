@@ -6,6 +6,8 @@ import java.util.Base64
 import common.widgets.OutputArea
 import org.scalajs.dom
 import org.scalajs.dom.XMLHttpRequest
+import org.scalajs.dom.EventTarget
+import org.singlespaced.d3js.Selection
 
 object Utils {
 
@@ -82,5 +84,21 @@ object Utils {
     codemirrorJS.fromTextArea(dom.document.getElementById(textAreaId),lit)
   }
 
+
+ def moreInfo(block: Selection[dom.EventTarget],ref: String): Unit = {
+    val more = block.append("div")
+        .attr("class","panel-group")
+        .append("p")
+    more
+      .style("font-size","larger")
+      .style("text-align","center")
+      .style("padding-top","18px")
+    more
+      .text("More information on the project: ")
+      .append("a")
+        .attr("href",ref)
+        .attr("target","#")
+        .text(ref)
+ }
 
 }

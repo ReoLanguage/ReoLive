@@ -102,6 +102,8 @@ object RemoteVirtuoso extends {
     verifytaOut.init(leftColumn)
     verifytaError.init(leftColumn)
 
+    common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/hubAutomata")
+
 //    reload()
     // load default button
     if (!examples.loadButton("Port")) {

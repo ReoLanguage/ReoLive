@@ -77,19 +77,22 @@ object RemoteLince {
       graphic.init(rightColumn, visible = true)
       eval.init(rightColumn,visible = false)
 
-      val moreInfo = rightColumn.append("div")
-        .attr("class","panel-group")
-        .append("p")
-      moreInfo
-        .style("font-size","larger")
-        .style("text-align","center")
-        .style("padding-top","18px")
-      moreInfo
-        .text("More information on the project: ")
-        .append("a")
-          .attr("href","https://github.com/arcalab/lince")
-          .attr("target","#")
-          .text("https://github.com/arcalab/lince")
+
+      // val moreInfo = rightColumn.append("div")
+      //   .attr("class","panel-group")
+      //   .append("p")
+      // moreInfo
+      //   .style("font-size","larger")
+      //   .style("text-align","center")
+      //   .style("padding-top","18px")
+      // moreInfo
+      //   .text("More information on the project: ")
+      //   .append("a")
+      //     .attr("href","https://github.com/arcalab/lince")
+      //     .attr("target","#")
+      //     .text("https://github.com/arcalab/lince")
+
+      common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/lince")
 
 
       // load default button

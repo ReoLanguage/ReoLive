@@ -54,8 +54,43 @@
     border-radius: 0px; 
     border: 0px;
 }
+
+.navbar-reo {
+    background-image: -webkit-linear-gradient(top,#00abca 0,#004764 100%);
+    background-image: -o-linear-gradient(top,#00abca 0,#004764 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#00abca),to(#004764));
+    background-image: linear-gradient(to bottom,#00abca 0,#004764 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36569c', endColorstr='#ff182b53', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    border-radius: 0px; 
+    border: 0px;
+}
+
+.navbar-lince {
+    background-image: -webkit-linear-gradient(top,#d97e00 0,#724300 100%);
+    background-image: -o-linear-gradient(top,#d97e00 0,#724300 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#d97e00),to(#724300));
+    background-image: linear-gradient(to bottom,#d97e00 0,#724300 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36569c', endColorstr='#ff182b53', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    border-radius: 0px; 
+    border: 0px;
+}
+
+.navbar-hubs {
+    background-image: -webkit-linear-gradient(top,#5a6078 0,#263145 100%);
+    background-image: -o-linear-gradient(top,#5a6078 0,#263145 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#5a6078),to(#263145));
+    background-image: linear-gradient(to bottom,#5a6078 0,#263145 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36569c', endColorstr='#ff182b53', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    border-radius: 0px; 
+    border: 0px;
+}
+
 .navbar-brand { /*brand name (arcatools)*/
     color: white;
+    font-style: italic;
 }
 .navbar-brand:hover { /*brand name (arcatools)*/
     color: white;
@@ -64,13 +99,18 @@
 .navbar-brand:focus { /*brand name (arcatools)*/
     color: white;
 }
-.navbar-nav>li>a { /*items in sections*/
+.navbar-nav>li>a, .navbar-nav>li>ul>li>a { /*items in sections*/
     color: white;
 }
 .navbar-nav>li>a:hover, .navbar-nav>li>a:focus { /*hovered items insections*/
+    font-weight: bold;
+    background-color: initial;
+    text-decoration: underline;
+}
+.navbar-nav-tools>li>a:hover, .navbar-nav>li>a:focus { /*hovered items insections*/
     color: #36569c;
     background-color: #cadcf3;
-    font-weight: bold;
+    text-decoration: none;
 }
 /*a:focus, a:hover {
     color: red;
