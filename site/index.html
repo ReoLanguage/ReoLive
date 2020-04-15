@@ -118,15 +118,18 @@
       ////////////////////
       $(function () {
       /////////////////
+        // direct links
         switch(location.hash) {
-          case "#reo":
-            window.location.replace("reo.html"); break;
-          case "#lince":
-            window.location.replace("lince.html"); break;
-          case "#arx":
-            window.location.replace("reo.html#arx"); break;
-          default:
-            load_home("arcatools");
+          case "#reo":   window.location.replace("reo.html"); break;
+          case "#preo":  window.location.replace("reo.html"); break;
+          case "#preo2":  window.location.replace("reo.html#preo2"); break;
+          case "#treo":  window.location.replace("reo.html#treo"); break;
+          case "#arx":   window.location.replace("reo.html#arx"); break;
+          case "#hubs":  window.location.replace("hubs.html"); break;
+          case "#virtuoso":  window.location.replace("hubs.html"); break;
+          case "#lwhubs":window.location.replace("hubs.html#lwHubs");break;
+          case "#lince": window.location.replace("lince.html"); break;
+          default: load_home("arcatools");
         }
       });
 
