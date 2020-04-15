@@ -33,7 +33,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def hubs = Action {
-    Found("/assets/virtuoso.html")
+    Found("/assets/hubs.html")
   }
 
 //  def about = Action {
