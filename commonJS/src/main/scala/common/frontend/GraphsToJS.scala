@@ -10,13 +10,13 @@ import scala.reflect.ClassTag
 //todo: add rectangle colision colision
 object GraphsToJS {
   def apply(graph: Circuit): String = {
-    val mark = "gr"//graph.hashCode()
-    generateJS(getNodes(graph,mark), getLinks(graph,mark))
+    val mark = "gr" //graph.hashCode()
+    generateJS(getNodes(graph, mark), getLinks(graph, mark))
   }
 
-  def toVirtuosoJs(graph:Circuit):String = {
+  def toVirtuosoJs(graph: Circuit): String = {
     val mark = "gr" //graph.hashCode()
-    generateJS(getNodes(graph,mark,virtuoso=true), getLinks(graph,mark))
+    generateJS(getNodes(graph, mark, virtuoso = true), getLinks(graph, mark))
   }
 
   private def generateJS(nodes: String, edges: String): String = {
@@ -184,9 +184,9 @@ object GraphsToJS {
 //                 return (d.group >=6 && d.group <= 12 );
                 return (d.group == "mrg" || d.group == "dupl" || d.group == "xor" || d.group == "semaphore" ||
                         d.group == "fifo" || d.group =="resource" || d.group == "event" || d.group == "blackboard"
-                        || d.group == "dataEvent" || d.group == "drain" || d.group == "port"
-                        || d.group == "eventFull" || d.group == "dataEventFull" || d.group == "fifoFull"
-                        || d.group == "blackboardFull" || d.group == "await" || d.group == "timeout");
+       || d.group == "dataEvent" || d.group == "drain" || d.group == "port"
+       || d.group == "eventFull" || d.group == "dataEventFull" || d.group == "fifoFull"
+       || d.group == "blackboardFull" || d.group == "await" || d.group == "timeout");
               }));
             var hub = hubs.enter();
             var rg = hub.append("g").attr("class","hub");
@@ -276,7 +276,9 @@ object GraphsToJS {
                   if(d.type === "drain" || d.type === "lossy" || d.type === "merger" ||
                      d.type === "sync" || d.type === "fifo" || d.type === "rid" || d.type
                      === "fifofull" || d.type === "timer" ||
-                     d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw"""/^\d/.test(d.type)) {""" +s"""
+                     d.type.startsWith("NW ") || d.type.startsWith("W ") ||""" +
+      raw"""/^\d/.test(d.type)) {""" +
+      s"""
                       return "";
                   }else {
                     return d.type;
@@ -287,7 +289,9 @@ object GraphsToJS {
                     .style("fill","#3B01E9")
                     .style("font-size", "8px")
                     .text(function (d) {
-                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
+                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||""" +
+      raw""" /^\d/.test(d.type)) {""" +
+      s"""
                         return d.type.split(" ")[0]+" "
                       } else return  ""
                     });
@@ -295,7 +299,9 @@ object GraphsToJS {
                     .attr("class", "port-name")
                     .style("font-size", "8px")
                     .text(function (d) {
-                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||"""+raw""" /^\d/.test(d.type)) {""" +s"""
+                      if (d.type.startsWith("NW ") || d.type.startsWith("W ") ||""" +
+      raw""" /^\d/.test(d.type)) {""" +
+      s"""
                         return d.type.split(" ")[1];
                       } else return  ""
                     });
@@ -405,19 +411,19 @@ object GraphsToJS {
   }
 
 
-  private def getNodes(graph: Circuit, mark:String, virtuoso:Boolean = false): String =
+  private def getNodes(graph: Circuit, mark: String, virtuoso: Boolean = false): String =
     graph.nodes.map(processNode(_, mark, virtuoso)).mkString("[", ",", "]")
 
 
-  private def getLinks(graph: Circuit, mark:String): String =
-    graph.edges.map(processEdge(_,mark)).mkString("[",",","]")
+  private def getLinks(graph: Circuit, mark: String): String =
+    graph.edges.map(processEdge(_, mark)).mkString("[", ",", "]")
 
 
-  private def processNode(node:ReoNode,mark:String,virtuoso:Boolean = false):String = node match {
-    case ReoNode(id, name, nodeType, extra,ports) => {
-      val nodeGroup = typeToGroup(nodeType, extra,virtuoso);
-//      val ports:Set[Int] = Set()
-      s"""{"id": "${mark}_$id", "group": "$nodeGroup", "name": "${name.getOrElse("")}", "ports" : ${ports.map(p => s""""${p.toString}"""").mkString("[",",","]")} }"""
+  private def processNode(node: ReoNode, mark: String, virtuoso: Boolean = false): String = node match {
+    case ReoNode(id, name, nodeType, extra, ports) => {
+      val nodeGroup = typeToGroup(nodeType, extra, virtuoso);
+      //      val ports:Set[Int] = Set()
+      s"""{"id": "${mark}_$id", "group": "$nodeGroup", "name": "${name.getOrElse("")}", "ports" : ${ports.map(p => s""""${p.toString}"""").mkString("[", ",", "]")} }"""
     }
   }
 
@@ -436,27 +442,29 @@ object GraphsToJS {
     *  - 10: Port
     *  - 11: Resource
     *  - 12: Semaphore
+    *
     * @param nodeType if it is source, sink, or mixed type
-    * @param extra optional field that may contain "component"
+    * @param extra    optional field that may contain "component"
     * @return
     */
-  private def typeToGroup(nodeType: NodeType, extra: Set[Any],virtuoso:Boolean=false):String = nodeType match{
-    case Source => if (extra.contains("component")) "wr"  else "src"
-    case Sink   => if (extra.contains("component")) "rd"  else "snk"
-    case Mixed  =>
+  private def typeToGroup(nodeType: NodeType, extra: Set[Any], virtuoso: Boolean = false): String = nodeType match {
+    case Source => if (extra.contains("component")) "wr" else "src"
+    case Sink => if (extra.contains("component")) "rd" else "snk"
+    case Mixed =>
       if (extra.contains("box"))
         "box"
       else if (virtuoso) {
         //(extra - "mrg").headOption.getOrElse("xor").toString
-        val hub = extra.filter(e=>e.isInstanceOf[String]).asInstanceOf[Set[String]].find(e=> (DSL.hubs++DSL.primitiveConnectors-"mrg").contains(e))
+        val hub = extra.filter(e => e.isInstanceOf[String]).asInstanceOf[Set[String]].find(e => (DSL.hubs ++ DSL.primitiveConnectors - "mrg").contains(e))
         if (hub.isDefined) hub.get else "xor"
       }
       else if (extra.contains("xor"))
         "xrouter"
       else
         "mix"
-      // todo: probably "xor" should be "port", now just to show a P instead of a mixed node
+    // todo: probably "xor" should be "port", now just to show a P instead of a mixed node
   }
+
 
   private def processEdge(channel: ReoChannel,mark:String): String = channel match{
     case ReoChannel(src,trg, srcType, trgType, name, style) => {
