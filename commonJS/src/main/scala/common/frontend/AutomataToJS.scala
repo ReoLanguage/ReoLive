@@ -572,7 +572,6 @@ object AutomataToJS {
       s"""{"id": "$to", "group": ${if (t.to==init) "0" else "1"} ,"inv":"${dsl.backend.Show(t.to)}"}""",
       s"""{"id": "$from-1-$to-$id", "group": "2","inv":""}""",
       s"""{"id": "$to-2-$from-$id", "group": "2" ,"inv":""}""")
-    println(res)
     res
   }
   private def getLinks(aut:SBAutomata,name:String) = {
