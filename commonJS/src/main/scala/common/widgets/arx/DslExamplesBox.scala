@@ -186,17 +186,15 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
     "display"::
       """import Types.{Bool,Unit}
         |
-        |def display(showMouse:Bool,mouseCoord,time) = {
-        |  last <~ showMouse
+        |def gui(sel:Bool,mouse,time) = {
+        |  last <~ sel
         |  t,f <- match(last)
-        |  drain(t,mouseCoord)
-        |  drain(f,time)
-        |  toDisplay <- mouseCoord
-        |  toDisplay <- time
-        |  toDisplay
+        |  drain(t,mouse) display <- mouse
+        |  drain(f,time)  display <- time
+        |  display
         |}
         |
-        |display(sm,mc,t)
+        |gui(sm,mc,t)
       """.stripMargin::""::Nil
     ///////////////////
 //    "fix"::
