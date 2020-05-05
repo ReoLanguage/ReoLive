@@ -14,7 +14,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       "//minimum number of context switches\n//to read twice \n " +
       "out^2".stripMargin::
       """// always executing in or nothing else executes
-        |A[] doing in or nothing
+        |A[] in.doing or nothing
         |// out fires at the same time as in
         |A[] in imply out
         |// Is it possible to fire in and not out?
@@ -35,7 +35,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       :: "dupl"
       ::"//minimum number of context switches\n//to write once\n" + "in"::
       """A[] out1 imply out2
-        | doing in --> out1 and out2
+        |in.doing --> out1 and out2
       """.stripMargin::Nil,
     "Semaphore"
       ::("<p><strong>Semaphore</strong></p>"+
@@ -86,14 +86,14 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       """// after doing in
         |// and before doing any other action,
         |// clock cl cannot grow beyond 5
-        |A[] doing in imply cl <= 5
+        |A[] in.doing imply cl <= 5
         |// For every in, out fires (before in again)
         |every in --> out
         |// every in, out executes
         |// and it waits at least 5 to do it
         |every in --> out after 5
         |// out waits at least 5 before refiring
-        |A[] out waits atLeast 5""".stripMargin :: Nil,
+        |A[] out refiresAfterOrAt 5""".stripMargin :: Nil,
         //|// For every in, out fires (before in again)
         //|in --> not(in) until out
     "Blackboard"
@@ -232,7 +232,7 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
       |// finishing a previous round.
       |A[] s2 imply (p2.t >= 2) or not(p2.done)
       |// maximum time before repeating s2
-      |A[] s2 waits atMost 9""".stripMargin::Nil,
+      |A[] s2 refiresBeforeOrAt 9""".stripMargin::Nil,
 
       // |E<> p2 and get
       // |// Task 1 can start only if

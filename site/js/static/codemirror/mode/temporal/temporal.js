@@ -193,16 +193,16 @@ CodeMirror.defineMode("temporal", function(_config, modeConfig) {
     }
 
     setType("keyword")( // where, ...
-      "atLeast","atMost","moreThan","lessThan","nothing","deadlock","[","]","<",">");
+      "refiresAfter","refiresAfterOrAt","refiresBefore","refiresBeforeOrAt","nothing","deadlock","[","]","<",">");
 
     setType("keyword")(
-     "t","done", "-->","=",">=","<=","<",">","==");
+     "t","done","doing", "-->","=",">=","<=","<",">","==");
 
     setType("builtin")( // types and constructors
       );
 
     setType("builtin")(
-      "waits","every","after","doing","not","or","and","imply","A","E"
+      "every","after","not","or","and","imply","A","E"
       );
 
     var override = modeConfig.overrideKeywords;
