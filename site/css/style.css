@@ -290,6 +290,11 @@ button {
 }
 
 
+.temporal-formula {
+    background-color: rgb(230, 230, 230);
+}
+
+
 /* FOR SMALLER SCREENS */
 @media (max-width: 750px) {
   .rightside{
