@@ -1,5 +1,6 @@
 package common.widgets
 
+import common.widgets.Box.Block
 import hprog.frontend.solver.LiveSageSolver
 import hub.common.ParseException
 import ifta.common.FExpOverflowException
@@ -7,6 +8,7 @@ import org.scalajs.dom
 import org.scalajs.dom.{EventTarget, MouseEvent, html}
 import org.singlespaced.d3js.Selection
 import preo.common.TypeCheckException
+
 import scala.scalajs.js.{JavaScriptException, UndefOr}
 
 
@@ -90,8 +92,12 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
 //        val svg = button.append("img")
 //          .attr("src","assets/content/svg/cloud_download.svg")
 //          .style("width","15pt")
-              case Right("refresh") =>
+      case Right("refresh") =>
         button.append("span").attr("class", "glyphicon glyphicon-refresh")
+      case Right("help") =>
+        button.append("img")
+          .attr("src","svg/help.svg")
+          .style("margin","-2pt -2pt 0pt -2pt")
       case Right("oldDownload") => drawButton(button,Left("&dArr;"))
       case Right(s) => drawButton(button,Left(s))
     }

@@ -1,12 +1,9 @@
 package common.widgets.virtuoso
 
-import java.util.Base64
-
 import common.widgets._
-import hub.{DSL, HubAutomata, Utils}
-import hub.analyse.{TemporalFormula, UppaalFormula}
+import hub.{DSL, HubAutomata}
+import hub.analyse.TemporalFormula
 import hub.backend._
-import org.scalajs.dom.XMLHttpRequest
 import preo.ast.CoreConnector
 import preo.backend.Automata
 
@@ -22,8 +19,12 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, errorB
   override protected val boxId: String = "temporalInputArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("refresh") -> (() => reload, "Load the logical formula (shift-enter)")//,
-//      Left("&dArr;")-> (()=>expandAnddownload(), "Download query in temporal logic for Uppaal")
+      Right("refresh") -> (() =>
+        reload(),
+        "Load the logical formula (shift-enter)"),
+      Right("help") -> (()=>
+        common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#temporal-logic"),
+        "See documentation for this widget")
     )
 
   override protected val codemirror: String = "temporal"

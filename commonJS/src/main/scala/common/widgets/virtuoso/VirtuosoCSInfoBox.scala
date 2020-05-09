@@ -36,10 +36,12 @@ class VirtuosoCSInfoBox(connector:Box[CoreConnector], errorBox: OutputArea)
 //      .attr("id", "csInfoBox")
     csInfo = panelBox(div,visible,
       buttons = List(
-        Right("refresh") -> (() => update(), "Estimate minimum number of context switches for a sequence of actions (Shift-enter)")
+        Right("refresh") -> (() =>
+          update(), "Estimate minimum number of context switches for a sequence of actions (Shift-enter)"),
+        Right("help") -> (()=>
+          common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#context-switch-analysis"),
+          "See documentation for this widget")
       ))
-      //.append("div")
-      //.attr("id", "csInfoBox")
 
     toggleVisibility(visible = ()=>{update()})
 

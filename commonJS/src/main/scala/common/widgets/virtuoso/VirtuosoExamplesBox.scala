@@ -5,6 +5,22 @@ import common.widgets.{ButtonsBox, Setable}
 class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Setable[String],csBox:Setable[String],logicBox:Setable[String])
   extends ButtonsBox(reload, List(msgBox, inputBox,csBox,logicBox)){
 
+  override def init(div: Block, visible: Boolean): Unit = {
+      val buttonsDiv = super.panelBox(div,visible,
+        buttons = List(
+          Right("help") -> (() =>
+            common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#examples-widget"),
+            "See documentation for this widget"))
+        ).append("div")
+        .attr("id", "buttons")
+        .attr("style","padding: 2pt;")
+
+      buttonsDiv
+        .style("display:block; padding:2pt")
+
+      for (ops <- buttons ) yield genButton(ops,buttonsDiv)
+  }
+
   override protected val buttons: Seq[List[String]] = Seq(
     "Port"::("<p><strong>Port Hub</strong></p>Forwards data from its source to its sink, acting" +
       " as a synchronisation mechanism between two tasks."  +
@@ -121,58 +137,6 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |   event(a,b) event(c,d) eventFull(e,f)
           |   dupl(b,c,x) dupl(d,e,y) dupl(f,a,z)
           |}""".stripMargin::Nil,
-//  "RoundRobin tasks"
-//    ::"Round robin between 2 tasks, sending to an actuator. Tasks are not modelled - only the coordinator."
-//    :: """s1 * p1 * s2 * p2;
-//        |coord;
-//        |get
-//        |{
-//        |  dupl3(a?,b!,c!,d!) =
-//        |    dupl(a,b,a2)
-//        |    dupl(a2,c,d)
-//        |  ,
-//        |  coord(s1?,p1?,s2?,p2?,get!) =
-//        |    dupl3(p1,d11,d12,d13)
-//        |    dupl3(p2,d21,d22,d23)
-//        |    drain(s1,d21) drain(s2,d11)
-//        |    drain(d12,d42) drain(d22,d32)
-//        |    dupl(e1,d41,d42) dupl(e2,d32,d31)
-//        |    event(d31,e1) eventFull(d41,e2)
-//        |    merger(d13,d23,get)
-//        |}
-//      """.stripMargin::
-//      "//minimum number of context switches\n//to read twice \n " +
-//      "get^2"::
-//      """// always get fires or no other action does it
-//        |A[] doing get or nothing
-//        |// p1 and p2 never execute together
-//        |A[] not (doing p1 and doing p2)
-//        |// For every p1, p2 fires before p1 fires again
-//        |every p1 --> p2""".stripMargin
-//        ::Nil,
-//  "RoundRobin tasks - with components"
-//    ::"Round robin between 2 tasks, sending to an actuator. Tasks are modelled as components always ready to interact."
-//    :: """t1 * t2;
-//          |coord;
-//          |act
-//          |{
-//          |  dupl3(a?,b!,c!,d!) =
-//          |    dupl(a,b,a2)
-//          |    dupl(a2,c,d)
-//          |  ,
-//          |  coord(s1?,p1?,s2?,p2?,get!) =
-//          |    dupl3(p1,d11,d12,d13)
-//          |    dupl3(p2,d21,d22,d23)
-//          |    drain(s1,d21) drain(s2,d11)
-//          |    drain(d12,d42) drain(d22,d32)
-//          |    dupl(e1,d41,d42) dupl(e2,d32,d31)
-//          |    event(d31,e1) eventFull(d41,e2)
-//          |    merger(d13,d23,get),
-//          |  [hide] t1 = writer*writer,
-//          |  [hide] t2 = writer*writer,
-//          |  [hide] act = reader
-//          |}
-//        """.stripMargin::Nil,
     "Tasks in sequence (in paper)"
       ::"Two tasks executing in sequence, publishing data to an actuator task."
       ::"""mainW // try different scenarios
@@ -219,27 +183,21 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |    task<act>(W get?)
           |    seq(s1,p1,s2,p2,get)
           |}""".stripMargin
-      ::""::
-      """// Task 2 can send data to the actuator
-      |A[] s1 imply ((p1.t>=p2.t) and (s2.t>=p2.t))
-      |// Task 2 can always start
-      |A<> s2
-      |// If start1 fires, start2 must eventually fire
-      |s1 -->  s2
-      |// Evertime start1 fires, start2 must fire (after >2)
-      |every s1 --> s2 after 2
-      |// Task 2 can only start 4 time units after
-      |// finishing a previous round.
-      |A[] s2 imply (p2.t >= 2) or not(p2.done)
-      |// maximum time before repeating s2
-      |A[] s2 refiresBeforeOrAt 9""".stripMargin::Nil,
-
-      // |E<> p2 and get
-      // |// Task 1 can start only if
-      // |//    Task 2 was the last one to run, and
-      // |//    when Task 2 is not running.
-
-      "2 tasks and semaphores"
+      ::""
+      ::"""// Task 2 can send data to the actuator
+        |A[] s1 imply ((p1.t>=p2.t) and (s2.t>=p2.t))
+        |// Task 2 can always start
+        |A<> s2
+        |// If start1 fires, start2 must eventually fire
+        |s1 -->  s2
+        |// Evertime start1 fires, start2 must fire (after >2)
+        |every s1 --> s2 after 2
+        |// Task 2 can only start 4 time units after
+        |// finishing a previous round.
+        |A[] s2 imply (p2.t >= 2) or not(p2.done)
+        |// maximum time before repeating s2
+        |A[] s2 refiresBeforeOrAt 9""".stripMargin::Nil,
+    "2 tasks and semaphores"
       ::"Round robin between 2 tasks, without an actuator."
       ::"""rr1 {
           | rr1() =
@@ -254,62 +212,6 @@ class VirtuosoExamplesBox(reload: => Unit, inputBox: Setable[String],msgBox:Seta
           |   semaphore(pb,tb) semaphore(pa,ta)
           |   merger(p1,p2,get)
           |}""".stripMargin::Nil,
-//    "Simpler RoundRobin - with tasks"
-//      ::"Round robin between 2 tasks, without an actuator."
-//      ::"""rr {
-//          | rr() =
-//          |   task<tk1>(W r1?,W w1!)
-//          |   task<tk2>(W r2?,W w2!)
-//          |   semaphore(w1,r2) semaphore(w2,r1)
-//          |}""".stripMargin::Nil,
-//    "Tasks (preo)"
-//      ::"Examples of task using preo syntax."
-//      ::"""t1 {
-//          | t1 = task(NW!),
-//          | t2 = task(NW?),
-//          | t3 = task(W!),
-//          | t4 = task(W?),
-//          | t5 = task(5!),
-//          | t6 = task(10?),
-//          | t7 = task(NW!,W?,5!)
-//          |}""".stripMargin::Nil
-//      """// Round robin between 2 tasks, sending to an actuator
-//        |t1 * t2;
-//        |coord;
-//        |act
-//        |{
-//        |  coord(s1?,p1?,s2?,p2?,get!) =
-//        |    drain(s1,p2) drain(s2,p1)
-//        |    drain(p1,f1) drain(p2,f2)
-//        |    sync(p1,get) sync(p2,get)
-//        |    event(f1,f2) eventFull(f2,f1),
-//        |  [hide] t1 = writer*writer,
-//        |  [hide] t2 = writer*writer,
-//        |  [hide] act = reader
-//        |}
-//      """.stripMargin
-//    "Alternating Port"::"" ::
-//      """// Alternating port
-//        |...""".stripMargin::Nil,
-//    "Test"::""::
-//      """// experiments
-//        |mainHub
-//        |{
-//        |  [hide,T:intt, full:false, N:4] de1 = fifo,   // dataEvent
-//        |  [hide,T:intt, full:true] de2 = fifofull, // dataEvent
-//        |  dupl3 = dupls 3,
-//        |
-//        |   mainHub(s1?,p1?,s2?,p2?,g!) =
-//        |     drain(s1,x2)
-//        |     drain(x1,s2)
-//        |     dupl3(p1,x1,x3,x4)
-//        |     dupl3(p2,x2,x11,x12)
-//        |     drain(x3,x5) dupl(x9,x5,x6)
-//        |     de1(x6,x7) dupl(x7,x10,x8)
-//        |     de2(x8,x9) drain(x10,x11)
-//        |     merger(x4,x12,g) // port?
-//        |}
-//        |""".stripMargin::Nil
   )
 
 }

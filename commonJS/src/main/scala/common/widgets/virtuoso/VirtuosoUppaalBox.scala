@@ -6,6 +6,7 @@ import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 import hub.{DSL, HubAutomata}
 import common.widgets.{Box, OutputArea}
+import common.Utils
 import preo.ast.CoreConnector
 import preo.backend.Automata
 
@@ -30,8 +31,10 @@ class VirtuosoUppaalBox(connector:Box[CoreConnector], errorBox:OutputArea)
     * @param visible is true when this box is initially visible (i.e., expanded).
     */
   override def init(div: Block, visible: Boolean): Unit = {
-    box = panelBox(div, visible,buttons=List(Right("download")-> (()=>download(), "Download model as a TA in Uppaal")))
-      .append("div")
+    box = panelBox(div, visible,buttons=List(
+        Right("download")-> (()=>download(), "Download model as a TA in Uppaal"),
+        Right("help") -> (()=>Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#uppaal-model"),"See documentation for this widget")
+      )).append("div")
       .attr("id", "uppaalHubBox")
 
     dom.document.getElementById("Uppaal Model")
