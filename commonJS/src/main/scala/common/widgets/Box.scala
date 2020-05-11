@@ -1,5 +1,6 @@
 package common.widgets
 
+import common.widgets.Box.Block
 import hprog.frontend.solver.LiveSageSolver
 import hub.common.ParseException
 import ifta.common.FExpOverflowException
@@ -7,6 +8,7 @@ import org.scalajs.dom
 import org.scalajs.dom.{EventTarget, MouseEvent, html}
 import org.singlespaced.d3js.Selection
 import preo.common.TypeCheckException
+
 import scala.scalajs.js.{JavaScriptException, UndefOr}
 
 
@@ -69,6 +71,12 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
         .style("max-height","18pt")
         .style("margin-left","2pt")
         .style("display","flex")
+      if (name==Right("help")) button
+        .style("margin-left","-2pt")
+        .style("border", "none")
+        .style("background", "none")
+        .style("box-shadow", "none")
+        .style("padding", "3pt")
       if (title.nonEmpty) button.attr("title",title)
 
       drawButton(button,name)
@@ -90,8 +98,18 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
 //        val svg = button.append("img")
 //          .attr("src","assets/content/svg/cloud_download.svg")
 //          .style("width","15pt")
-              case Right("refresh") =>
+      case Right("refresh") =>
         button.append("span").attr("class", "glyphicon glyphicon-refresh")
+      case Right("help") =>
+        val b = button.append("span")
+        b .style("line-height","9pt")
+          .style("padding","0pt 0pt 4pt 3pt")
+          .style("color", "#b0b0b0")
+          .style("text-shadow", "none")
+        b.html("?")
+//        button.append("img")
+//          .attr("src","svg/help.svg")
+//          .style("margin","-2pt -2pt 0pt -2pt")
       case Right("oldDownload") => drawButton(button,Left("&dArr;"))
       case Right(s) => drawButton(button,Left(s))
     }
