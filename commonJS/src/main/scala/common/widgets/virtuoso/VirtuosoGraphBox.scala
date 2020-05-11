@@ -19,10 +19,10 @@ class VirtuosoGraphBox(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def init(div: Block, visible: Boolean): Unit = {
     box = GraphBox.appendSvg(super.panelBox(div,visible,
       buttons = List(
-        Right("download")-> (() => saveSvg(),"Download image as SVG"),
         Right("help") -> (()=>
           common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#circuit-of-the-instance"),
-          "See documentation for this widget")
+          "See documentation for this widget"),
+        Right("download")-> (() => saveSvg(),"Download image as SVG")
       )),"circuit")
     dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = {e: MouseEvent => update()}

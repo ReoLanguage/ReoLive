@@ -9,10 +9,10 @@ class VirtuosoBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
     override protected val boxId: String = "virtuosoInputArea"
     override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
       List(
-        Right("refresh") -> (() => reload, "Load the Hub (shift-enter)"),
         Right("help") -> (()=>
           common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#hub-composer"),
-          "See documentation for this widget")
+          "See documentation for this widget"),
+        Right("refresh") -> (() => reload, "Load the Hub (shift-enter)")
       )
 
     override protected val codemirror: String = "virtuoso"

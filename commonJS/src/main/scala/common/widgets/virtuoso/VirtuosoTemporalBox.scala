@@ -19,12 +19,12 @@ class VirtuosoTemporalBox(connector: Box[CoreConnector], default: String, errorB
   override protected val boxId: String = "temporalInputArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("refresh") -> (() =>
-        reload(),
-        "Load the logical formula (shift-enter)"),
       Right("help") -> (()=>
         common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#temporal-logic"),
-        "See documentation for this widget")
+        "See documentation for this widget"),
+      Right("refresh") -> (() =>
+        reload(),
+        "Load the logical formula (shift-enter)")
     )
 
   override protected val codemirror: String = "temporal"

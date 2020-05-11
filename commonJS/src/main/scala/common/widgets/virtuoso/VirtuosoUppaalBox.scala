@@ -32,9 +32,9 @@ class VirtuosoUppaalBox(connector:Box[CoreConnector], errorBox:OutputArea)
     */
   override def init(div: Block, visible: Boolean): Unit = {
     box = panelBox(div, visible,buttons=List(
-        Right("download")-> (()=>download(), "Download model as a TA in Uppaal"),
-        Right("help") -> (()=>Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#uppaal-model"),"See documentation for this widget")
-      )).append("div")
+        Right("help") -> (()=>Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#uppaal-model"),"See documentation for this widget"),
+        Right("download")-> (()=>download(), "Download model as a TA in Uppaal")
+    )).append("div")
       .attr("id", "uppaalHubBox")
 
     dom.document.getElementById("Uppaal Model")
