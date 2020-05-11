@@ -57,7 +57,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#lince" data-toggle="tab" data-target="#lince" onclick='load_WS("fulllince")'>
+      <a class="navbar-brand" href="#fulllince" data-toggle="tab" data-target="#lince" onclick='load_WS("fulllince")'>
         <!-- <img id="reolivelogo" src="....png" alt="ReoLive logo"> -->
         <img src="content/img/lince.svg">
       <!-- Lince -->
@@ -70,7 +70,7 @@
           CHANGE TABS HERE
         ~~~~~~~~~~~~~~~~~~-->
         <!-- <li><a href="#families" data-toggle="tab" aria-expanded="true">Reo Families</a></li> -->
-        <li style="display: none;"><a href="#lince" data-toggle="tab" onclick='load_WS("fulllince")'>Full Lince</a>
+        <li style="display: none;"><a href="" data-toggle="tab" onclick='load_WS("fulllince")'>Full Lince</a>
         <li><a target="#" href="https://github.com/arcalab/lince">Development</a>
         <!-- <li><a href="#lwLince" data-toggle="tab" onclick='load_home("lwLince")'>LW Lince</a> -->
         <!-- <li><a href="#about" data-toggle="tab" aria-expanded="false">About</a></li> -->
@@ -84,8 +84,8 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Publications<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a target="#" href="https://zenodo.org/record/3518839/files/mainTACAS.pdf">
-              Lince: Lightweight Prototyping of Hybrid Programs (report 2019)</a>
+<!--             <li><a target="#" href="https://zenodo.org/record/3518839/files/mainTACAS.pdf">
+              Lince: Lightweight Prototyping of Hybrid Programs (report 2019)</a> -->
               <!-- <a target="#" href="https://doi.org/10.5281/zenodo.3518838">(doi)</a></li> -->
             <li><a target="#" href="https://arxiv.org/pdf/1902.07684">
               An Adequate While-Language for Hybrid Computation (PPDP 2019) </a>
@@ -133,7 +133,7 @@
       ////////////////////
       $(function () {
        var lhash = location.hash;
-       if (lhash=="") { lhash = "#lince";}
+       if (lhash=="") { lhash = "#fulllince";}
        var activeTab = $('[href=' + lhash + ']');
     //    activeTab && activeTab.tab('show');
        activeTab.tab('show');
