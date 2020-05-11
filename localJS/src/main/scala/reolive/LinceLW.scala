@@ -52,7 +52,7 @@ object LinceLW extends{
     descr = new OutputArea
     errors = new OutputArea //(id="Lince")
     inputBox = new LinceBox(reload(),"",errors)
-    examples = new LinceExamplesBox(softReload(),inputBox,descr)
+    examples = new LinceExamplesBox(softReload(),inputBox,descr,descr)
     deviation = new InputBox(reloadGraphics(),"0","deviation",1,
       title = "Maximum perturbation",
       refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
