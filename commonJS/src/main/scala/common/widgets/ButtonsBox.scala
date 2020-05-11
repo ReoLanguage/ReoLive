@@ -262,7 +262,7 @@ unzip_ =
 
   override def update: Unit = ()
 
-  private def genButton(ss:List[String],buttonsDiv:Block): Unit = {
+  protected def genButton(ss:List[String],buttonsDiv:Block): Unit = {
     ss match {
       case hd::tl =>
         val button = buttonsDiv.append("button")

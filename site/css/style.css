@@ -93,6 +93,11 @@
     border: none;
 }
 
+.navbar-lince>div>ul>li>ul {
+    background-color: #724300;
+    border: none;
+}
+
 .navbar-brand { /*brand name (arcatools)*/
     color: white;
     font-style: italic;
@@ -116,6 +121,9 @@
     color: #36569c;
     background-color: #cadcf3;
     text-decoration: none;
+}
+.dropdown>a:focus {
+    border-color: black;
 }
 /*a:focus, a:hover {
     color: red;
@@ -279,6 +287,11 @@
 
 button {
     margin: 1px;
+}
+
+
+.temporal-formula {
+    background-color: rgb(230, 230, 230);
 }
 
 

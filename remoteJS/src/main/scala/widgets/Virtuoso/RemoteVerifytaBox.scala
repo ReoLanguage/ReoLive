@@ -25,8 +25,12 @@ class RemoteVerifytaBox(connector: Box[CoreConnector], connectorStr:Box[String],
   override protected val boxId: String = "temporalLogicArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("refresh")-> (()=>reload(),"Check if the property holds (shift-enter)")//,
-      //Left("&dArr;")-> (()=>download(), "Download query in temporal logic for Uppaal")
+      Right("refresh")-> (()=>
+        reload(),
+        "Check if the property holds (shift-enter)"),
+        Right("help") -> (()=>
+          common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#temporal-logic"),
+          "See documentation for this widget")
     )
 
 

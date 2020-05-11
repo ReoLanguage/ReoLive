@@ -29,7 +29,7 @@ object RemoteVirtuoso extends {
 
   var aut: VirtuosoAutomataBox = _
 
-  var uppaal:RemoteUppaalBox = _
+  var uppaal:VirtuosoUppaalBox = _
 
 //  var csBox:VirtuosoCSInputBox = _
   var csInfoBox:VirtuosoCSInfoBox = _
@@ -83,7 +83,7 @@ object RemoteVirtuoso extends {
 //    csBox = new VirtuosoCSInputBox(reloadCsInfo())
     outputCs = new OutputArea
     csInfoBox = new VirtuosoCSInfoBox(instantiate,outputCs)
-    uppaal = new RemoteUppaalBox(instantiate,errors)
+    uppaal = new VirtuosoUppaalBox(instantiate,errors)
     verifyta = new RemoteVerifytaBox(instantiate,inputBox,verifytaError,verifytaOut,"")
     examples = new VirtuosoExamplesBox(softReload(),inputBox,descr,csInfoBox,verifyta)
 

@@ -22,7 +22,11 @@ class VirtuosoInfoBox(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def get: HubAutomata = aut
 
   override def init(div: Block, visible: Boolean): Unit = {
-    box = panelBox(div, visible).append("div")
+    box = panelBox(div, visible, buttons = List(
+        Right("help") -> (()=>
+          common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#hub-automaton-analysis"),
+          "See documentation for this widget"))
+      ).append("div")
       .attr("id", "analysisBox")
     dom.document.getElementById("Hub Automaton Analysis").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = {e: MouseEvent => if(!isVisible) showInfo() else deleteInfo()}

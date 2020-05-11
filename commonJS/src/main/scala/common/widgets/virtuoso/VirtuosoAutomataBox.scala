@@ -1,5 +1,6 @@
 package common.widgets.virtuoso
 
+import common.Utils
 import common.frontend.AutomataToJS
 import common.widgets.{Box, GraphBox, OutputArea}
 import hub.HubAutomata
@@ -30,12 +31,9 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
   override def get: Automata = automaton
 
   override def init(div: Block, visible: Boolean): Unit = {
-    svg= GraphBox.appendSvg(panelBox(div, visible,buttons= List()
-//      List(
-//      Left("port names")      -> (()=> if (isVisible) drawAutomata(true) else (),"See port names"),
-//      Left("hub names")      -> (()=> if (isVisible) drawAutomata(false) else (),"See hub names"),
-//      Left("show")      -> (()=> if (isVisible) debug() else (),"See automata as text"))
-    ),"virtuosoAutomata")
+    svg= GraphBox.appendSvg(panelBox(div, visible,buttons= List(
+      Right("help") -> (()=>Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#hub-automaton-of-the-instance"),"See documentation for this widget")
+    )),"virtuosoAutomata")
     dom.document.getElementById("Hub Automaton of the instance").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = {e: MouseEvent => if(!isVisible) drawAutomata() else deleteAutomaton()}
 

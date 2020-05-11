@@ -3,6 +3,7 @@ package common
 import java.net.URLDecoder
 import java.util.Base64
 
+import common.widgets.Box.Block
 import common.widgets.OutputArea
 import org.scalajs.dom
 import org.scalajs.dom.XMLHttpRequest
@@ -101,4 +102,11 @@ object Utils {
         .text(ref)
  }
 
+  /**
+    * Opens a url in the browser
+    * @param url the url to open
+    */
+  def goto(url:String):Unit = {
+    org.scalajs.dom.window.open(url)
+  }
 }
