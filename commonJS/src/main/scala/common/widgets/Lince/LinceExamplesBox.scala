@@ -2,11 +2,12 @@ package common.widgets.Lince
 
 import common.widgets.{ButtonsBox, Setable}
 
-class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable[String])
-  extends ButtonsBox(reload, List(inputBox,descr)){
+class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable[String], bounds: Setable[String])
+  extends ButtonsBox(reload, List(bounds,inputBox,descr)){
 
   override protected val buttons: Seq[List[String]] = Seq(
-    "Basic composition" -> """v:=0; v'=1 for 2; v'=3 for 2""" ->
+    "Basic composition" ->  "150 // maximum time in the plot" ->
+      """v:=0; v'=1 for 2; v'=3 for 2""" ->
       "Very simple example composing two basic atomic elements."
     ,"Cruise control"->
 //        """x:= -1; v:= 0; a:= 1;
@@ -15,6 +16,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 //          |  x' = v, v' = a  & 0.5
 //          |}
 //          |""".stripMargin ->
+      "15 // maximum time in the plot" ->
        """// Cruise control
           |p:=0; v:=2;
           |while true do {
@@ -25,6 +27,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
       ////
       ,"Traffic lights"->
+        "150 // maximum time in the plot" ->
         """// Alternate between two constant values.
           |l:=0;
           |repeat 4 {
@@ -34,6 +37,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         descr("Traffic lights","Alternating between two constant values.")
       ////
       ,"Avoiding approx. error"->
+        "150 // maximum time in the plot" ->
         """// A naive evaluation would give an approximation
           |// error of the if-condition.
           |x := 1;
@@ -47,7 +51,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         "checks perturbations, detects that an approximation error can occur here at 80.")
       ////
       ,"Trigonometric computation"->
-        """// Solution not naively computed (precise solution involves sin/cos)
+      "150 // maximum time in the plot" ->
+      """// Solution not naively computed (precise solution involves sin/cos)
           |// Use the online version to use the precise solution.
           |p:=1;v:=1;
           |p'=v, v'=-p for 8""".stripMargin ->
@@ -56,6 +61,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       ////
     ////
     ,"Naive particle positioning" ->
+      "150 // maximum time in the plot" ->
       """x:= -1; v:= 0; a:= 1;
         |while true do {
         |	if x <= 0 then a:= 1 else {a:=-1 };
@@ -65,6 +71,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 
     ////
     ,"Landing system" ->
+      "150 // maximum time in the plot" ->
       """y := 10000; v := -1000; a:= 0; g:= 10;
         |while (y >= 1000) do {
         |	if v <= -100 then { a := (100 - g) }
@@ -98,6 +105,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 //      "Experimental event-driven example (using approximations)."
     /////
     ,"Bouncing ball (ED)"->
+    "150 // maximum time in the plot" ->
     """// Bouncing ball example
           |v:=5; p:=10; c:=0;
           |while (c<4) do {
@@ -119,6 +127,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 
     /////
     ,"Fireflies 2x (ED)"->
+        "150 // maximum time in the plot" ->
         """f1 := 1; f2 := 4;
         |repeat 8 {
         |  f1'=1, f2'=1 until_0.01
@@ -138,7 +147,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     ////
 
     ,"Fireflies 3x (ED)"->
-        """f1 := 1; f2 := 4; f3 := 7;
+      "150 // maximum time in the plot" ->
+      """f1 := 1; f2 := 4; f3 := 7;
         |repeat 8 {
         |  f1'=1, f2'=1, f3'=1
         |  until_0.01 f1>10 \/ f2>10 \/ f3>10;
@@ -155,6 +165,6 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         "their flashes in a decentralised way." +
         "This version synchronizes 3 fireflies")
 
-  ).map(x=>List(x._1._1,x._1._2,x._2))
+  ).map(x=>List(x._1._1._1,x._1._1._2,x._1._2,x._2))
 
 }
