@@ -9,6 +9,7 @@ import hprog.ast.{SVal, Syntax}
 import hprog.backend.Show
 import hprog.common.{ParserException, TimeOutOfBoundsException, TimeoutException}
 import hprog.frontend.CommonTypes.Valuation
+import hprog.frontend.Traj.Logger
 import hprog.frontend.solver.LiveSageSolver
 import hprog.frontend.{Distance, Eval, Traj}
 import hprog.lang.SageParser
@@ -151,7 +152,8 @@ class LinceActor(out: ActorRef) extends Actor{
       s"Error: time value $t must be non-negative."
     }
     else {
-      val point = traj.eval(texp).get //  traj(texp)(solver)
+      val logger = new Logger()
+      val point = traj.eval(texp,logger).get //  traj(texp)(solver)
 
       debug(()=>s"sexpr/t/point = ${
         Show(sexpr)}, ${
@@ -197,10 +199,11 @@ class LinceActor(out: ActorRef) extends Actor{
           " @ " + Show(tc.t)
         }"))
         .mkString("§§")
-      debug(() => s"exporting eval result: \n$res")
+      val res2 = res+"§§§"+logger.getWarnings.map(wr => s"${Eval(wr._1)}§${wr._2}").mkString("§§")
+      debug(() => s"exporting eval result: \n$res2")
 
       solver.closeWithoutWait()
-      res
+      res2
     }
   }
 
