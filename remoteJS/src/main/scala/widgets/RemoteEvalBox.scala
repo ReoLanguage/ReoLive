@@ -83,19 +83,44 @@ class RemoteEvalBox(program: Box[String], errorBox: OutputArea, bounds: Box[Stri
       errorBox.error(sageReply)
     else try {
       //println(s"got reply from sage: ${sageReply}. About to parse ${dependency.get}.")
-      val sol = sageReply.split("§§").map(_.split("§"))
-      var res:List[String] = Nil
-      for (kv <- sol)
-        kv match {
-          case Array(k,v) => res ::= s"$k: $v"
-          case _ => errorBox.error(s"unexpected reply ${kv.map(x=>s"'$x'")
-            .mkString(", ")} : ${kv.getClass}")
-        }
-//      errorBox.message(res.mkString("</br>"))
-      outEval.html(res.mkString("</br>"))
+      sageReply.split("§§§",2) match {
+        case Array(sol1,sol2) =>
+          var res:List[String] = Nil
+          var warnStr: String = ""
+          //
+          val warns = sol2.split("§§")
+          for (kv <- warns)
+            kv.split("§",2) match {
+              case Array(pos,msg) => warnStr += drawWarning(pos,msg)
+              case Array("") =>
+              case arr => errorBox.error(s"2unexpected reply ${arr.map(x=>s"'$x'")
+                .mkString(", ")} : ${arr.getClass}")
+            }
+          if (warnStr.nonEmpty) res = List("",warnStr)
+          ///
+          val sol = sol1.split("§§").map(_.split("§"))
+          for (kv <- sol)
+            kv match {
+              case Array(k,v) => res ::= s"$k: $v"
+              case _ => errorBox.error(s"1unexpected reply ${kv.map(x=>s"'$x'")
+                .mkString(", ")} : ${kv.getClass}")
+            }
+          ///
+          //      errorBox.message(res.mkString("</br>"))
+          outEval.html(res.mkString("</br>"))
+        case arr => errorBox.error(s"3unexpected reply ${arr.map(x=>s"'$x'")
+          .mkString(", ")} : ${arr.getClass}")
+      }
     }
-    catch Box.checkExceptions(errorBox, "Evaluator2")  }
+    catch Box.checkExceptions(errorBox, "Evaluator2")
+  }
 
+  private def drawWarning(pos: String, msg: String): String = {
+    s"""<div class="alert alert-warning" style="display: flex; margin-top: 10px;">
+       | <div style="margin-top:auto; margin-bottom:auto;">[Warn] @$pos:</div>
+       | <div style="margin-left: 10px;">$msg</div>
+       | </div>""".stripMargin
+  }
 
 
 }
