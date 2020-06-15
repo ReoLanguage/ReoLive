@@ -83,6 +83,7 @@ object ARx {
 
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/arx")
+    common.Utils.temporaryInfo(rightColumn,"Coordination'20 slides and video presentation: ","http://arca.di.uminho.pt/content/arx-slides-20.pdf")
 
     // default button
     if (examples.loadButton("alt")) {
