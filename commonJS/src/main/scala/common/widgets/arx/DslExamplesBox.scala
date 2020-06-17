@@ -175,11 +175,20 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |data Either<a,b> = Left(a) | Right(b)
         |data Unit = U
         |
-        |def natmatch(x:Nat) = {match(x)}
+        |def natmatch(x:Nat) = {
+        | z,s <- match(x)
+        | z s
+        | }
         |
-        |def listmatch(y:List<a>) = {match(y)}
+        |def listmatch(y:List<a>) = {
+        | n,e,r <- match(y)
+        | n e r
+        | }
         |
-        |def boolmatch(z:Bool) = {match(z)}
+        |def boolmatch(z:Bool) = {
+        | t,f <- match(z)
+        | t f
+        | }
         |
         |natmatch(w)""".stripMargin::
       ""::Nil,

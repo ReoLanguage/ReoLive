@@ -102,6 +102,22 @@ object Utils {
         .text(ref)
  }
 
+  def temporaryInfo(block: Selection[dom.EventTarget],title:String,ref: String): Unit = {
+    val more = block.append("div")
+      .attr("class","panel-group")
+      .append("p")
+    more
+      .style("font-size","larger")
+      .style("text-align","center")
+      .style("padding-top","0px")
+    more
+      .text(title)
+      .append("a")
+      .attr("href",ref)
+      .attr("target","#")
+      .text(ref)
+  }
+
   /**
     * Opens a url in the browser
     * @param url the url to open
