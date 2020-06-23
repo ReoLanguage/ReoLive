@@ -152,10 +152,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
 //        |""".stripMargin::
 //      "Build a streams of [Zero,Zero] and merge it with SomeData."::Nil,
     "counter"::
-      """data Nat = Zero | Succ(Nat)
-        |data Unit = U
-        |
-        |def counter(tick):Nat = {
+      """def counter(tick):Nat = {
         |  first,rest<-xor(tick)
         |  drain(first,zero) drain(rest,more)
         |  succ<-build(zero,more)
@@ -168,14 +165,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |""".stripMargin::
       "Gets clicks, outputs number of clicks since last request."::Nil,
     "matches"::
-      """data List<a> = Nil | Cons(a,List<a>)
-        |data Bool = True | False
-        |data Nat = Zero | Succ(Nat)
-        |data Pair<a,b> = P(a,b)
-        |data Either<a,b> = Left(a) | Right(b)
-        |data Unit = U
-        |
-        |def natmatch(x:Nat) = {
+      """def natmatch(x:Nat) = {
         | z,s <- match(x)
         | z s
         | }
@@ -193,9 +183,7 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |natmatch(w)""".stripMargin::
       ""::Nil,
     "display"::
-      """import Types.{Bool,Unit}
-        |
-        |def gui(sel:Bool,mouse,time) = {
+      """def gui(sel:Bool,mouse,time) = {
         |  last <~ sel
         |  t,f <- match(last)
         |  drain(t,mouse) display <- mouse

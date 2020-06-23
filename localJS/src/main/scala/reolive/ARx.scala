@@ -19,8 +19,8 @@ object ARx {
   var examples: DslExamplesBox = _
   var graph: DslGraphBox = _
   var descr: OutputArea = _
-  var dsllib:DslLibBox = _
-  var dsllibout:DslLibOutputArea = _
+//  var dsllib:DslLibBox = _
+//  var dsllibout:DslLibOutputArea = _
   var aut:DslAutomataBox = _
 
 
@@ -62,13 +62,13 @@ object ARx {
 
     descr = new OutputArea
     errors = new OutputArea //(id="Lince")
-    dsllibout = new DslLibOutputArea
+//    dsllibout = new DslLibOutputArea
 
     inputBox = new DslBox(reload(),program,errors)
     result = new DslAnalysisBox(inputBox,errors)
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
     graph = new DslGraphBox(result,errors)
-    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
+//    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
     aut = new DslAutomataBox(inputBox,errors)
 
     inputBox.init(leftColumn, true)
@@ -77,8 +77,8 @@ object ARx {
     aut.init(rightColumn,visible = false)
     result.init(rightColumn,visible = true)
     descr.init(leftColumn)
-    dsllib.init(leftColumn,visible = true)
-    dsllibout.init(leftColumn)
+//    dsllib.init(leftColumn,visible = true)
+//    dsllibout.init(leftColumn)
     examples.init(leftColumn,visible = true)
 
 
@@ -99,7 +99,7 @@ object ARx {
     */
   private def reload(): Unit = {
     descr.clear()
-    dsllibout.clear()
+//    dsllibout.clear()
     softReload()
   }
   private def softReload(): Unit = {
