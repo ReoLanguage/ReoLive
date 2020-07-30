@@ -22,6 +22,8 @@ object ARx {
 //  var dsllib:DslLibBox = _
 //  var dsllibout:DslLibOutputArea = _
   var aut:DslAutomataBox = _
+  var sb:SBComposerBox = _
+  var sbRes:SBAnalysisBox = _
 
 
   @JSExportTopLevel("reolive.ARx.main")
@@ -37,6 +39,20 @@ object ARx {
         |  out(x)
         |}
         |alt(x,y)""".stripMargin
+
+    val sbs =
+      """sb = {
+        |	get(a,b) -> c:=a, d:=b;
+        |	get(a) -> c:=a;
+        |  get(b) -> d:=b
+        |}
+        |
+        |seq = {
+        |	get(a) -> bx:=_;
+        |  get(b,bx) ->
+        |}
+        |
+        |seq * sb""".stripMargin
 
     // Creating outside containers:
     val contentDiv = d3.select(content).append("div")
@@ -70,6 +86,8 @@ object ARx {
     graph = new DslGraphBox(result,errors)
 //    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
     aut = new DslAutomataBox(inputBox,errors)
+    sb = new SBComposerBox(reloadSB(),sbs,errors)
+    sbRes = new SBAnalysisBox(sb,errors)
 
     inputBox.init(leftColumn, true)
     errors.init(leftColumn)
@@ -80,7 +98,8 @@ object ARx {
 //    dsllib.init(leftColumn,visible = true)
 //    dsllibout.init(leftColumn)
     examples.init(leftColumn,visible = true)
-
+    sb.init(leftColumn,visible = true)
+    sbRes.init(rightColumn,visible = true)
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/arx")
     common.Utils.temporaryInfo(rightColumn,"Coordination'20 slides and video presentation: ","http://arca.di.uminho.pt/content/arx-slides-20.pdf")
@@ -102,6 +121,11 @@ object ARx {
 //    dsllibout.clear()
     softReload()
   }
+  private def reloadSB(): Unit = {
+    sbRes.update()
+    errors.clear()
+  }
+
   private def softReload(): Unit = {
     errors.clear()
     inputBox.update()
