@@ -41,18 +41,66 @@ object ARx {
         |alt(x,y)""".stripMargin
 
     val sbs =
-      """sb = {
-        |	get(a,b) -> c:=a, d:=b;
-        |	get(a) -> c:=a;
-        |  get(b) -> d:=b
-        |}
-        |
+      """/// a>>b
         |seq = {
         |	get(a) -> bx:=_;
         |  get(b,bx) ->
         |}
         |
-        |seq * sb""".stripMargin
+        |// c<-a d<-b
+        |sb1 = {
+        |	get(a,b) ->c:=a, d:=b;
+        |	get(a) -> c:=a;
+        |  get(b) -> d:=b
+        |}
+        |// a>>b
+        |seq2 = {
+        |	get(a,c) -> bx:=_;
+        |	get(b,bx) ->
+        |}
+        |// a<-c d<-b
+        |sb2 = {
+        |	get(c,b) -> a:=c, d:=b;
+        |	get(c) ->  a:=c;
+        |  get(b) -> d:=b
+        |}
+        |
+        |// a<-c b<-d
+        |sb3 = {
+        |	get(c,d) -> a:=c, b:=d;
+        |	get(c) ->  a:=c;
+        |  get(d) -> b:=d
+        |}
+        |// a>>b
+        |seq3 = {
+        |	get(a,c) -> bx:=_;
+        |	get(b,bx,d) ->
+        |}
+        |
+        |// a>>b
+        |seq4 = {
+        |	get(a) -> bx:=_;
+        |	get(b,bx,d) ->
+        |}
+        |
+        |
+        |// c<-a b<-d
+        |sb4 = {
+        |	get(a,d) -> c:=a, b:=d;
+        |	get(a) ->  c:=a;
+        |  get(d) -> b:=d
+        |}
+        |
+        |// a>>b c<-a d<-b (a,b inputs)
+        |//seq * sb1
+        |
+        |// a>>b a<-c d<-b (a output,b input)
+        |//seq * sb2 // not ok
+        |//seq2 * sb2 // ok
+        |// a>>b a<-c b<-d (a,b output)
+        |//seq3 * sb3 // ok
+        |// a>>b c<-a b<-d (a input,b output)
+        |seq4 * sb4 // ok""".stripMargin
 
     // Creating outside containers:
     val contentDiv = d3.select(content).append("div")
