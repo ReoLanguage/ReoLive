@@ -22,7 +22,7 @@ object LinceLW extends{
   var deviation: InputBox = _
 
 
-  @JSExportTopLevel("reolive.Lince.main")
+  @JSExportTopLevel("reolive_Lince_main")
   def main(content: html.Div): Unit = {
 
 

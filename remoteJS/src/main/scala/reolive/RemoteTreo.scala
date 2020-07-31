@@ -23,7 +23,7 @@ object RemoteTreo {
 //  var perturbation: InputBox = _
 
 
-  @JSExportTopLevel("reolive.RemoteTreo.main")
+  @JSExportTopLevel("reolive_RemoteTreo_main")
   def main(content: html.Div): Unit = {
 
     val program =

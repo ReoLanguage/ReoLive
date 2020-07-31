@@ -1,14 +1,13 @@
 package services
 
 import akka.actor.{Actor, ActorRef, Props}
-import hub.{DSL, HubAutomata}
-import hub.analyse.{TemporalFormula, UppaalFormula}
+import hub.analyse.TemporalFormula
 import hub.backend._
+import hub.{DSL, HubAutomata}
 import play.api.libs.json._
 import preo.ast.CoreConnector
 import preo.backend.Automata
 import preo.lang.ParserUtils
-import services.UppaalBind
 
 /**
   * Created by guillecledou on 2019-10-05
@@ -113,7 +112,7 @@ class VerifytaActor(out:ActorRef) extends Actor {
     res
   } catch {
     case e: java.io.IOException => "error:IO exception: " + e.getMessage
-    case e=> e.getMessage
+    case e: Throwable => e.getMessage
   }
 
 }

@@ -32,7 +32,7 @@ object WebReo extends{
   var ifta: IFTABox =_
   var iftaInfo:IftaInfoBox = _
 
-  @JSExportTopLevel("reolive.WebReo.main")
+  @JSExportTopLevel("reolive_WebReo_main")
   def main(content: html.Div): Unit = {
 
     //    // add header

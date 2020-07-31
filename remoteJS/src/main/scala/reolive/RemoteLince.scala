@@ -24,7 +24,7 @@ object RemoteLince {
     var bounds: InputBox = _
 
 
-    @JSExportTopLevel("reolive.RemoteLince.main")
+    @JSExportTopLevel("reolive_RemoteLince_main")
     def main(content: html.Div): Unit = {
 
 
