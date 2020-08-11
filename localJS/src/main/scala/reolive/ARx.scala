@@ -26,7 +26,7 @@ object ARx {
   var sbRes:SBAnalysisBox = _
 
 
-  @JSExportTopLevel("reolive.ARx.main")
+  @JSExportTopLevel("reolive_ARx_main")
   def main(content: html.Div): Unit = {
 
     val program =

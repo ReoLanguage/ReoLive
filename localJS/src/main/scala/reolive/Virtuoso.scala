@@ -35,7 +35,7 @@ object Virtuoso extends{
   var logicOutBox:VerifytaOutputArea = _
   var logicErrorBox:OutputArea = _
 
-  @JSExportTopLevel("reolive.Virtuoso.main")
+  @JSExportTopLevel("reolive_Virtuoso_main")
   def main(content: html.Div): Unit = {
 
 

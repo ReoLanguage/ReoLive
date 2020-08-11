@@ -39,7 +39,7 @@ object RemoteVirtuoso extends {
   var verifytaOut:VerifytaOutputArea =_
   var verifytaError:OutputArea =_
 
-  @JSExportTopLevel("reolive.RemoteVirtuoso.main")
+  @JSExportTopLevel("reolive_RemoteVirtuoso_main")
   def main(content: html.Div): Unit = {
 
 

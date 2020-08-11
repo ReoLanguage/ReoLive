@@ -38,7 +38,7 @@ object RemoteReo extends{
   private var uppaalAut:RemoteUppaalAutBox = _
   private var uppaalNet:RemoteUppaalNetBox = _
 
-  @JSExportTopLevel("reolive.RemoteReo.main")
+  @JSExportTopLevel("reolive_RemoteReo_main")
   def main(content: html.Div): Unit = {
 
     //    // add header
