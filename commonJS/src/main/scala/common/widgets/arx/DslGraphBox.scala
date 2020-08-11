@@ -23,7 +23,7 @@ extends GraphBox(null, errorBox, path, "Circuit of the program"){
     //println(s"[prog] - Drawing graph - $program")
     val (typedProgram,_) = typeCheck(program)
     val (net1,maxPort1) = Net(typedProgram)
-    //println(s"[net] - Drawing graph (max=$maxPort1):\n$net1")
+//    println(s"[net] - Drawing graph (max=$maxPort1):\n$net1")
     val (net2,maxPort2) = addNodes(net1,Some(maxPort1+1))
     //println(s"[net] - Added Nodes (max=$maxPort2):\n$net2")
     val preo1: Network = mkPreoNet(net2)
