@@ -25,6 +25,7 @@ object WebReo extends{
   var errors: OutputArea = _
   var svg: GraphBox = _
   var svgAut: AutomataBox = _
+  var visAut: AutomataVisBox = _
   var hubAut: VirtuosoAutomataBox = _
   var mcrl2Box: Mcrl2Box = _
   var mcrl2IftaBox: IftaMcrl2Box = _
@@ -78,6 +79,7 @@ object WebReo extends{
     val buttonsDiv = new ButtonsBox(softReload(), List(inputBox,logicBox,descr))
     svg          = new GraphBox(instanceInfo, errors)
     svgAut       = new AutomataBox(instanceInfo, errors)
+    visAut       = new AutomataVisBox(instanceInfo, errors)
     hubAut       = new VirtuosoAutomataBox(instanceInfo,errors)
     mcrl2Box     = new Mcrl2Box(instanceInfo,errors)
     mcrl2IftaBox     = new IftaMcrl2Box(instanceInfo,errors)
@@ -98,6 +100,7 @@ object WebReo extends{
 
     svg.init(rightside,visible = true)
     svgAut.init(rightside,visible = false)
+    visAut.init(rightside,visible = false)
     hubAut.init(rightside,visible = false)
     ifta.init(rightside,visible = false)
     mcrl2Box.init(rightside,visible = false)
@@ -131,6 +134,7 @@ object WebReo extends{
 
     svg.update()
     svgAut.update()
+    visAut.update()
     hubAut.update()
     mcrl2Box.update()
     mcrl2IftaBox.update()
