@@ -131,7 +131,7 @@ object ARx {
     inputBox = new DslBox(reload(),program,errors)
     result = new DslAnalysisBox(inputBox,errors)
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
-    graph = new DslGraphBox(result,errors)
+    graph = new DslGraphBox(inputBox,errors)
 //    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
     aut = new DslAutomataBox(inputBox,errors)
     sb = new SBComposerBox(reloadSB(),sbs,errors)

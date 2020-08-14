@@ -29,6 +29,7 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
   override def init(div: Block, visible: Boolean): Unit = {
     //svg= GraphBox.appendSvg(panelBox(div, visible),"sbautomata")
     panel = panelBox(div, visible, buttons = List(
+      Left("simple")      -> (()=> if (isVisible) drawAutomata(SimpleMode) else (),"Without Push/Pull interpretation"),
       Left("push")      -> (()=> if (isVisible) drawAutomata(PushMode) else (),"Environment can push streams"),
       Left("pull")      -> (()=> if (isVisible) drawAutomata(PullMode) else (),"Environment can pull streams"),
       Left("all")       -> (()=> if (isVisible) drawAutomata(AllMode) else (),"Environment can push/pull streams"),
@@ -49,7 +50,7 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
     textAut.style("display",if(text) "block" else "none")
   }
 
-  private def drawAutomata(buildMode:BuildMode=PushMode): Unit = try{
+  private def drawAutomata(buildMode:BuildMode=SimpleMode): Unit = try{
       deleteAutomaton()
 
       val prog = DSL.parse(program.get)

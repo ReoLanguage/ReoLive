@@ -567,7 +567,6 @@ object AutomataToJS {
       val from = t.from.hashCode().toString
       val to = t.to.hashCode().toString
       val id = t.hashCode().toString
-      val fromSt = dsl.backend.Show(t.from)
     val res = Set(s"""{"id": "$from", "group": ${if (t.from==init) "0" else "1"} ,"inv":"${dsl.backend.Show(t.from)}"}""",
       s"""{"id": "$to", "group": ${if (t.to==init) "0" else "1"} ,"inv":"${dsl.backend.Show(t.to)}"}""",
       s"""{"id": "$from-1-$to-$id", "group": "2","inv":""}""",

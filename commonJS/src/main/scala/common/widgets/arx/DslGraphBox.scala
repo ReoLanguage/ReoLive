@@ -2,6 +2,7 @@ package common.widgets.arx
 
 import common.frontend.GraphsToJS
 import common.widgets.{Box, GraphBox, OutputArea}
+import dsl.DSL
 import dsl.DSL._
 import dsl.analysis.syntax.Program
 import dsl.backend.Net
@@ -10,7 +11,7 @@ import preo.ast.{CPrim, CoreInterface}
 import preo.backend.Network.Mirrors
 import preo.backend.{Circuit, Network}
 
-class DslGraphBox(programBox: Box[Program], errorBox: OutputArea, path: String=".")
+class DslGraphBox(codeBox: Box[String], errorBox: OutputArea, path: String=".")
 extends GraphBox(null, errorBox, path, "Circuit of the program"){
 
   override def init(div: Block, visible: Boolean): Unit = {
@@ -19,11 +20,11 @@ extends GraphBox(null, errorBox, path, "Circuit of the program"){
   }
   override def drawGraph(): Unit = try{
     clear()
-    val program = programBox.get
+    val program = DSL.parse(codeBox.get)
     //println(s"[prog] - Drawing graph - $program")
     val (typedProgram,_) = typeCheck(program)
     val (net1,maxPort1) = Net(typedProgram)
-    //println(s"[net] - Drawing graph (max=$maxPort1):\n$net1")
+//    println(s"[net] - Drawing graph (max=$maxPort1):\n$net1")
     val (net2,maxPort2) = addNodes(net1,Some(maxPort1+1))
     //println(s"[net] - Added Nodes (max=$maxPort2):\n$net2")
     val preo1: Network = mkPreoNet(net2)
