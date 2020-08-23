@@ -1,9 +1,10 @@
 package reolive
 
+import common.DomNode
 import common.widgets.Lince.{LinceBox, LinceExamplesBox}
 import common.widgets._
 import org.scalajs.dom.html
-import org.singlespaced.d3js.d3
+//import org.singlespaced.d3js.d3
 import widgets.RemoteGraphicBox
 import widgets.Treo.{TreoBox, TreoExamplesBox, TreoResultBox}
 
@@ -35,7 +36,7 @@ object RemoteTreo {
       """.stripMargin
 
     // Creating outside containers:
-    val contentDiv = d3.select(content).append("div")
+    val contentDiv = DomNode.select(content).append("div") //d3.select(content).append("div")
       .attr("class", "content")
 
     val rowDiv = contentDiv.append("div")

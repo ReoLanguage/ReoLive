@@ -2,11 +2,12 @@ package reolive
 
 import java.net.URLDecoder
 
+import common.DomNode
 import common.widgets._
 import common.widgets.Ifta.{IFTABox, IftaInfoBox, IftaMcrl2Box}
 import common.widgets.virtuoso.VirtuosoAutomataBox
 import org.scalajs.dom.html
-import org.singlespaced.d3js.d3
+//import org.singlespaced.d3js.d3
 import widgets._
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -41,7 +42,7 @@ object WebReo extends{
     //      .attr("id", "header")
     //      .append("h1").text("Reo Live - Connector Families")
 
-    val contentDiv = d3.select(content).append("div")
+    val contentDiv = DomNode.select(content).append("div") //d3.select(content).append("div")
       .attr("class", "content")
 
     val rowDiv = contentDiv.append("div")

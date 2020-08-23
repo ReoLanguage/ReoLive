@@ -36,13 +36,13 @@ class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]
     ss match {
       case hd::tl =>
         val button = buttonsDiv.append("button")
-          .text(hd)
+          .textEl(hd)
 
-        button.on("click",{(_: EventTarget, _: Int, _:UndefOr[Int])=> {
+        button.on("click", () => {// {(_: EventTarget, _: Int, _:UndefOr[Int])=> {
           toSet.zip(tl).foreach(pair => pair._1.setValue(pair._2))
           toSet.drop(tl.size).foreach(_.setValue(""))
           reload
-        }} : button.DatumFunction[Unit])
+        }) //} : button.DatumFunction[Unit])
       case Nil =>
     }
   }

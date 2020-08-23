@@ -1,8 +1,9 @@
 package common.widgets.arx
 
+import common.DomElem
 import common.widgets.Setable
 import org.scalajs.dom
-import org.singlespaced.d3js.Selection
+//import org.singlespaced.d3js.Selection
 
 /**
   * Created by guillecledou on 2020-01-27
@@ -10,7 +11,7 @@ import org.singlespaced.d3js.Selection
 
 
 class DslLibOutputArea  extends Setable[String] {
-  type Block = Selection[dom.EventTarget]
+  type Block = DomElem //Selection[dom.EventTarget]
 
   var output: Block = _
 
@@ -32,7 +33,7 @@ class DslLibOutputArea  extends Setable[String] {
     //header
     out.append("div")
       .attr("class","panel-heading my-panel-heading")
-      .append("h5").text("Library Information")
+      .append("h5").textEl("Library Information")
       .style("margin","0px")
 
     // body

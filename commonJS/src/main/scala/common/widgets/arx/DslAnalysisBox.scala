@@ -8,7 +8,7 @@ import dsl.analysis.syntax.Program
 import dsl.analysis.types.{Context, TExp}
 import dsl.backend.{Net, Show}
 import org.scalajs.dom.EventTarget
-import org.singlespaced.d3js.Selection
+//import org.singlespaced.d3js.Selection
 
 /**
   * Created by guillerminacledou on 2019-06-07

@@ -77,7 +77,9 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
     catch Box.checkExceptions(errorBox,"sbAutomata")
 
   private def deleteAutomaton(): Unit = {
-    svg.selectAll("g").html("")
+    //svg.selectAll("g").html("")
+    //// EXPERIMENTING TO DROP D3JS
+    svg.deleteAll("g")
     textAut.text("")
   }
 }

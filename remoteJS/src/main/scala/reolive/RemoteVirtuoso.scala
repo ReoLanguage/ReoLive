@@ -1,10 +1,11 @@
 package reolive
 
 
+import common.DomNode
 import common.widgets._
 import common.widgets.virtuoso._
 import org.scalajs.dom.html
-import org.singlespaced.d3js.d3
+//import org.singlespaced.d3js.d3
 import widgets.Virtuoso.{RemoteUppaalBox, RemoteVerifytaBox}
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -44,7 +45,7 @@ object RemoteVirtuoso extends {
 
 
     // Creating outside containers:
-    val contentDiv = d3.select(content).append("div")
+    val contentDiv = DomNode.select(content).append("div") //d3.select(content).append("div")
       .attr("class", "content")
 
     val rowDiv = contentDiv.append("div")

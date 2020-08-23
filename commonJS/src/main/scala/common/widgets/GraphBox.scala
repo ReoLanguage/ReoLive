@@ -1,9 +1,10 @@
 package common.widgets
 
+import common.DomElem
 import common.frontend.GraphsToJS
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
-import org.singlespaced.d3js.Selection
+//import org.singlespaced.d3js.Selection
 import preo.ast.CoreConnector
 import preo.backend.Circuit
 import preo.backend.Network.Mirrors
@@ -49,6 +50,7 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
     //println("Drawing graph - source: "+dependency.get)
     //println("Drawing graph - produced: "+ graph)
 //    toJs(graph)
+    //println("Drawing graph - produced: "+ GraphsToJS(graph))
     scalajs.js.eval(GraphsToJS(graph))
   }
   catch Box.checkExceptions(errorBox)
@@ -58,7 +60,9 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
 //  protected def toJs(g:Graph):Unit = scalajs.js.eval(GraphsToJS(g))
 
   protected def deleteDrawing(): Unit = {
-    box.selectAll("g").html("")
+    //box.selectAll("g").html("")
+    /// EXPERIMENT WHEN DROPPING d3js
+    box.deleteAll("g")
   }
 
   protected def saveSvg(): Unit = {
@@ -139,14 +143,14 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
     }
 
 object GraphBox {
-  type Block = Selection[dom.EventTarget]
+  type Block = DomElem //Selection[dom.EventTarget]
 
   private var width = 700
   private var height = 400
 
   def appendSvg(div: Block,name: String, path:String = "."): Block = {
     val svg = div.append("svg")
-      .attr("style","margin: auto;")
+//      .attr("style","margin: auto;")
       .attr("viewBox",s"0 0 $width $height")
       .attr("preserveAspectRatio","xMinYMin meet")
       .attr("id",name)

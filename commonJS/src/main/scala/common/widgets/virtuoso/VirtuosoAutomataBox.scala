@@ -69,7 +69,9 @@ class VirtuosoAutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
   }
 
   private def deleteAutomaton(): Unit = {
-    svg.selectAll("g").html("")
+    //svg.selectAll("g").html("")
+    //// EXPERIMENTING TO DROP D3JS
+    svg.deleteAll("g")
   }
 
   private def debug(): Unit = {

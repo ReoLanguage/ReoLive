@@ -50,7 +50,9 @@ extends GraphBox(null, errorBox, path, "Circuit of the program"){
   catch Box.checkExceptions(errorBox)
 
   protected def clear(): Unit = {
-    box.selectAll("g").html("")
+    //box.selectAll("g").html("")
+    //// EXPERIMENTING TO DROP D3JS
+    box.deleteAll("g")
   }
 
   /** For each connector c:ins->outs, replace boundary interfaces with nodes  */

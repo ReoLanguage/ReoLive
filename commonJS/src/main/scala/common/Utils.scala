@@ -6,9 +6,8 @@ import java.util.Base64
 import common.widgets.Box.Block
 import common.widgets.OutputArea
 import org.scalajs.dom
-import org.scalajs.dom.XMLHttpRequest
-import org.scalajs.dom.EventTarget
-import org.singlespaced.d3js.Selection
+import org.scalajs.dom.{EventTarget, XMLHttpRequest, document}
+//import org.singlespaced.d3js.Selection
 
 object Utils {
 
@@ -86,7 +85,15 @@ object Utils {
   }
 
 
- def moreInfo(block: Selection[dom.EventTarget],ref: String): Unit = {
+ def moreInfo(block: DomNode,ref: String): Unit = {
+//   val more2 = document.createElement("div")
+//   more2.setAttribute("class","panel-group")
+//   val p2 = document.createElement("p")
+//   more2.appendChild(p2)
+//   block.appendChild(more2)
+//   p2.setAttribute("style","...")
+//
+     ////////
     val more = block.append("div")
         .attr("class","panel-group")
         .append("p")
@@ -102,7 +109,7 @@ object Utils {
         .text(ref)
  }
 
-  def temporaryInfo(block: Selection[dom.EventTarget],title:String,ref: String): Unit = {
+  def temporaryInfo(block: DomNode,title:String,ref: String): Unit = {
     val more = block.append("div")
       .attr("class","panel-group")
       .append("p")
