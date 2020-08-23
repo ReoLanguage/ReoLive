@@ -35,6 +35,7 @@ class SBAnalysisBox(streamBuilder: Box[String], errorBox: OutputArea)
     this.clear()
 
     sb = DSL.parseSB(streamBuilder.get)
+    sb = sb.filterOutAndClean(sb.outputs -- sb.inputs -- sb.memory)
 
     var out = box.append("div").attr("class", "sb-result")
       .append("ul")
