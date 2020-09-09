@@ -57,7 +57,7 @@ class DomElem(elem: dom.Element) extends DomNode(elem) {
 //    org.scalajs.dom.document.onclick
     elem.addEventListener(`type`, {(_:dom.Event) => f()})
   }
-  
+
   def deleteAll(el:String): DomElem = {
     val ls = elem.querySelectorAll(el)
     for (i <- 0 until ls.length) {

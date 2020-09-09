@@ -163,6 +163,12 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
     */
   def update(): Unit
 
+  /** Adds code that is executed everyting the text of the title is clicked.
+    * The code is executed *before* collapsing/expanding. */
+  def whenClickTitle(update: ()=>Unit): Unit =
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+      .onclick = {_: MouseEvent => update()}
+
 }
 
 object Box {

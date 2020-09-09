@@ -130,9 +130,9 @@ object ARx {
 //    dsllibout = new DslLibOutputArea
 
     inputBox = new DslBox(reload(),program,errors)
-    result = new DslAnalysisBox(inputBox,errors)
-    examples = new DslExamplesBox(softReload(),List(inputBox,descr))
     graph = new DslGraphBox(inputBox,errors)
+    result = new DslAnalysisBox(graph,errors)
+    examples = new DslExamplesBox(softReload(),List(inputBox,descr))
 //    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
     aut = new DslAutomataBox(inputBox,errors)
     sb = new SBComposerBox(reloadSB(),sbs,errors)
@@ -178,8 +178,8 @@ object ARx {
   private def softReload(): Unit = {
     errors.clear()
     inputBox.update()
-    result.update()
     graph.update()
+    result.update()
     aut.update()
   }
 

@@ -1,9 +1,9 @@
 package common.widgets.arx
 
-import common.widgets.{Box, GraphBox, OutputArea}
-import dsl.analysis.semantics._
 import common.frontend.AutomataToJS
+import common.widgets.{Box, GraphBox, OutputArea}
 import dsl.DSL
+import dsl.analysis.semantics._
 import dsl.backend.Show
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
@@ -57,6 +57,7 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
       val (tprog,tctx) = DSL.typeCheck(prog)
       val sbCtx = DSL.encode(tprog,tctx)
       val sbProgram = sbCtx("Program")
+      //println(s"[arx-aut] SBs: ${Show(sbProgram._1)} § ${sbProgram._2} § ${sbProgram._3}")
       automaton = SBAutomata(sbProgram._1,mode=buildMode)
 
       val sizeAut = automaton.sts.size
