@@ -192,7 +192,27 @@ class DslExamplesBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[
         |}
         |
         |gui(sm,mc,t)
-      """.stripMargin::""::Nil
+      """.stripMargin::""::Nil,
+    "sb sequencer"::
+    """sb seq<m1,m2>(i1,i2) = {
+       |  init m1:=U
+       |  get(i1,m1),und(m2) -> m2:=m1, o1:=i1
+       |  get(i2,m2),und(m1) -> m1:=m2, o2:=i2
+       |  o1 o2
+       |}
+       |
+       |seq(a,b)""".stripMargin::"Sequencer definition using stream builder notation"::Nil,
+    "sb fifo"::
+    """sb boolfifo<m:Bool>(a) = {
+        | get(a),und(m) -> m:=a
+        | get(m) -> b:=m
+        | b
+        |}
+        |
+        |o1<-boolfifo(in)
+        |o2<-boolfifo(True)
+        |o1 o2
+        |""".stripMargin::"Boolean fifo definition using stream builder notation"::Nil
     ///////////////////
 //    "fix"::
 //      """def conn(y) = {
