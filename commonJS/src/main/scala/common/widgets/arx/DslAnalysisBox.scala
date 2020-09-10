@@ -177,7 +177,7 @@ class DslAnalysisBox(circuitBox: DslGraphBox, errorBox: OutputArea)
 //            gc.highlights.flatMap(m1).flatMap(nID).mkString(",")
 ////            highlight(gc.highlights.flatMap(net.mirror).flatMap(nID))
 //            )
-        def m1(s:String) = net.mirror(s)+s
+        def m1(s:String): Set[String] = net.mirror(s)+s
         val hls = gc.highlights.flatMap(m1).flatMap(nID)
         row.on("mouseenter", ()=>scala.scalajs.js.eval(highlight(hls)))
         row.on("mouseleave", ()=>scala.scalajs.js.eval(deHighlight(hls)))

@@ -7,7 +7,7 @@ import dsl.DSL
 import dsl.analysis.semantics.SBContext
 import dsl.analysis.types.Context
 import dsl.backend.ArxNet.Edge
-import dsl.backend.ArxNet
+import dsl.backend.{ArxNet, Show}
 import preo.ast.{CPrim, CoreInterface}
 import preo.backend.Network.{Mirrors, Port}
 import preo.backend.{Circuit, Network}
@@ -87,11 +87,13 @@ class DslGraphBox(codeBox: Box[String], errorBox: OutputArea, path: String=".")
   def drawGraph(): Unit = try{
     clear()
     val prog = DSL.parse(codeBox.get)
-    //println(s"[arx-prog] - Drawing graph - $prog")
+    //println(s"[DSLGr] - Drawing graph - $prog")
     val (tprog,tctx) = DSL.typeCheck(prog)
     sbCtx = DSL.encode(tprog,tctx)
     val (sb,_,_,newNet) = sbCtx("Program")
+    //println(s"[DSLGr] got program: ${Show(sb)}  ==  $newNet")
     net = newNet
+    net.clearMirrors()
     types = tctx
 
     // keeping track of node IDs
@@ -106,21 +108,21 @@ class DslGraphBox(codeBox: Box[String], errorBox: OutputArea, path: String=".")
     }
 
     addNodes(net,sb.inputs,sb.outputs)
-    //println(s"[arx-prog] making net from ${sb.inputs} to ${sb.outputs}: $net")
+    //println(s"[DSLGr] making net from ${sb.inputs} to ${sb.outputs}: $net")
     val preo1 = mkPreoNet(net,sb.inputs,sb.outputs,getNode)
-    //println(s"[arx-prog] nodeIds $nIDs")
-    //println(s"[preo] - 'Got Network' - $preo1")
+    //println(s"[DSLGr] nodeIds $nIDs")
+    //println(s"[DSLGr] - 'Got Network' - $preo1")
 
     val ms = new Mirrors
     val preo2 = Network.simplifyGraph(preo1,ms)
     // flip ms!
     ms.inverse()
-    //println(s"[preo] - 'simplified' - $preo2  ###  $ms")
+    //println(s"[DSLGr] - 'simplified' - $preo2  ###  $ms")
     val preo3 = Network.addRedundancy(preo2,ms,Some(fresh+1))
-    //println(s"[arx-preo] - with redundancy - $preo3  ###  $ms")
+    //println(s"[DSLGr] - with redundancy - $preo3  ###  $ms")
 
     val graph = Circuit(preo3,ms)//Circuit(dependency.get,true)
-    //println(s"[arx-preo] - final graph - $graph  ###  $ms")
+    //println(s"[DSLGr] - final graph - $graph  ###  $ms")
     val size = graph.nodes.size
     val factor = Math.sqrt(size * 10000 / (densityCirc * widthCircRatio * heightCircRatio))
     val width = (widthCircRatio * factor).toInt
