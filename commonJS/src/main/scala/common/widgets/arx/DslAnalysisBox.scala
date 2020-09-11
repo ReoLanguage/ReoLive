@@ -150,6 +150,7 @@ class DslAnalysisBox(circuitBox: DslGraphBox, errorBox: OutputArea)
           //.attr("class", "alert alert-info")
           .attr("class","sb-box")
           .style("padding","5px")
+          .style("background-color","rgba(255, 255, 255,0.4)")
           .style("color","#008900")
           .text(Show(gc.guard))
         row.append("div")
@@ -162,7 +163,8 @@ class DslAnalysisBox(circuitBox: DslGraphBox, errorBox: OutputArea)
           //.attr("class", "alert alert-success")
           .attr("class", "sb-box")
           .style("padding","5px")
-          .style("background-color","white")
+//          .style("background-color","white")
+          .style("background-color","rgba(255, 255, 255,0.4)")
           .style("color","#0F024F")
           .text(if (gc.cmd.isEmpty) "∅" else gc.cmd.map(c=>Show(c)).mkString(", "))
 //        row.append("div")
@@ -179,8 +181,22 @@ class DslAnalysisBox(circuitBox: DslGraphBox, errorBox: OutputArea)
 //            )
         def m1(s:String): Set[String] = net.mirror(s)+s
         val hls = gc.highlights.flatMap(m1).flatMap(nID)
-        row.on("mouseenter", ()=>scala.scalajs.js.eval(highlight(hls)))
-        row.on("mouseleave", ()=>scala.scalajs.js.eval(deHighlight(hls)))
+        def onEnter(): Any = {
+          scala.scalajs.js.eval(highlight(hls))
+          row.style("background-color","rgb(202, 238, 254)") // light blue
+
+        }
+        def onLeave(): Any = {
+          scala.scalajs.js.eval(deHighlight(hls))
+          row
+            .resetStyle()
+            .style("display", "flex")
+            .style("margin", "5px")
+            .style("justify-content", "fix-start")
+            .style("background-color","white") // light blue
+        }
+        row.on("mouseenter", onEnter)
+        row.on("mouseleave", onLeave)
       }
 
       def highlight(ports:Iterable[Int]): String = {
