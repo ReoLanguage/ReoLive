@@ -266,9 +266,11 @@ class DslGraphBox(codeBox: Box[String], errorBox: OutputArea, path: String=".")
     val extra:Set[Any] =
       (if (edge.prim == "node" && edge.from.size>1) Set[Any]("mrg")  else Set()) ++
         (if (edge.prim == "node" && edge.to.size>1) Set("dupl") else Set()) ++
+        (if (edge.prim.startsWith("±")) Set("box") else Set() ) ++
         (if (edge.prim == "BUILD" || edge.prim == "MATCH") Set("box") else
           if (edge.from.isEmpty && edge.to.size==1)    Set("box")  else Set())
-    Network.Prim(CPrim(edge.prim,CoreInterface(edge.from.size),CoreInterface(edge.to.size),extra)
+    val name = if (edge.prim.startsWith("±")) edge.prim.drop(1) else edge.prim
+    Network.Prim(CPrim(name,CoreInterface(edge.from.size),CoreInterface(edge.to.size),extra)
                 , edge.from.map(nodeId).toList, edge.to.map(nodeId).toList, Nil)
   }
 

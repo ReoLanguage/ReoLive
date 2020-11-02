@@ -31,6 +31,10 @@ class DomElem(elem: dom.Element) extends DomNode(elem) {
     this
   }
 
+  def resetStyle(): DomElem = {
+    elem.setAttribute("style","")
+    this
+  }
   def style(str:String): DomElem = {
     elem.getAttribute("style") match {
       case null => elem.setAttribute("style", str)

@@ -241,7 +241,8 @@ object Box {
       }
       //            instanceInfo.append("p").text("-")
       case e: java.lang.AssertionError => errorBox.error(e.getMessage)
-      case e: Throwable => errorBox.error(s"unknown error$by: " + e + " - " + e.getClass +"/n ### "+e.getStackTrace.mkString("\n - "))
+      case e: RuntimeException => errorBox.error(s"Runtime error$by: " + e)
+      case e: Throwable => errorBox.error(s"Error$by: " + e + " - " + e.getClass +"\n ### "+e.getStackTrace.mkString("\n - "))
     }
     f
   }
