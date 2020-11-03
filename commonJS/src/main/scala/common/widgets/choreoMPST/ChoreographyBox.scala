@@ -1,4 +1,4 @@
-package common.widgets.choreo
+package common.widgets.choreoMPST
 
 import choreo.DSL
 import choreo.backend.Mermaid._
@@ -27,11 +27,11 @@ class ChoreographyBox(choreo: Box[String], errorBox: OutputArea)
     */
   override def init(div: Block, visible: Boolean): Unit =
     box = panelBox(div, visible,buttons=List(
-      //Right("download")-> (()=>Utils.downloadSvg("choreographyBox"), "Download model as a TA in Uppaal")
+      Right("download")-> (() => Utils.downloadSvg("svgChoreography"), "Download SVG")
     )).append("div")
     .attr("class","mermaid")
     .attr("id", "choreographyBox")
-    .append("div").attr("id","disposableDiv")
+    .append("div").attr("id","svgChoreography")
 
 
   /**
@@ -43,14 +43,13 @@ class ChoreographyBox(choreo: Box[String], errorBox: OutputArea)
       try {
         val (choreography,_) = DSL.parseAndValidate(choreo.get)
         val mermaid = choreography.toMermaid
-//        box.text(mermaid)
         val initMermaid =
           s"""
             |  var display = document.getElementById('choreographyBox');
             |  var text = `
             |    ${mermaid}
             |  `
-            |  var graph = mermaid.mermaidAPI.render('disposableDiv', text, function(svgCode){ display.innerHTML = svgCode});
+            |  var graph = mermaid.mermaidAPI.render('svgChoreography', text, function(svgCode){ display.innerHTML = svgCode});
             """.stripMargin
         scalajs.js.eval(initMermaid)
       } catch Box.checkExceptions(errorBox)

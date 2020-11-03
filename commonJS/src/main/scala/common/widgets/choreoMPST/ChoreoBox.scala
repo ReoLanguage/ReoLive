@@ -1,4 +1,4 @@
-package common.widgets.choreo
+package common.widgets.choreoMPST
 
 import common.widgets.{Box, CodeBox, OutputArea}
 

@@ -290,7 +290,7 @@ object GraphBox {
   /** Calls JS code to download the SVG `element` as a file. */
   def saveSvg(element:String = "circuit"): Unit = {
     scalajs.js.eval(
-      s"""svgEl = document.getElementById("$element");
+      """svgEl = document.getElementById("circuit");
         |name = "circuit.svg";
         |
         |svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");

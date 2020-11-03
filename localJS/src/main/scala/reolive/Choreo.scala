@@ -2,7 +2,7 @@ package reolive
 
 import common.DomNode
 import common.widgets.OutputArea
-import common.widgets.choreo.{ChoreoBox, ChoreographyBox}
+import common.widgets.choreoMPST._
 import org.scalajs.dom.html
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -18,6 +18,8 @@ object Choreo {
   var descriptionArea: OutputArea = _
   var choreo:ChoreoBox = _
   var choreographyBox:ChoreographyBox = _
+  var exampleBox:ChoreoExamplesBox = _
+  var pomsetBox:PomsetBox = _
 
   @JSExportTopLevel("reolive_Choreo_main")
   def main(content: html.Div): Unit = {
@@ -72,22 +74,23 @@ object Choreo {
     errorArea = new OutputArea
     choreo = new ChoreoBox(reload(),defaultChoreo,errorArea)
     choreographyBox = new ChoreographyBox(choreo,errorArea)
+    exampleBox = new ChoreoExamplesBox(softReload(),List(choreo,descriptionArea))
+    pomsetBox = new PomsetBox(choreo,errorArea)
 
     choreo.init(leftColumn, true)
     errorArea.init(leftColumn)
     descriptionArea.init(leftColumn)
+    exampleBox.init(leftColumn,true)
     choreographyBox.init(rightColumn, true)
+    pomsetBox.init(rightColumn,true)
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/choreo")
 
-    softReload()
-//    // default button
-//    if (examples.loadButton("alt")) {
-//      softReload()
-//    }
-
+    // load default button
+    if (exampleBox.loadButton("streaming")) {
+      softReload()
+    }
   }
-
 
   /**
     * Function that parses the expressions written in the input box and
@@ -102,6 +105,7 @@ object Choreo {
     errorArea.clear()
     choreo.update()
     choreographyBox.update()
+    pomsetBox.update()
   }
 
 }
