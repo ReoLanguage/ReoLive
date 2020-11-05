@@ -4,6 +4,7 @@ import choreo.DSL
 import choreo.backend.Dot.DotOps
 import choreo.backend.DotVisPomsets._
 import common.Utils
+import common.frontend.CytoscapePomset
 import common.widgets.{Box, OutputArea}
 
 /**
@@ -12,7 +13,7 @@ import common.widgets.{Box, OutputArea}
 
 
 class PomsetBox(choreo: Box[String], errorBox: OutputArea)
-  extends Box[String]("Pomset of the choreography", List(choreo)) {
+  extends Box[String]("Pomset of the choreography via dot for Vis.js", List(choreo)) {
 
   val pomset:String = ""
   private var box:Block = _
@@ -27,11 +28,10 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
     */
   override def init(div: Block, visible: Boolean): Unit =
     box = panelBox(div, visible,buttons=List(
-      Right("download")-> (() => Utils.downloadSvg("svgPomset"), "Download SVG")
+      //Right("download")-> (() => Utils.downloadSvg("pomsetBox"), "Download SVG")
     )).append("div")
       .attr("class","pomset")
       .attr("id", "pomsetBox")
-      //.append("div").attr("id","svgChoreography")
 
 
   /**
@@ -42,19 +42,18 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
   override def update(): Unit = {
     try {
       val (choreography,channels) = DSL.parseAndValidate(choreo.get)
-      val dot = DSL.semantics(choreography,channels).toDot
-      println(dot)
+      val pomsets = DSL.semantics(choreography,channels)
       val initDot =
         s"""
            |  var display = document.getElementById('pomsetBox');
            |  var dot = `
-           |    ${dot}
+           |    ${pomsets.toDot}
            |  `
            |  var network = vis.parseDOTNetwork(dot);
            |
            |  var options = network.options;
            |
-           |  options.height = Math.round($$(window).height() * 0.45) + 'px';
+           |  options.height = '600px'; //Math.round($$(window).height() * 0.45) + 'px';
            |  options.hierarchicalLayout = {
            |    enabled : true,
            |    direction : "LR",

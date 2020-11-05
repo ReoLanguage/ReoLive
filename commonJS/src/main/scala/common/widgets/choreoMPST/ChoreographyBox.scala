@@ -31,6 +31,7 @@ class ChoreographyBox(choreo: Box[String], errorBox: OutputArea)
     )).append("div")
     .attr("class","mermaid")
     .attr("id", "choreographyBox")
+      .style("text-align","center")
     .append("div").attr("id","svgChoreography")
 
 

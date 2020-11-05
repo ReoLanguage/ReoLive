@@ -20,6 +20,7 @@ object Choreo {
   var choreographyBox:ChoreographyBox = _
   var exampleBox:ChoreoExamplesBox = _
   var pomsetBox:PomsetBox = _
+  var pomsetCytoBox:PomsetCytoBox = _
 
   @JSExportTopLevel("reolive_Choreo_main")
   def main(content: html.Div): Unit = {
@@ -76,6 +77,7 @@ object Choreo {
     choreographyBox = new ChoreographyBox(choreo,errorArea)
     exampleBox = new ChoreoExamplesBox(softReload(),List(choreo,descriptionArea))
     pomsetBox = new PomsetBox(choreo,errorArea)
+    pomsetCytoBox = new PomsetCytoBox(choreo,errorArea)
 
     choreo.init(leftColumn, true)
     errorArea.init(leftColumn)
@@ -83,6 +85,7 @@ object Choreo {
     exampleBox.init(leftColumn,true)
     choreographyBox.init(rightColumn, true)
     pomsetBox.init(rightColumn,true)
+    pomsetCytoBox.init(rightColumn,true)
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/choreo")
 
@@ -106,6 +109,7 @@ object Choreo {
     choreo.update()
     choreographyBox.update()
     pomsetBox.update()
+    pomsetCytoBox.update()
   }
 
 }
