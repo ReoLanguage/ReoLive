@@ -44,7 +44,6 @@ class PomsetCytoBox(choreo: Box[String], errorBox: OutputArea)
       val (choreography, channels) = DSL.parseAndValidate(choreo.get)
       val pomsets = DSL.semantics(choreography, channels)
       val cyto = CytoscapePomset(pomsets,"pomsetCytoBox")
-      println(cyto)
       scalajs.js.eval(cyto)
     } catch Box.checkExceptions(errorBox)
   }

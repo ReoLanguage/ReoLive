@@ -49,6 +49,18 @@ class ChoreoExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |
         |a>ofifo(m)>b
         |""".stripMargin::"Override-Fifo"::Nil,
+    "fifo-sync"::
+      """def fifo<m>(i)(o) = {
+        | get(i),und(m) -> m:=i
+        | get(m) -> o:=m
+        |}
+        |
+        |def sync(i)(o) = {
+        | get(i) -> o:=i
+        |}
+        |
+        |a>fifo(m)>b ; a>sync>c
+        |""".stripMargin::"Fifo-Sync"::Nil,
     "reader"::
       """def reader<m>(a)() = {
         | get(a),und(m) -> m:=a
