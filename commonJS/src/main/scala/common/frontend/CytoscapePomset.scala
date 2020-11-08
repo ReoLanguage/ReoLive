@@ -17,15 +17,14 @@ object CytoscapePomset {
   private lazy val pomsetBackground = "#F0F0F0"
   private lazy val edgeArrow = "triangle"
 
-  private var seedId:Int = 0
-  private def seed():Int = {seedId+=1;seedId-1}
-
   def apply(p: PomsetFamily, elementId: String): String = {
-    seedId = 0
+    val pomsetsWithId = p.pomsets.zipWithIndex
+    val elements = pomsetsWithId.map{case (p,i) => mkPomsetElements(p)(i)}.mkString(",")
+    val loops = pomsetsWithId.map{case (p,i) => mkLoopsElements(p)(i)}.mkString(",")
     s"""
        |var cy = cytoscape({
        |    container: document.getElementById('${elementId}'),
-       |    elements: [${mkFamilyElements(p.pomsets)}],
+       |    elements: [${elements}],
        |    style: [
        |      { selector: 'node',
        |        style: { 'background-color': '${labelBackground}','label': 'data(label)'}
@@ -45,8 +44,8 @@ object CytoscapePomset {
        |      },
        |      { selector: "node[class='loop']",
        |        style: {
-       |          'background-opacity': '0', 'border-color':'#999999', 'opacity':'0.35',
-       |          'label': 'data(label)','z-compound-depth':'top','shape':'round-rectangle'}
+       |          'background-opacity': '0.05', 'border-color':'#999999', 'opacity':'0.35',
+       |          'label': 'data(label)','z-compound-depth':'bot','shape':'round-rectangle','padding':'15px'}
        |      },
        |      { selector: 'edge',
        |        style: {
@@ -59,31 +58,33 @@ object CytoscapePomset {
        |      }
        |    ],
        |});
+       |// first, order labels and edges
        |cy.elements(":childless,edge").layout({
        |  name:"dagre",
        |  rankDir:'LR',
        |  avoidOverlap: true,
        |  fit:true,
        |  nodeDimensionsIncludeLabels: true}).run();
+       |// second, order pomset boxes
        |cy.elements("[^parent]").layout({
        |  name:"dagre",
        |  rankDir:'LR',
        |  avoidOverlap: true,
        |  fit:true,
        |  nodeDimensionsIncludeLabels: true}).run();
-       |cy.elements().renderedBoundingBox();
+       |// add loops
+       |cy.add([$loops]);
+       |// position loops
        |cy.nodes("[class='invisible']").map(function(node){
-       |  cy.$$("#"+node.data('id')).position(cy.$$('#'+node.data('mirror')).position());
-       | });
+       |  cy.$$("#"+node.data('id')).position(cy.$$("#"+node.data('mirror')).position());
+       |});
+       |// fit everything into the box, leaving 20px padding
        |cy.fit(20);
        |""".stripMargin
   }
 
-  def mkFamilyElements(pomsets: Set[Pomset]): String =
-    pomsets.flatMap(p=>mkPomsetElements(p)(seed())).mkString(",")
-
-  def mkPomsetElements(p: Pomset)(implicit id:Int): List[String] =
-    nodes(p)++edges(p)++loops(p)
+  def mkPomsetElements(p: Pomset)(implicit id:Int): String =
+    (nodes(p)++edges(p)).mkString(",")
 
   def nodes(p: Pomset)(implicit id:Int): List[String] =
     s"""{data:{id:'p${id}', parent: undefined, label:'P$id'}}"""::
@@ -96,16 +97,17 @@ object CytoscapePomset {
   def mkLabel(l:(Event,Label))(implicit id:Int):String =
     s"""{data:{id:'${l._1}', parent:'p$id-${l._2.active.name}', label:'${Show(l._2)}'}}"""
 
-  def loops(p:Pomset)(implicit id:Int):List[String] =
-    p.loops.flatMap(l=>mkLoop(l,p.labels,id)(seed())).toList
+  def mkLoopsElements(p:Pomset)(implicit id:Int):String =
+    p.loops.zipWithIndex.flatMap({case(l,loopId)=>mkLoop(l,p.labels,id)(loopId)}).mkString(",")
 
   def mkLoop(loop:Set[Event],labels:Labels,pomId:Int)(implicit loopId:Int):List[String] =
-    s"""{data:{id:'loop$loopId', parent: 'p$pomId', label:'loop', class:'loop'}}"""::
-    loop.map(l=>mkLoopEvent(l,labels)).toList
+    s"""{ group: 'nodes', data:{id:'loop$loopId-p$pomId', parent: 'p$pomId', label:'loop', class:'loop'}}"""::
+    loop.map(l=>mkLoopEvent(l,labels,pomId)).toList
 
-  def mkLoopEvent(e:Event,labels:Labels)(implicit loopId:Int):String =
-    s"""{data:{id:'${e}bis-$loopId',
-       |       parent:'loop$loopId',
+  def mkLoopEvent(e:Event,labels:Labels,pomId:Int)(implicit loopId:Int):String =
+    s"""{group:'nodes',
+       | data:{id:'${e}bis-l$loopId-p$pomId',
+       |       parent:'loop$loopId-p$pomId',
        |       label:'${Show(labels(e))}',
        |       class:'invisible',
        |       mirror:'$e'}}""".stripMargin
@@ -124,9 +126,8 @@ object CytoscapePomset {
     if (labels(o.right).active == labels(o.left).active) s"p$id-${labels(o.right).active.name}"
     else "p"+id.toString
 
-  def mkEdgeColor(o: Order,labels:Labels):String = {
+  def mkEdgeColor(o: Order,labels:Labels):String =
     if (labels(o.right).active == labels(o.left).active) "#c2a566"
     else if (labels(o.right).passive.contains(labels(o.left).active)) "black"
     else "orange"
-  }
 }
