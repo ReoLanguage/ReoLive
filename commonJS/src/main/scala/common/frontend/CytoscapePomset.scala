@@ -2,6 +2,7 @@ package common.frontend
 
 import choreo.Agent
 import choreo.backend.Show
+import choreo.semantics.Pomset.Label.{In, Out, OverrideIn}
 import choreo.semantics.Pomset.{Event, Label, Labels, Loops, Order}
 import choreo.semantics.{Pomset, PomsetFamily}
 
@@ -95,7 +96,7 @@ object CytoscapePomset {
       p.labelsOf(a).map((mkLabel)).toList
 
   def mkLabel(l:(Event,Label))(implicit id:Int):String =
-    s"""{data:{id:'${l._1}', parent:'p$id-${l._2.active.name}', label:'${Show(l._2)}'}}"""
+    s"""{data:{id:'p$id-${l._1}', parent:'p$id-${l._2.active.name}', label:'${Show(l._2)}'}}"""
 
   def mkLoopsElements(p:Pomset)(implicit id:Int):String =
     p.loops.zipWithIndex.flatMap({case(l,loopId)=>mkLoop(l,p.labels,id)(loopId)}).mkString(",")
@@ -110,15 +111,15 @@ object CytoscapePomset {
        |       parent:'loop$loopId-p$pomId',
        |       label:'${Show(labels(e))}',
        |       class:'invisible',
-       |       mirror:'$e'}}""".stripMargin
+       |       mirror:'p$pomId-$e'}}""".stripMargin
 
   def edges(p:Pomset)(implicit id:Int):List[String] =
     p.order.map(o=>mkOrder(o,p.labels)).toList
 
   def mkOrder(o:Order,labels:Labels)(implicit id:Int):String =
-    s"""{data: { id: '${o.left}-${o.right}',
-       |        source: '${o.left}',
-       |        target: '${o.right}',
+    s"""{data: { id: 'p$id-${o.left}-${o.right}',
+       |        source: 'p$id-${o.left}',
+       |        target: 'p$id-${o.right}',
        |        color: '${mkEdgeColor(o, labels)}',
        |        parent: '${mkParent(o,labels)}'}}""".stripMargin
 
@@ -128,6 +129,7 @@ object CytoscapePomset {
 
   def mkEdgeColor(o: Order,labels:Labels):String =
     if (labels(o.right).active == labels(o.left).active) "#c2a566"
-    else if (labels(o.right).passive.contains(labels(o.left).active)) "black"
+    else if (labels(o.left).matchingIO(labels(o.right))) "black"
     else "orange"
+
 }
