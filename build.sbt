@@ -44,8 +44,8 @@ lazy val server = (project in file("server"))
     scalacOptions ++= Seq("-unchecked", "-deprecation","-feature"),
     resolvers ++= Seq(
       "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
-      "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/",
-      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+      ("Akka Snapshot Repository" at "http://repo.akka.io/snapshots/").withAllowInsecureProtocol(true),
+      ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/").withAllowInsecureProtocol(true)
     ),
     libraryDependencies ++= Seq(
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",//"1.1.0",
@@ -122,7 +122,7 @@ lazy val remoteJS= (project in file("remoteJS"))
     name := "remote_js",
     javascript_settings,
     resolvers ++= Seq(
-      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+      ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/").withAllowInsecureProtocol(true)
     ),
     libraryDependencies ++= Seq(
       // "com.typesafe.play" %% "play" % "2.6.11"
