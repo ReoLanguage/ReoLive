@@ -4,6 +4,8 @@ package common.widgets.choreoMPST
 //import choreo.backend.Mermaid._
 //import choreo.backend.MermaidChoreography._
 //import choreo.choreo2.syntax.Agent
+import choreo.choreo2.DSL
+import choreo.choreo2.view.SequenceChart
 import common.Utils
 import common.widgets.{Box, OutputArea}
 
@@ -43,17 +45,17 @@ class ChoreographyBox(choreocode: Box[String], errorBox: OutputArea)
       */
   override def update(): Unit = {
       try {
-  //        val (choreography,_) = DSL.parseAndValidate(choreo.get)
-//        val mermaid = choreography.toMermaid
-//        val initMermaid =
-//          s"""
-//            |  var display = document.getElementById('choreographyBox');
-//            |  var text = `
-//            |    ${mermaid}
-//            |  `
-//            |  var graph = mermaid.mermaidAPI.render('svgChoreography', text, function(svgCode){ display.innerHTML = svgCode});
-//            """.stripMargin
-//        scalajs.js.eval(initMermaid)
+        val choreography = DSL.parse(choreocode.get)
+        val mermaid = SequenceChart(choreography)
+        val initMermaid =
+          s"""
+            |  var display = document.getElementById('choreographyBox');
+            |  var text = `
+            |    ${mermaid}
+            |  `
+            |  var graph = mermaid.mermaidAPI.render('svgChoreography', text, function(svgCode){ display.innerHTML = svgCode});
+            """.stripMargin
+        scalajs.js.eval(initMermaid)
       } catch Box.checkExceptions(errorBox)
     }
 
