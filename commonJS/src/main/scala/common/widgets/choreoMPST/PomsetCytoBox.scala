@@ -1,7 +1,7 @@
 package common.widgets.choreoMPST
 
-import choreo.DSL
-import common.frontend.CytoscapePomset
+//import choreo.DSL
+//import common.frontend.CytoscapePomset
 import common.widgets.{Box, OutputArea}
 
 /**
@@ -41,10 +41,10 @@ class PomsetCytoBox(choreo: Box[String], errorBox: OutputArea)
     */
   override def update(): Unit = {
     try {
-      val (choreography, channels) = DSL.parseAndValidate(choreo.get)
-      val pomsets = DSL.semantics(choreography, channels)
-      val cyto = CytoscapePomset(pomsets,"pomsetCytoBox")
-      scalajs.js.eval(cyto)
+//      val (choreography, channels) = DSL.parseAndValidate(choreo.get)
+//      val pomsets = DSL.semantics(choreography, channels)
+//      val cyto = CytoscapePomset(pomsets,"pomsetCytoBox")
+//      scalajs.js.eval(cyto)
     } catch Box.checkExceptions(errorBox)
   }
 }

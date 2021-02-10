@@ -13,14 +13,14 @@ mkdir -p site/content
 cd site/
 echo "- linking generated JavaScript files"
 cd js/gen/
-ln -sf ../../../localJS/target/scala-2.12/local_js-fastopt.js     
-ln -sf ../../../localJS/target/scala-2.12/local_js-fastopt.js.map 
-ln -sf ../../../localJS/target/scala-2.12/local_js-opt.js         
-ln -sf ../../../localJS/target/scala-2.12/local_js-opt.js.map     
-ln -sf ../../../remoteJS/target/scala-2.12/remote_js-fastopt.js     
-ln -sf ../../../remoteJS/target/scala-2.12/remote_js-fastopt.js.map 
-ln -sf ../../../remoteJS/target/scala-2.12/remote_js-opt.js         
-ln -sf ../../../remoteJS/target/scala-2.12/remote_js-opt.js.map     
+ln -sf ../../../localJS/target/scala-2.13/local_js-fastopt.js
+ln -sf ../../../localJS/target/scala-2.13/local_js-fastopt.js.map
+ln -sf ../../../localJS/target/scala-2.13/local_js-opt.js
+ln -sf ../../../localJS/target/scala-2.13/local_js-opt.js.map
+ln -sf ../../../remoteJS/target/scala-2.13/remote_js-fastopt.js
+ln -sf ../../../remoteJS/target/scala-2.13/remote_js-fastopt.js.map
+ln -sf ../../../remoteJS/target/scala-2.13/remote_js-opt.js
+ln -sf ../../../remoteJS/target/scala-2.13/remote_js-opt.js.map
 cd ../../../
 echo "Updating links at the server"
 mkdir -p server/public

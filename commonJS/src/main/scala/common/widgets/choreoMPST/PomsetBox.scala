@@ -1,10 +1,10 @@
 package common.widgets.choreoMPST
 
-import choreo.DSL
-import choreo.backend.Dot.DotOps
-import choreo.backend.DotVisPomsets._
-import common.Utils
-import common.frontend.CytoscapePomset
+//import choreo.DSL
+//import choreo.backend.Dot.DotOps
+//import choreo.backend.DotVisPomsets._
+//import common.Utils
+//import common.frontend.CytoscapePomset
 import common.widgets.{Box, OutputArea}
 
 /**
@@ -41,28 +41,28 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
     */
   override def update(): Unit = {
     try {
-      val (choreography,channels) = DSL.parseAndValidate(choreo.get)
-      val pomsets = DSL.semantics(choreography,channels)
-      val initDot =
-        s"""
-           |  var display = document.getElementById('pomsetBox');
-           |  var dot = `
-           |    ${pomsets.toDot}
-           |  `
-           |  var network = vis.parseDOTNetwork(dot);
-           |
-           |  var options = network.options;
-           |
-           |  options.height = '600px'; //Math.round($$(window).height() * 0.45) + 'px';
-           |  options.hierarchicalLayout = {
-           |    enabled : true,
-           |    direction : "LR",
-           |    layout : "direction"
-           |  }
-           |
-           |  var graph = new vis.Network(display,network,options);
-            """.stripMargin
-      scalajs.js.eval(initDot)
+//      val (choreography,channels) = DSL.parseAndValidate(choreo.get)
+//      val pomsets = DSL.semantics(choreography,channels)
+//      val initDot =
+//        s"""
+//           |  var display = document.getElementById('pomsetBox');
+//           |  var dot = `
+//           |    ${pomsets.toDot}
+//           |  `
+//           |  var network = vis.parseDOTNetwork(dot);
+//           |
+//           |  var options = network.options;
+//           |
+//           |  options.height = '600px'; //Math.round($$(window).height() * 0.45) + 'px';
+//           |  options.hierarchicalLayout = {
+//           |    enabled : true,
+//           |    direction : "LR",
+//           |    layout : "direction"
+//           |  }
+//           |
+//           |  var graph = new vis.Network(display,network,options);
+//            """.stripMargin
+//      scalajs.js.eval(initDot)
     } catch Box.checkExceptions(errorBox)
   }
 

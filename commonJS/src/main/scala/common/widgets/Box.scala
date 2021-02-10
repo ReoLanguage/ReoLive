@@ -233,10 +233,10 @@ object Box {
         errorBox.error(s"InvalidParameterException$by: " + e.getMessage)
       case e: dsl.common.PatternMatchingException =>
         errorBox.error(s"PatternMatchingException$by: " + e.getMessage)
-      case e: choreo.common.ParsingException =>
-        errorBox.error(s"ParserException$by: " + e.getMessage)
-      case e: choreo.common.DefinitionException =>
-        errorBox.error(s"DefinitionException$by: " + e.getMessage)
+//      case e: choreo.common.ParsingException =>
+//        errorBox.error(s"ParserException$by: " + e.getMessage)
+//      case e: choreo.common.DefinitionException =>
+//        errorBox.error(s"DefinitionException$by: " + e.getMessage)
       case e: JavaScriptException => {
         //      val sw = new StringWriter
         //      e.printStackTrace(new PrintWriter(sw))

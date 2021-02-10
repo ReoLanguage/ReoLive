@@ -1,8 +1,9 @@
 package common.widgets.choreoMPST
 
-import choreo.DSL
-import choreo.backend.Mermaid._
-import choreo.backend.MermaidChoreography._
+//import choreo.DSL
+//import choreo.backend.Mermaid._
+//import choreo.backend.MermaidChoreography._
+//import choreo.choreo2.syntax.Agent
 import common.Utils
 import common.widgets.{Box, OutputArea}
 
@@ -11,8 +12,8 @@ import common.widgets.{Box, OutputArea}
   */
 
 
-class ChoreographyBox(choreo: Box[String], errorBox: OutputArea)
-  extends Box[String]("Sequence diagram of the choreography", List(choreo)) {
+class ChoreographyBox(choreocode: Box[String], errorBox: OutputArea)
+  extends Box[String]("Sequence diagram of the choreography", List(choreocode)) {
 
   val sequenceChart:String = ""
   private var box:Block = _
@@ -42,17 +43,17 @@ class ChoreographyBox(choreo: Box[String], errorBox: OutputArea)
       */
   override def update(): Unit = {
       try {
-        val (choreography,_) = DSL.parseAndValidate(choreo.get)
-        val mermaid = choreography.toMermaid
-        val initMermaid =
-          s"""
-            |  var display = document.getElementById('choreographyBox');
-            |  var text = `
-            |    ${mermaid}
-            |  `
-            |  var graph = mermaid.mermaidAPI.render('svgChoreography', text, function(svgCode){ display.innerHTML = svgCode});
-            """.stripMargin
-        scalajs.js.eval(initMermaid)
+  //        val (choreography,_) = DSL.parseAndValidate(choreo.get)
+//        val mermaid = choreography.toMermaid
+//        val initMermaid =
+//          s"""
+//            |  var display = document.getElementById('choreographyBox');
+//            |  var text = `
+//            |    ${mermaid}
+//            |  `
+//            |  var graph = mermaid.mermaidAPI.render('svgChoreography', text, function(svgCode){ display.innerHTML = svgCode});
+//            """.stripMargin
+//        scalajs.js.eval(initMermaid)
       } catch Box.checkExceptions(errorBox)
     }
 
