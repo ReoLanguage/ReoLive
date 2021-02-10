@@ -38,7 +38,13 @@
 <script type="text/javascript" src="../js/static/codemirror/mode/choreo/choreo.js"></script>
 <script type="text/javascript" src="../js/gen/local_js-fastopt.js"></script>
 <script type="text/javascript" src="../js/static/mermaid.min.js"></script>
-<script>mermaid.mermaidAPI.initialize({ startOnLoad:false,logLevel: 1});</script>
+<script>
+    var config = {
+        startOnLoad:false,
+        logLevel:1
+    };
+    mermaid.mermaidAPI.initialize(config);
+</script>
 
 <script>
     reolive_Choreo_main(document.getElementById('contentWrap'));

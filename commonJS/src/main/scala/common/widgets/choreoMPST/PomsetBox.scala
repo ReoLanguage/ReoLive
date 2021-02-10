@@ -5,6 +5,9 @@ package common.widgets.choreoMPST
 //import choreo.backend.DotVisPomsets._
 //import common.Utils
 //import common.frontend.CytoscapePomset
+import choreo.choreo2.DSL
+import choreo.choreo2.view.MermaidPomset
+import common.Utils
 import common.widgets.{Box, OutputArea}
 
 /**
@@ -13,7 +16,7 @@ import common.widgets.{Box, OutputArea}
 
 
 class PomsetBox(choreo: Box[String], errorBox: OutputArea)
-  extends Box[String]("Pomset of the choreography via dot for Vis.js", List(choreo)) {
+  extends Box[String]("Pomset", List(choreo)) {
 
   val pomset:String = ""
   private var box:Block = _
@@ -28,10 +31,12 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
     */
   override def init(div: Block, visible: Boolean): Unit =
     box = panelBox(div, visible,buttons=List(
-      //Right("download")-> (() => Utils.downloadSvg("pomsetBox"), "Download SVG")
+      Right("download")-> (() => Utils.downloadSvg("svgPomset"), "Download SVG")
     )).append("div")
-      .attr("class","pomset")
+      .attr("class","mermaid")
       .attr("id", "pomsetBox")
+      .style("text-align","center")
+      .append("div").attr("id","svgPomset")
 
 
   /**
@@ -41,6 +46,17 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
     */
   override def update(): Unit = {
     try {
+      val choreography = DSL.parse(choreo.get)
+      val mermaid = MermaidPomset(DSL.pomset(choreography))
+      val initMermaid =
+        s"""
+           |  var display = document.getElementById('pomsetBox');
+           |  var text = `
+           |    ${mermaid}
+           |  `
+           |  var graph = mermaid.mermaidAPI.render('svgPomset', text, function(svgCode){ display.innerHTML = svgCode});
+            """.stripMargin
+      scalajs.js.eval(initMermaid)
 //      val (choreography,channels) = DSL.parseAndValidate(choreo.get)
 //      val pomsets = DSL.semantics(choreography,channels)
 //      val initDot =

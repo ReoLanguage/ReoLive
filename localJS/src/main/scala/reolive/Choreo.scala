@@ -19,34 +19,14 @@ object Choreo {
   var choreo:ChoreoBox = _
   var choreographyBox:ChoreographyBox = _
   var exampleBox:ChoreoExamplesBox = _
-  //var pomsetBox:PomsetBox = _
-  var pomsetCytoBox:PomsetCytoBox = _
+  var pomsetBox:PomsetBox = _
+//  var pomsetCytoBox:PomsetCytoBox = _
 
   @JSExportTopLevel("reolive_Choreo_main")
   def main(content: html.Div): Unit = {
 
     val defaultChoreo =
-      """def send<w>(dp,kp)(k) = {
-        | get(dp) -> w:=dp
-        | get(w,kp) -> k:={w,kp}
-        |}
-        |
-        |def notify<x,y,z>(k)(c1,c2) = {
-        | get(k) -> x:=k
-        | get(x) -> y:=x
-        | get(y) -> z:=y
-        | get(z) -> c1:=z, c2:=z
-        |}
-        |
-        |def check<z>(m)(m)={
-        | get(z) -> m:=z, z:=z
-        |}
-        |
-        |(
-        | dataProd,keyProd >send(w)> kernel ;
-        | kernel > notify(x,y,z)>cons1,cons2
-        |)*
-        ||| (monitor>check(z)>monitor)*"""
+      """a->b:x"""
         .stripMargin
 
     // Creating outside containers:
@@ -76,22 +56,22 @@ object Choreo {
     choreo = new ChoreoBox(reload(),defaultChoreo,errorArea)
     choreographyBox = new ChoreographyBox(choreo,errorArea)
     exampleBox = new ChoreoExamplesBox(softReload(),List(choreo,descriptionArea))
-    //pomsetBox = new PomsetBox(choreo,errorArea)
-    pomsetCytoBox = new PomsetCytoBox(choreo,errorArea)
+    pomsetBox = new PomsetBox(choreo,errorArea)
+//    pomsetCytoBox = new PomsetCytoBox(choreo,errorArea)
 
     choreo.init(leftColumn, true)
     errorArea.init(leftColumn)
     descriptionArea.init(leftColumn)
     exampleBox.init(leftColumn,true)
     choreographyBox.init(rightColumn, true)
-    pomsetCytoBox.init(rightColumn,true)
-    //pomsetBox.init(rightColumn,true)
+//    pomsetCytoBox.init(rightColumn,true)
+    pomsetBox.init(rightColumn,true)
 
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/choreo")
 
     // load default button
-    if (exampleBox.loadButton("streaming")) {
+    if (exampleBox.loadButton("ex4")) {
       softReload()
     }
   }
@@ -109,8 +89,8 @@ object Choreo {
     errorArea.clear()
     choreo.update()
     choreographyBox.update()
-    //pomsetBox.update()
-    pomsetCytoBox.update()
+    pomsetBox.update()
+//    pomsetCytoBox.update()
   }
 
 }
