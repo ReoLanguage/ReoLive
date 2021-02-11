@@ -11,7 +11,7 @@ class ChoreoExamplesBox(reload: => Unit, toSet: List[Setable[String]])
   extends ExampleBox("Choreo Examples",reload,toSet) {
 
   protected val buttons:Seq[List[String]] =
-    (for ((n,e) <- Examples.all)
+    (for ((n,e) <- Examples.allList) //Examples.all.toSeq.sortBy(_._1)
       yield n::e.toString::n::Nil).toSeq
 
 //  protected val buttons: Seq[List[String]] = Seq(
