@@ -16,7 +16,7 @@ import common.widgets.{Box, OutputArea}
 
 
 class PomsetBox(choreo: Box[String], errorBox: OutputArea)
-  extends Box[String]("Pomset", List(choreo)) {
+  extends Box[String]("Nested Pomset", List(choreo)) {
 
   val pomset:String = ""
   private var box:Block = _
