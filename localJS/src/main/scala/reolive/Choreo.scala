@@ -2,7 +2,7 @@ package reolive
 
 import common.DomNode
 import common.widgets.OutputArea
-import common.widgets.choreoMPST._
+import common.widgets.choreography._
 import org.scalajs.dom.html
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -20,6 +20,7 @@ object Choreo {
   var choreographyBox:ChoreographyBox = _
   var exampleBox:ChoreoExamplesBox = _
   var pomsetBox:PomsetBox = _
+  var pomsetSimBox:PomsetSimBox = _
 //  var pomsetCytoBox:PomsetCytoBox = _
 
   @JSExportTopLevel("reolive_Choreo_main")
@@ -57,7 +58,9 @@ object Choreo {
     choreographyBox = new ChoreographyBox(choreo,errorArea)
     exampleBox = new ChoreoExamplesBox(softReload(),List(choreo,descriptionArea))
     pomsetBox = new PomsetBox(choreo,errorArea)
+    pomsetSimBox = new PomsetSimBox(choreo,errorArea)
 //    pomsetCytoBox = new PomsetCytoBox(choreo,errorArea)
+
 
     choreo.init(leftColumn, true)
     errorArea.init(leftColumn)
@@ -66,6 +69,7 @@ object Choreo {
     choreographyBox.init(rightColumn, true)
 //    pomsetCytoBox.init(rightColumn,true)
     pomsetBox.init(rightColumn,true)
+    pomsetSimBox.init(rightColumn)
 
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/choreo")
@@ -91,6 +95,7 @@ object Choreo {
     choreographyBox.update()
     pomsetBox.update()
 //    pomsetCytoBox.update()
+    pomsetSimBox.update()
   }
 
 }

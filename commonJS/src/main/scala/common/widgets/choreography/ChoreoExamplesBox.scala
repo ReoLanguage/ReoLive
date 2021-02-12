@@ -1,4 +1,4 @@
-package common.widgets.choreoMPST
+package common.widgets.choreography
 
 import common.widgets.{Box, ExampleBox, Setable}
 import choreo.choreo2.Examples

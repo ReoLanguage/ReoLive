@@ -1,4 +1,4 @@
-package common.widgets.choreoMPST
+package common.widgets.choreography
 
 //import choreo.DSL
 //import common.frontend.CytoscapePomset

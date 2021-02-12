@@ -1,4 +1,4 @@
-package common.widgets.choreoMPST
+package common.widgets.choreography
 
 //import choreo.DSL
 //import choreo.backend.Mermaid._

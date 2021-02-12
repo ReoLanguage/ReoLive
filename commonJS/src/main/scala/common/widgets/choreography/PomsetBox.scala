@@ -1,4 +1,4 @@
-package common.widgets.choreoMPST
+package common.widgets.choreography
 
 //import choreo.DSL
 //import choreo.backend.Dot.DotOps
@@ -55,6 +55,7 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
            |    ${mermaid}
            |  `
            |  var graph = mermaid.mermaidAPI.render('svgPomset', text, function(svgCode){ display.innerHTML = svgCode});
+           |
             """.stripMargin
       scalajs.js.eval(initMermaid)
 //      val (choreography,channels) = DSL.parseAndValidate(choreo.get)
