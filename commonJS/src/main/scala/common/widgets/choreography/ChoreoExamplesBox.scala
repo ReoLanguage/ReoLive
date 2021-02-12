@@ -8,7 +8,7 @@ import choreo.choreo2.Examples
   */
 
 class ChoreoExamplesBox(reload: => Unit, toSet: List[Setable[String]])
-  extends ExampleBox("Choreo Examples",reload,toSet) {
+  extends ExampleBox("Choreography Examples",reload,toSet) {
 
   protected val buttons:Seq[List[String]] =
     (for ((n,e) <- Examples.allList) //Examples.all.toSeq.sortBy(_._1)

@@ -8,7 +8,7 @@ import common.widgets.{Box, OutputArea}
   * Created by guillecledou on 05/11/2020
   */
 
-
+@deprecated
 class PomsetCytoBox(choreo: Box[String], errorBox: OutputArea)
   extends Box[String]("Pomset of the choreography via cytoscape.js", List(choreo)) {
 

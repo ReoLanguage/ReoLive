@@ -1,22 +1,23 @@
 package common.widgets.choreography
 
-//import choreo.DSL
-//import choreo.backend.Dot.DotOps
-//import choreo.backend.DotVisPomsets._
-//import common.Utils
-//import common.frontend.CytoscapePomset
-import choreo.choreo2.DSL
-import choreo.choreo2.view.MermaidPomset
+
 import common.Utils
 import common.widgets.{Box, OutputArea}
+import choreo.choreo2.view.MermaidPomset
+import choreo.choreo2.DSL
+import choreo.choreo2._
+import choreo.choreo2.analysis.pomsets.Pomset
+import org.scalajs.dom
+import org.scalajs.dom.{MouseEvent, html}
+
 
 /**
   * Created by guillecledou on 03/11/2020
   */
 
 
-class PomsetBox(choreo: Box[String], errorBox: OutputArea)
-  extends Box[String]("Nested Pomset", List(choreo)) {
+class PomsetBox(pomInstance: Box[Pomset], errorBox: OutputArea)
+  extends Box[String]("Nested Pomset", List(pomInstance)) {
 
   val pomset:String = ""
   private var box:Block = _
@@ -29,7 +30,7 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
     * @param div     Placeholder that will receive the "append" with the content of the box
     * @param visible is true when this box is initially visible (i.e., expanded).
     */
-  override def init(div: Block, visible: Boolean): Unit =
+  override def init(div: Block, visible: Boolean): Unit = {
     box = panelBox(div, visible,buttons=List(
       Right("download")-> (() => Utils.downloadSvg("svgPomset"), "Download SVG")
     )).append("div")
@@ -37,6 +38,9 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
       .attr("id", "pomsetBox")
       .style("text-align","center")
       .append("div").attr("id","svgPomset")
+    dom.document.getElementById("Nested Pomset").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+      .onclick = {e: MouseEvent => if(!isVisible) showPom() }
+  }
 
 
   /**
@@ -44,10 +48,13 @@ class PomsetBox(choreo: Box[String], errorBox: OutputArea)
     *  - update its output value, and
     *  - produce side-effects (e.g., redraw a diagram)
     */
-  override def update(): Unit = {
+  override def update(): Unit = if(isVisible) showPom()
+
+  def showPom():Unit = {
     try {
-      val choreography = DSL.parse(choreo.get)
-      val mermaid = MermaidPomset(DSL.pomset(choreography))
+      //val choreography = DSL.parse(pomInstance.get)
+      //val mermaid = MermaidPomset(DSL.pomset(choreography))
+      val mermaid = MermaidPomset(pomInstance.get)
       val initMermaid =
         s"""
            |  var display = document.getElementById('pomsetBox');

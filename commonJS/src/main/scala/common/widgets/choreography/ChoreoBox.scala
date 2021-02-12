@@ -8,7 +8,7 @@ import common.widgets.{Box, CodeBox, OutputArea}
 
 
 class ChoreoBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
-  extends Box[String]("Choreo", Nil) with CodeBox {
+  extends Box[String]("Choreography", Nil) with CodeBox {
 
     override protected var input: String = default
     override protected val boxId: String = "choreoBox"

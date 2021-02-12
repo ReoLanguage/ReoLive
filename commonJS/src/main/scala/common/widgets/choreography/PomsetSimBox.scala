@@ -6,15 +6,16 @@ import choreo.choreo2._
 import choreo.choreo2.analysis.pomsets.Pomset
 import choreo.choreo2.analysis.pomsets.GlobalPom
 import choreo.choreo2.view.MermaidPomset
-import choreo.choreo2.syntax.Choreo
 import choreo.choreo2.syntax.Choreo._
+import org.scalajs.dom
+import org.scalajs.dom.{MouseEvent, html}
 
 /**
  * Created by guillecledou on 12/02/2021
  */
 
-class PomsetSimBox(choreocode: Box[String], errorBox: OutputArea)
-  extends Box[Unit]("Nested Pomset Simulation", List(choreocode)) {
+class PomsetSimBox(pomInstance: Box[Pomset], errorBox: OutputArea)
+  extends Box[Unit]("Nested Pomset Simulation", List(pomInstance)) {
 
   private var container:Block = _
   private var left:Block = _
@@ -39,6 +40,8 @@ class PomsetSimBox(choreocode: Box[String], errorBox: OutputArea)
       Right("refresh") -> (() =>
         update(), "Simulate next actions of current nested pomset")
     ))
+    dom.document.getElementById("Nested Pomset Simulation").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+      .onclick = {e: MouseEvent => if(!isVisible) showTraces() }
     top = box
       .append("div")
       .style("width:100%;margin-bottom:10px;margin:5px 1px 5px 15px")
@@ -75,15 +78,16 @@ class PomsetSimBox(choreocode: Box[String], errorBox: OutputArea)
    *  - update its output value, and
    *  - produce side-effects (e.g., redraw a diagram)
    */
-  override def update(): Unit =
-    try {
-      val choreography = DSL.parse(choreocode.get)
-      pomset = DSL.pomset(choreography)
-      trace = Nil
-      steps = pomset::Nil
-      showNexts()
-      showPom(pomset)
-    } catch Box.checkExceptions(errorBox)
+  override def update(): Unit = if(isVisible) showTraces()
+
+  def showTraces():Unit = try {
+    //val choreography = DSL.parse(pomInstance.get)
+    pomset = pomInstance.get//DSL.pomset(choreography)
+    trace = Nil
+    steps = pomset::Nil
+    showNexts()
+    showPom(pomset)
+  } catch Box.checkExceptions(errorBox)
 
   protected def showNexts():Unit = try {
     left.html("")
@@ -92,7 +96,6 @@ class PomsetSimBox(choreocode: Box[String], errorBox: OutputArea)
       .append("span").style("font-weight:normal")
       .text(s""" ${trace.mkString(", ")}""")
     errorBox.clear()
-    // todo: pomset.trans not recognized but supposedly supported
     val enabled = GlobalPom.nextPom(pomset)
     //steps :+= enabled
     val ul = left.append("ul")

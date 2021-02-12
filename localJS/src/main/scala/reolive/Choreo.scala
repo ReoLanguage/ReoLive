@@ -17,6 +17,8 @@ object Choreo {
   var errorArea:OutputArea = _
   var descriptionArea: OutputArea = _
   var choreo:ChoreoBox = _
+  var choreoInstance:ChoreoInstantiate = _
+  var pomsetInstance:PomsetInstantiate = _
   var choreographyBox:ChoreographyBox = _
   var exampleBox:ChoreoExamplesBox = _
   var pomsetBox:PomsetBox = _
@@ -55,10 +57,12 @@ object Choreo {
     descriptionArea = new OutputArea
     errorArea = new OutputArea
     choreo = new ChoreoBox(reload(),defaultChoreo,errorArea)
-    choreographyBox = new ChoreographyBox(choreo,errorArea)
+    choreoInstance = new ChoreoInstantiate(choreo,errorArea)
+    pomsetInstance = new PomsetInstantiate(choreoInstance,errorArea)
+    choreographyBox = new ChoreographyBox(choreoInstance,errorArea)
     exampleBox = new ChoreoExamplesBox(softReload(),List(choreo,descriptionArea))
-    pomsetBox = new PomsetBox(choreo,errorArea)
-    pomsetSimBox = new PomsetSimBox(choreo,errorArea)
+    pomsetBox = new PomsetBox(pomsetInstance,errorArea)
+    pomsetSimBox = new PomsetSimBox(pomsetInstance,errorArea)
 //    pomsetCytoBox = new PomsetCytoBox(choreo,errorArea)
 
 
@@ -92,6 +96,8 @@ object Choreo {
   private def softReload(): Unit = {
     errorArea.clear()
     choreo.update()
+    choreoInstance.update()
+    pomsetInstance.update()
     choreographyBox.update()
     pomsetBox.update()
 //    pomsetCytoBox.update()
