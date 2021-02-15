@@ -51,11 +51,14 @@ class PomsetSimBox(pomInstance: Box[Pomset], errorBox: OutputArea)
       .textEl("undo")
       .on("click",() =>
         if (steps.size>1) {
-          pomset= steps.init.last
+          pomset = steps.init.last
           steps = steps.init
           trace = trace.init
           showNexts()
-          showPom(pomset)})
+          showPom(pomset)
+        }
+        else showTraces()
+        )
 
     container = box.append("div")
       .style("display", "flex")
@@ -96,7 +99,9 @@ class PomsetSimBox(pomInstance: Box[Pomset], errorBox: OutputArea)
       .append("span").style("font-weight:normal")
       .text(s""" ${trace.mkString(", ")}""")
     errorBox.clear()
-    val enabled = GlobalPom.nextPom(pomset)
+    var enabled = GlobalPom.nextPom(pomset)
+    if (GlobalPom.isTerminating(pomset) && !GlobalPom.isFinal(pomset))
+      enabled += ((Tau,GlobalPom.terminate(pomset)))
     //steps :+= enabled
     val ul = left.append("ul")
       .style("list-style-type:none;padding:0;margin:0;")//.attr("class", "list-group list-group-flush")
@@ -110,7 +115,7 @@ class PomsetSimBox(pomInstance: Box[Pomset], errorBox: OutputArea)
       b.on("click", () => {
         pomset = p
         steps :+= p
-        trace :+=a
+        if (a!=Tau) trace :+=a
         showNexts()
         showPom(p)
       })

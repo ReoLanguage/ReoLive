@@ -1,9 +1,5 @@
 package common.widgets.choreography
 
-//import choreo.DSL
-//import choreo.backend.Mermaid._
-//import choreo.backend.MermaidChoreography._
-//import choreo.choreo2.syntax.Agent
 import common.Utils
 import common.widgets.{Box, OutputArea}
 import choreo.choreo2.DSL
