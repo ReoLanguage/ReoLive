@@ -43,18 +43,20 @@ class BisimBox(choreography: Box[Choreo], errorBox: OutputArea)
 
   def check():Unit = {
     box.text("")
-    val bisim = Bisimulation.findWBisim2(choreography.get)
+    val bisim = Bisimulation.findBisim(choreography.get)
     bisim match {
       case Left(e) =>
         box.append("span")
           .style("color:red;font-weight:bold;")
           .text("Not realisable:")
         box.append("div")
-          .text(e.msg.mkString("\n"))
+          .html(e.msg.map(x=>s"<li>$x</li>").mkString("<ul>","","</ul"))
       case Right(b) =>
         box.append("span")
           .style("color:green;font-weight:bold;")
           .text("Realisable")
+        box.append("div")
+          .html("<pre style=\"width: 95%;\">"+Bisimulation.pp(b).replace("\n","</br>").replace(" ","&nbsp;")+"</pre>")
     }
   }
 }
