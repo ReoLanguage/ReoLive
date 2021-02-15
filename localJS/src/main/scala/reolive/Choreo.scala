@@ -25,6 +25,7 @@ object Choreo {
   var pomsetSimBox:PomsetSimBox = _
 //  var pomsetCytoBox:PomsetCytoBox = _
   var bisimBox: BisimBox = _
+  var projBox: ProjectionBox = _
 
   @JSExportTopLevel("reolive_Choreo_main")
   def main(content: html.Div): Unit = {
@@ -66,6 +67,7 @@ object Choreo {
     pomsetSimBox = new PomsetSimBox(pomsetInstance,errorArea)
 //    pomsetCytoBox = new PomsetCytoBox(choreo,errorArea)
     bisimBox = new BisimBox(choreoInstance,errorArea)
+    projBox = new ProjectionBox(pomsetInstance,errorArea)
 
 
     choreo.init(leftColumn, true)
@@ -77,6 +79,7 @@ object Choreo {
 //    pomsetBox.init(rightColumn,true)
     pomsetSimBox.init(rightColumn)
     bisimBox.init(leftColumn,false)
+    projBox.init(rightColumn,false)
 
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/choreo")
@@ -106,6 +109,7 @@ object Choreo {
 //    pomsetCytoBox.update()
     pomsetSimBox.update()
     bisimBox.update()
+    projBox.update()
   }
 
 }
