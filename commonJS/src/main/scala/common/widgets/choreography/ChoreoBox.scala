@@ -14,7 +14,7 @@ class ChoreoBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
     override protected val boxId: String = "choreoBox"
     override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
       List(
-        Right("refresh") -> (() => reload, "Load the choreography (shift-enter)")
+        Right("refresh") -> (() => reload(), "Load the choreography (shift-enter)")
       )
 
     override protected val codemirror: String = "choreo"
