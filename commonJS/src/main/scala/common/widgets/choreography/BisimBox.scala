@@ -50,7 +50,11 @@ class BisimBox(choreography: Box[Choreo], errorBox: OutputArea)
           .style("color:red;font-weight:bold;")
           .text("Not realisable:")
         box.append("div")
-          .html(e.msg.map(x=>s"<li>$x</li>").mkString("<ul>","","</ul"))
+          .html(e.msgs
+            .map(lst => lst.map(x=>s"<li>$x</li>")
+              .mkString("<li style=\"margin-bottom: 12pt;margin-left: -47pt;display: block;\"><ul>",
+                        "","</ul></li>"))
+            .mkString("<ul>","","</ul>"))
       case Right(b) =>
         box.append("span")
           .style("color:green;font-weight:bold;")
