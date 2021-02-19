@@ -111,7 +111,7 @@ class PomsetSimBox(pomInstance: Box[Pomset], errorBox: OutputArea)
       val li = ul.append("li")
         //.attr("class", "list-group-item")
 
-      val b = li.append("button").textEl(a.toString)
+      val b = li.append("button").textEl(if (a == Tau) "terminate" else a.toString)
       b.on("click", () => {
         pomset = p
         steps :+= p
