@@ -15,7 +15,7 @@ import org.scalajs.dom.{MouseEvent, html}
   * Created by guillecledou on 03/11/2020
   */
 
-
+@deprecated
 class PomsetBox(pomInstance: Box[Pomset], errorBox: OutputArea)
   extends Box[String]("Nested Pomset", List(pomInstance)) {
 
