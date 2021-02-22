@@ -22,11 +22,11 @@ class ChoreoExamplesBox(reload: => Unit, toSet: List[Setable[String]])
     case Choreo.In(a, b, m) => s"$a?$b${m.pp}"
     case Choreo.Out(a, b, m) => s"$a!$b${m.pp}"
     case Choreo.Tau => "τ"
-    case Choreo.Seq(c1, c2) => s"${parserpp(c1)} ; ${parserpp(c2)}"
-    case Choreo.Par(c1, c2) => s"${parserpp(c1)} || ${parserpp(c2)}"
-    case Choreo.Choice(c1, c2) => s"${parserpp(c1)} + ${parserpp(c2)}"
-    case Choreo.DChoice(c1, c2) => s"${parserpp(c1)} [+] ${parserpp(c2)}"
-    case Choreo.Loop(c) => s"(${parserpp(c)})*"
+    case Choreo.Seq(c1, c2) => s"${mbP(c1)} ; ${mbP(c2)}"
+    case Choreo.Par(c1, c2) => s"${mbP(c1)} || ${mbP(c2)}"
+    case Choreo.Choice(c1, c2) => s"${mbP(c1)} + ${mbP(c2)}"
+    case Choreo.DChoice(c1, c2) => s"${mbP(c1)} [+] ${mbP(c2)}"
+    case Choreo.Loop(c) => s"(${mbP(c)})*"
     case Choreo.End => "0"
   }
 
