@@ -1,5 +1,6 @@
 package common.widgets.choreography
 
+import common.frontend.MermaidJS
 import common.widgets.{Box, OutputArea}
 import choreo.choreo2.DSL
 import choreo.choreo2._
@@ -124,16 +125,8 @@ class PomsetSimBox(pomInstance: Box[Pomset], errorBox: OutputArea)
 
   protected def showPom(p:Pomset):Unit = try {
     val mermaid = MermaidPomset(p)
-    val initMermaid =
-      s"""
-         |  var display = document.getElementById('pomsetSimBox');
-         |  var text = `
-         |    ${mermaid}
-         |  `
-         |  var graph = mermaid.mermaidAPI.render('svgSimPomset', text, function(svgCode){ display.innerHTML = svgCode});
-         |
-            """.stripMargin
-    scalajs.js.eval(initMermaid)
+    val mermaidJs = MermaidJS(mermaid,"pomsetSimBox","svgSimPomset")
+    scalajs.js.eval(mermaidJs)
   } catch Box.checkExceptions(errorBox)
 
 }

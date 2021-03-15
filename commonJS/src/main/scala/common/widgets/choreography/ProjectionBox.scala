@@ -1,6 +1,7 @@
 package common.widgets.choreography
 
 import common.widgets.{Box, OutputArea}
+import common.frontend.MermaidJS
 import choreo.choreo2.view.MermaidPomset
 import choreo.choreo2.DSL
 import choreo.choreo2._
@@ -63,18 +64,8 @@ class ProjectionBox(pomInstance: Box[Pomset], errorBox: OutputArea)
       .style("text-align","center")
       .append("div").attr("id",s"svgPomset${agent.s}")
 
-    val initMermaid =
-      s"""
-         |  var display = document.getElementById('pomsetBox${agent.s}');
-         |  var text = `
-         |    ${mermaid}
-         |  `
-         |  var graph = mermaid.mermaidAPI.render('svgPomset${agent.s}', text, function(svgCode){
-         |    display.innerHTML = svgCode
-         |    });
-         |
-            """.stripMargin
-    scalajs.js.eval(initMermaid)
+    val mermaidJs = MermaidJS(mermaid,s"pomsetBox${agent.s}",s"svgPomset${agent.s}")
+    scalajs.js.eval(mermaidJs)
   }
 
 }

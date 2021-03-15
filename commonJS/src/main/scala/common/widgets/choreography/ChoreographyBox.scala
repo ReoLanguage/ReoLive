@@ -7,6 +7,7 @@ import choreo.choreo2.view.SequenceChart
 import choreo.choreo2.syntax._
 import choreo.choreo2.syntax.Choreo
 import choreo.choreo2.syntax.Choreo._
+import common.frontend.MermaidJS
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
 
@@ -52,15 +53,8 @@ class ChoreographyBox(choreography: Box[Choreo], errorBox: OutputArea)
   def showChoreo():Unit = {
       try {
         val mermaid = SequenceChart(choreography.get)
-        val initMermaid =
-          s"""
-            |  var display = document.getElementById('choreographyBox');
-            |  var text = `
-            |    ${mermaid}
-            |  `
-            |  var graph = mermaid.mermaidAPI.render('svgChoreography', text, function(svgCode){ display.innerHTML = svgCode});
-            """.stripMargin
-        scalajs.js.eval(initMermaid)
+        val mermaidJs = MermaidJS(mermaid,"choreographyBox","svgChoreography")
+        scalajs.js.eval(mermaidJs)
       } catch Box.checkExceptions(errorBox)
     }
 
