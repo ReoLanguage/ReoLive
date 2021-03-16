@@ -191,18 +191,17 @@ CodeMirror.defineMode("choreo", function(_config, modeConfig) {
       };
     }
 
-    setType("keyword")( // where, ...
-      "def");
+//    setType("keyword")( // where, ...
+//      "def");
 
-    setType("keyword")(
-      );
+    setType("keyword")("!","?","->");
 
 
     setType("builtin")( // types and constructors
-      "+","||",";","*");
+      "+","||",";","*","[","]");
 
-    setType("builtin")(
-      );
+//    setType("builtin")(
+//      );
 
     var override = modeConfig.overrideKeywords;
     if (override) for (var word in override) if (override.hasOwnProperty(word))
