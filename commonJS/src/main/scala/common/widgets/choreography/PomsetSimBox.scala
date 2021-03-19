@@ -5,7 +5,7 @@ import common.widgets.{Box, OutputArea}
 import choreo.choreo2.DSL
 import choreo.choreo2._
 import choreo.choreo2.analysis.pomsets.Pomset
-import choreo.choreo2.analysis.pomsets.GlobalPom
+import choreo.choreo2.analysis.pomsets.GlobalPomMin
 import choreo.choreo2.view.MermaidPomset
 import choreo.choreo2.syntax.Choreo._
 import org.scalajs.dom
@@ -100,9 +100,9 @@ class PomsetSimBox(pomInstance: Box[Pomset], errorBox: OutputArea)
       .append("span").style("font-weight:normal")
       .text(s""" ${trace.mkString(", ")}""")
     //errorBox.clear()
-    var enabled = GlobalPom.nextPom(pomset)
-    if (GlobalPom.isTerminating(pomset) && !GlobalPom.isFinal(pomset))
-      enabled += ((Tau,GlobalPom.terminate(pomset)))
+    var enabled = GlobalPomMin.nextPom(pomset)
+    if (GlobalPomMin.isTerminating(pomset) && !GlobalPomMin.isFinal(pomset))
+      enabled += ((Tau,GlobalPomMin.terminate(pomset)))
     //steps :+= enabled
     val ul = left.append("ul")
       .style("list-style-type:none;padding:0;margin:0;")//.attr("class", "list-group list-group-flush")
