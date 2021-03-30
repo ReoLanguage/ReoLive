@@ -112,9 +112,9 @@ class ChoreoSimBox(choreoInstance: Box[Choreo], errorBox: OutputArea)
 
   def showEnabled(from:Choreo):Unit = {
     left.html("")
-    var enabled = Global.nextChoreo(from).toSet
+    var enabled = Global.nextChoreo(from)//.toSet
     if (Global.canSkip(from)) //todo: && !from.isFinal then
-      enabled += ((Tau,Choreo.End))
+      enabled +:= ((Tau,Choreo.End))
 
     val ul = left.append("ul")
       .style("list-style-type:none;padding:0;margin:0;")//.attr("class", "list-group list-group-flush")

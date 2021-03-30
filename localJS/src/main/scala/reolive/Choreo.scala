@@ -23,6 +23,7 @@ object Choreo {
   var exampleBox:ChoreoExamplesBox = _
   //var pomsetBox:PomsetBox = _
   var pomsetSimBox:PomsetSimBox = _
+  //var npomsetSimBox:NPomsetSimBox = _
 //  var pomsetCytoBox:PomsetCytoBox = _
   var bisimBox: BisimBox = _
   var projBox: ProjectionBox = _
@@ -70,7 +71,7 @@ object Choreo {
     bisimBox = new BisimBox(choreoInstance,errorArea)
     projBox = new ProjectionBox(pomsetInstance,errorArea)
     choreoSimBox = new ChoreoSimBox(choreoInstance,errorArea)
-
+    //npomsetSimBox = new NPomsetSimBox(choreoInstance,errorArea)
 
     choreo.init(leftColumn, true)
     errorArea.init(leftColumn)
@@ -80,6 +81,7 @@ object Choreo {
 //    pomsetCytoBox.init(rightColumn,true)
 //    pomsetBox.init(rightColumn,true)
     choreoSimBox.init(rightColumn)
+    //npomsetSimBox.init(rightColumn)
     pomsetSimBox.init(rightColumn)
     bisimBox.init(leftColumn,false)
     projBox.init(rightColumn,false)
@@ -115,6 +117,7 @@ object Choreo {
     bisimBox.update()
     projBox.update()
     choreoSimBox.update()
+    //npomsetSimBox.update()
   }
 
 }
