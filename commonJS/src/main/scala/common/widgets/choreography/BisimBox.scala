@@ -43,7 +43,11 @@ class BisimBox(choreography: Box[Choreo], errorBox: OutputArea)
 
   def check():Unit = {
     box.text("")
+    box.append("span")
+      .style("color:black;font-weight:bold;")
+      .text("<Calculating...>")
     val bisim = Bisimulation.findBisim(choreography.get)
+    box.text("")
     bisim match {
       case Left(e) =>
         box.append("span")

@@ -28,6 +28,7 @@ object Choreo {
   var bisimBox: BisimBox = _
   var projBox: ProjectionBox = _
   var choreoSimBox:ChoreoSimBox = _
+  var choreoLocalSimBox:ChoreoLocalSimBox = _
 
   @JSExportTopLevel("reolive_Choreo_main")
   def main(content: html.Div): Unit = {
@@ -71,6 +72,7 @@ object Choreo {
     bisimBox = new BisimBox(choreoInstance,errorArea)
     projBox = new ProjectionBox(pomsetInstance,errorArea)
     choreoSimBox = new ChoreoSimBox(choreoInstance,errorArea)
+    choreoLocalSimBox = new ChoreoLocalSimBox(choreoInstance,errorArea)
     //npomsetSimBox = new NPomsetSimBox(choreoInstance,errorArea)
 
     choreo.init(leftColumn, true)
@@ -81,6 +83,7 @@ object Choreo {
 //    pomsetCytoBox.init(rightColumn,true)
 //    pomsetBox.init(rightColumn,true)
     choreoSimBox.init(rightColumn)
+    choreoLocalSimBox.init(rightColumn)
     //npomsetSimBox.init(rightColumn)
     pomsetSimBox.init(rightColumn)
     bisimBox.init(leftColumn,false)
@@ -117,6 +120,7 @@ object Choreo {
     bisimBox.update()
     projBox.update()
     choreoSimBox.update()
+    choreoLocalSimBox.update()
     //npomsetSimBox.update()
   }
 
