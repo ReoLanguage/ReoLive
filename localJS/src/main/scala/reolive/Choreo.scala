@@ -24,7 +24,7 @@ object Choreo {
   //var pomsetBox:PomsetBox = _
   var pomsetSimBox:PomsetSimBox = _
   //var npomsetSimBox:NPomsetSimBox = _
-//  var pomsetCytoBox:PomsetCytoBox = _
+ // var pomsetCytoBox:PomsetCytoBox = _
   var bisimBox: BisimBox = _
   var projBox: ProjectionBox = _
   var choreoSimBox:ChoreoSimBox = _
