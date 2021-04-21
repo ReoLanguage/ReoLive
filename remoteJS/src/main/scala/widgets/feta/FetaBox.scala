@@ -7,7 +7,7 @@ import common.widgets.{Box, CodeBox, OutputArea}
  */
 
 class FetaBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
-  extends Box[String]("Featured ETA", Nil) with CodeBox {
+  extends Box[String]("FETA Specification", Nil) with CodeBox {
 
   override protected var input: String = default
   override protected val boxId: String = "fetaBox"
@@ -16,7 +16,7 @@ class FetaBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
       Right("refresh") -> (() => reload(), "Load the specification (shift-enter)")
     )
 
-  override protected val codemirror: String = "choreo"
+  override protected val codemirror: String = "feta"
   override protected val theme:String = "neat"
 
   override def reload(): Unit = {

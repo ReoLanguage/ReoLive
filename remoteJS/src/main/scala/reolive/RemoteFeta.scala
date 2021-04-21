@@ -2,7 +2,7 @@ package reolive
 
 import common.DomNode
 import common.widgets.OutputArea
-import widgets.feta.{FetaBox, FetaGraphBox}
+import widgets.feta.{FetaBox, FetaExamplesBox, FetaGraphBox}
 import org.scalajs.dom.html
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -17,6 +17,7 @@ object RemoteFeta {
   var descriptionArea: OutputArea = _
   var fetaBox: FetaBox = _
   var fetaGraphBox: FetaGraphBox = _
+  var examples:FetaExamplesBox = _
 
   @JSExportTopLevel("reolive_RemoteFeta_main")
   def main(content: html.Div): Unit = {
@@ -44,49 +45,24 @@ object RemoteFeta {
       .attr("id", "rightbar")
       .attr("class", "rightside")
 
-    val feta:String =
-      s"""FCA user (confirm)(join,leave) = {
-         |  start 0
-         |  0 --> 1 by join if s
-         |  1 --> 2 by confirm if s
-         |  0 --> 2 by join if o
-         |  2 --> 0 by leave
-         |}
-         |
-         |FCA server (join,leave)(confirm) = {
-         |  start 0
-         |  0 --> 1 by join if s
-         |  1 --> 0 by confirm if s
-         |  0 --> 0 by join if o
-         |  0 --> 0 by leave
-         |}
-         |
-         |FS = (u1->user,u2->user,s->server)
-         |
-         |FM = s xor o
-         |
-         |FST = {
-         | default = one to one
-         | {o}:join,leave = many to one
-         |}
-         |""".stripMargin
-
     descriptionArea = new OutputArea
     errorArea = new OutputArea
-    fetaBox = new FetaBox(reload(), fta.Examples.spec, errorArea)
+    fetaBox = new FetaBox(reload(), "", errorArea)
     fetaGraphBox = new FetaGraphBox(fetaBox, errorArea)
+    examples = new FetaExamplesBox(softReload(),List(fetaBox,descriptionArea))
 
     fetaBox.init(leftColumn, true)
     errorArea.init(leftColumn)
     descriptionArea.init(leftColumn)
     fetaGraphBox.init(rightColumn, true)
+    examples.init(leftColumn,true)
 
     common.Utils.moreInfo(rightColumn, "https://github.com/arcalab/team-a")
 
-    //// load default button
-    //if (exampleBox.loadButton("ex4")) {
-    //  softReload()
-    //}
+    // load default button
+    if (examples.loadButton("Auth")) {
+      softReload()
+    }
   }
 
   /**
