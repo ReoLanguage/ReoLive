@@ -64,6 +64,11 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.onlineVirtuoso())
   }
 
+  def onlineFeta = Action{
+    Ok(views.html.onlineFeta())
+  }
+
+
   def model(id: Long) = Action{
     val file = new File(s"/tmp/model_$id.mcrl2")
     if(file.exists())

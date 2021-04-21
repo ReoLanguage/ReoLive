@@ -71,6 +71,10 @@ lazy val choreo = project.in(file("lib/choreo"))
   .enablePlugins(ScalaJSPlugin)
   .settings(scalaVersion := "3.0.0-M1")
 
+lazy val teamA = project.in(file("lib/team-a"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(scalaVersion := "3.0.0-M1")
+
 lazy val javascript_settings = Seq(
 //  Compile/run := {},
   version := "1.0",
@@ -108,6 +112,7 @@ lazy val commonJS = (project in file("commonJS"))
     javascript_settings//,
     //Compile / run := (choreo / Compile / run).evaluated
   ).aggregate(choreo).dependsOn(choreo)
+  .aggregate(teamA).dependsOn(teamA)
 
 lazy val localJS = (project  in file("localJS"))
   .dependsOn(commonJS)
