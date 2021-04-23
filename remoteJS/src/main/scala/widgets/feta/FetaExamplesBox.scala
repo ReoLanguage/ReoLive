@@ -36,8 +36,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         | {o}:join,leave = many to one // or 1..* to 1..1
         |}""".stripMargin::"Auth"::Nil,
     "Chat"::
-      """
-        |FCA user (confirmL,confirmJ,fwd)
+      """FCA user (confirmL,confirmJ,fwd)
         |         (join,msg,leave) = {
         | start 0
         | 0 --> 1 by join
@@ -45,7 +44,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         | 2 --> 2 by msg
         | 2 --> 2 by fwd
         | 2 --> 3 by leave
-        | 3 --> 0 by confirm
+        | 3 --> 0 by confirmL
         |}
         |
         |FCA server (leave,join,reject,grant,msg)
@@ -68,7 +67,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |
         |FST = {
         | default = one to one // or 1..1 to 1..1
-        | {}:fws = one to any // or 1.1 to 0..*
+        | {}:fwd = one to any // or 1.1 to 0..*
         |}""".stripMargin::"Chat"::Nil
   )
 

@@ -60,8 +60,8 @@ object RemoteFeta {
     common.Utils.moreInfo(rightColumn, "https://github.com/arcalab/team-a")
 
     // load default button
-    if (examples.loadButton("Auth")) {
-      softReload()
+    if (!examples.loadButton("Auth")) {
+      reload()
     }
   }
 
