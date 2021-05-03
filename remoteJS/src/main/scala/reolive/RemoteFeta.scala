@@ -2,7 +2,7 @@ package reolive
 
 import common.DomNode
 import common.widgets.OutputArea
-import widgets.feta.{FetaBox, FetaExamplesBox, FetaGraphBox}
+import widgets.feta.{FCABox, FETAInfoBox, FetaBox, FetaExamplesBox, FetaGraphBox}
 import org.scalajs.dom.html
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -18,6 +18,8 @@ object RemoteFeta {
   var fetaBox: FetaBox = _
   var fetaGraphBox: FetaGraphBox = _
   var examples:FetaExamplesBox = _
+  var fcaBox: FCABox = _
+  var fetaInfo:FETAInfoBox = _
 
   @JSExportTopLevel("reolive_RemoteFeta_main")
   def main(content: html.Div): Unit = {
@@ -50,12 +52,16 @@ object RemoteFeta {
     fetaBox = new FetaBox(reload(), "", errorArea)
     fetaGraphBox = new FetaGraphBox(fetaBox, errorArea)
     examples = new FetaExamplesBox(softReload(),List(fetaBox,descriptionArea))
+    fcaBox = new FCABox(fetaBox,errorArea)
+    fetaInfo = new FETAInfoBox(fetaBox,errorArea)
 
     fetaBox.init(leftColumn, true)
     errorArea.init(leftColumn)
     descriptionArea.init(leftColumn)
     fetaGraphBox.init(rightColumn, true)
     examples.init(leftColumn,true)
+    fcaBox.init(rightColumn,false)
+    fetaInfo.init(leftColumn,true)
 
     common.Utils.moreInfo(rightColumn, "https://github.com/arcalab/team-a")
 
@@ -78,6 +84,8 @@ object RemoteFeta {
     errorArea.clear()
     fetaBox.update()
     fetaGraphBox.update()
+    fcaBox.update()
+    fetaInfo.update()
   }
 
 }
