@@ -36,6 +36,11 @@
     font-size: 14px;
 }
 
+#visnetwork {
+    width: auto;
+    height: 300px;
+    /*border: 1px solid lightgray;*/
+}
 
 .full {
     width: 100%;
@@ -85,6 +90,17 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36569c', endColorstr='#ff182b53', GradientType=0);
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
     border-radius: 0px; 
+    border: 0px;
+}
+
+.navbar-feta {
+    background-image: -webkit-linear-gradient(top,#4ca1af 0,#2c3e50 100%);
+    background-image: -o-linear-gradient(top,#4ca1af 0,#2c3e50 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#4ca1af),to(#2c3e50));
+    background-image: linear-gradient(to bottom,#4ca1af 0,#2c3e50 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36569c', endColorstr='#ff182b53', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    border-radius: 0px;
     border: 0px;
 }
 

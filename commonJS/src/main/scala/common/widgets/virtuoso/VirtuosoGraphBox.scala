@@ -1,6 +1,7 @@
 package common.widgets.virtuoso
 
 import common.frontend.GraphsToJS
+import common.widgets.GraphBox.saveSvg
 import common.widgets.{Box, GraphBox, OutputArea}
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}

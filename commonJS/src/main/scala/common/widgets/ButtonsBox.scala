@@ -266,13 +266,13 @@ unzip_ =
     ss match {
       case hd::tl =>
         val button = buttonsDiv.append("button")
-          .text(hd)
+          .textEl(hd)
 
-        button.on("click",{(e: EventTarget, a: Int, b:UndefOr[Int])=> {
+        button.on("click", () => { //{(e: EventTarget, a: Int, b:UndefOr[Int])=> {
           toSet.zip(tl).foreach(pair => pair._1.setValue(pair._2))
           toSet.drop(tl.size).foreach(_.setValue(""))
           reload
-        }} : button.DatumFunction[Unit])
+        }) //: button.DatumFunction[Unit])
       case Nil =>
     }
   }

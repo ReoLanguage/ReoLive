@@ -1,10 +1,11 @@
 package reolive
 
+import common.DomNode
 import common.widgets._
 import common.widgets.Ifta.IFTABox
 import org.scalajs.dom
 import dom.html
-import org.singlespaced.d3js.d3
+//import org.singlespaced.d3js.d3
 import preo.backend._
 import preo.frontend.mcrl2.Model
 import preo.ast.CoreConnector
@@ -38,7 +39,7 @@ object RemoteReo extends{
   private var uppaalAut:RemoteUppaalAutBox = _
   private var uppaalNet:RemoteUppaalNetBox = _
 
-  @JSExportTopLevel("reolive.RemoteReo.main")
+  @JSExportTopLevel("reolive_RemoteReo_main")
   def main(content: html.Div): Unit = {
 
     //    // add header
@@ -46,7 +47,7 @@ object RemoteReo extends{
     //      .attr("id", "header")
     //      .append("h1").text("Reo Live - Connector Families")
 
-    val contentDiv = d3.select(content).append("div")
+    val contentDiv = DomNode.select(content).append("div") //d3.select(content).append("div")
       .attr("id", "content")
 
     val rowDiv = contentDiv.append("div")

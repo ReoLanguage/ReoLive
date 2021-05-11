@@ -13,3 +13,9 @@
 [submodule "lib/reactiveDsl"]
 	path = lib/reactiveDsl
 	url = https://github.com/arcalab/reactiveDsl.git
+[submodule "lib/choreo"]
+	path = lib/choreo
+	url = https://github.com/arcalab/choreo.git
+[submodule "lib/team-a"]
+	path = lib/team-a
+	url = https://github.com/arcalab/team-a

@@ -1,12 +1,13 @@
 package common.widgets
 
+import common.{DomElem, DomNode}
 import common.widgets.Box.Block
 import hprog.frontend.solver.LiveSageSolver
 import hub.common.ParseException
 import ifta.common.FExpOverflowException
 import org.scalajs.dom
 import org.scalajs.dom.{EventTarget, MouseEvent, html}
-import org.singlespaced.d3js.Selection
+//import org.singlespaced.d3js.Selection
 import preo.common.TypeCheckException
 
 import scala.scalajs.js.{JavaScriptException, UndefOr}
@@ -14,9 +15,9 @@ import scala.scalajs.js.{JavaScriptException, UndefOr}
 
 //panel boxes are the abstract entities which contain each panel displayed on the website
 abstract class Box[A](val title: String, dependency: List[Box[_]]){
-  type Block = Selection[dom.EventTarget]
+  type Block = DomElem //Selection[dom.EventTarget]
 
-  var wrap:Block = _
+  var wrap:DomElem = _
 
   /**
     * Creates a collapsable pannel
@@ -27,10 +28,10 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
                          buttons:List[(Either[String,String], (()=>Unit,String) )] = Nil) : Block = {
 //    val percentage=100
 
-    var expander: Block = parent
+    //var expander: Block = parent
     wrap = parent.append("div").attr("class","panel-group")
       .append("div").attr("class","panel panel-default").attr("id",title)
-    expander = wrap
+    var expander = wrap
       .append("div").attr("class", "panel-heading my-panel-heading")
       .append("h4")
         .attr("class", "panel-title")
@@ -81,7 +82,9 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
 
       drawButton(button,name)
 
-      button.on("click", {(e: EventTarget, a: Int, b:UndefOr[Int])=> { action() }})
+//      button.on("click", {(e: EventTarget, a: Int, b:UndefOr[Int])=> { action() }})
+      // EXPERIMENT
+      button.on("click", ()=>action() )
     }
 
     res
@@ -160,10 +163,16 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
     */
   def update(): Unit
 
+  /** Adds code that is executed everyting the text of the title is clicked.
+    * The code is executed *before* collapsing/expanding. */
+  def whenClickTitle(update: ()=>Unit): Unit =
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+      .onclick = {_: MouseEvent => update()}
+
 }
 
 object Box {
-  type Block = Selection[dom.EventTarget]
+  type Block = DomElem //Selection[dom.EventTarget]
 
   def downloadSvg(block: Block): Unit = {
     val svg = block.append("svg")
@@ -172,7 +181,7 @@ object Box {
       .attr("height","20")
       .attr("viewBox","0 0 24 24")
       .attr("class", "svgIcon")
-    svg.style("margin","-3pt -2pt 0pt -2pt")
+    svg.style("margin","-3pt -2pt 0pt")
     //svg.style("fill","#505050")
     svg.append("path")
       .attr("d","M0 0h24v24H0z")
@@ -224,6 +233,10 @@ object Box {
         errorBox.error(s"InvalidParameterException$by: " + e.getMessage)
       case e: dsl.common.PatternMatchingException =>
         errorBox.error(s"PatternMatchingException$by: " + e.getMessage)
+//      case e: choreo.common.ParsingException =>
+//        errorBox.error(s"ParserException$by: " + e.getMessage)
+//      case e: choreo.common.DefinitionException =>
+//        errorBox.error(s"DefinitionException$by: " + e.getMessage)
       case e: JavaScriptException => {
         //      val sw = new StringWriter
         //      e.printStackTrace(new PrintWriter(sw))
@@ -232,7 +245,8 @@ object Box {
       }
       //            instanceInfo.append("p").text("-")
       case e: java.lang.AssertionError => errorBox.error(e.getMessage)
-      case e: Throwable => errorBox.error(s"unknown error$by: " + e + " - " + e.getClass +"/n ### "+e.getStackTrace.mkString("\n - "))
+      case e: RuntimeException => errorBox.error(s"Runtime error$by: " + e)
+      case e: Throwable => errorBox.error(s"Error$by: " + e + " - " + e.getClass +"\n ### "+e.getStackTrace.mkString("\n - "))
     }
     f
   }

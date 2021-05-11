@@ -1,10 +1,11 @@
 package common.widgets
 
+import common.DomElem
 import org.scalajs.dom
-import org.singlespaced.d3js.Selection
+//import org.singlespaced.d3js.Selection
 
 class OutputArea extends Setable[String] {
-  type Block = Selection[dom.EventTarget]
+  type Block = DomElem //Selection[dom.EventTarget]
 
   var outputs: Block = _
 

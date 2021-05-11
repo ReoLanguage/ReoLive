@@ -1,10 +1,11 @@
 package common.widgets
 
+import common.DomElem
 import hub.analyse.TemporalFormula
 import hub.backend.{Show, Uppaal, Verifyta, VerifytaCall}
 import org.scalajs.dom
 import org.scalajs.dom.html
-import org.singlespaced.d3js.Selection
+//import org.singlespaced.d3js.Selection
 import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 
 /**
@@ -14,7 +15,7 @@ import org.scalajs.dom.{MouseEvent, XMLHttpRequest, html}
 
 class VerifytaOutputArea(errorBox:OutputArea) {
 
-  type Block = Selection[dom.EventTarget]
+  type Block = DomElem //Selection[dom.EventTarget]
 
   var output: Block = _
 

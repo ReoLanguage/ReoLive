@@ -1,9 +1,9 @@
 package common.widgets.arx
 
-import common.widgets.{Box, GraphBox, OutputArea}
-import dsl.analysis.semantics._
 import common.frontend.AutomataToJS
+import common.widgets.{Box, GraphBox, OutputArea}
 import dsl.DSL
+import dsl.analysis.semantics._
 import dsl.backend.Show
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
@@ -29,6 +29,7 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
   override def init(div: Block, visible: Boolean): Unit = {
     //svg= GraphBox.appendSvg(panelBox(div, visible),"sbautomata")
     panel = panelBox(div, visible, buttons = List(
+      Left("simple")      -> (()=> if (isVisible) drawAutomata(SimpleMode) else (),"Without Push/Pull interpretation"),
       Left("push")      -> (()=> if (isVisible) drawAutomata(PushMode) else (),"Environment can push streams"),
       Left("pull")      -> (()=> if (isVisible) drawAutomata(PullMode) else (),"Environment can pull streams"),
       Left("all")       -> (()=> if (isVisible) drawAutomata(AllMode) else (),"Environment can push/pull streams"),
@@ -49,13 +50,14 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
     textAut.style("display",if(text) "block" else "none")
   }
 
-  private def drawAutomata(buildMode:BuildMode=PushMode): Unit = try{
+  private def drawAutomata(buildMode:BuildMode=SimpleMode): Unit = try{
       deleteAutomaton()
 
       val prog = DSL.parse(program.get)
       val (tprog,tctx) = DSL.typeCheck(prog)
       val sbCtx = DSL.encode(tprog,tctx)
       val sbProgram = sbCtx("Program")
+      //println(s"[arx-aut] SBs: ${Show(sbProgram._1)} § ${sbProgram._2} § ${sbProgram._3}")
       automaton = SBAutomata(sbProgram._1,mode=buildMode)
 
       val sizeAut = automaton.sts.size
@@ -76,7 +78,9 @@ class DslAutomataBox(program: Box[String], errorBox: OutputArea)
     catch Box.checkExceptions(errorBox,"sbAutomata")
 
   private def deleteAutomaton(): Unit = {
-    svg.selectAll("g").html("")
+    //svg.selectAll("g").html("")
+    //// EXPERIMENTING TO DROP D3JS
+    svg.deleteAll("g")
     textAut.text("")
   }
 }

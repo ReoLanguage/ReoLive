@@ -80,7 +80,9 @@ class IFTABox(dependency:Box[CoreConnector], errorBox:OutputArea)
   override def update(): Unit = if(isVisible) drawAutomata()
 
   private def deleteAutomaton(): Unit = {
-    box.selectAll("g").html("")
+    //box.selectAll("g").html("")
+    ///// EXPERIMENTS TO DROP D3JS
+    box.deleteAll("g")
   }
 
 

@@ -1,9 +1,10 @@
 package reolive
 
+import common.DomNode
 import common.widgets.{ButtonsBox, OutputArea}
 import common.widgets.arx._
 import org.scalajs.dom.html
-import org.singlespaced.d3js.d3
+//import org.singlespaced.d3js.d3
 
 import scala.scalajs.js.annotation.JSExportTopLevel
 
@@ -19,12 +20,14 @@ object ARx {
   var examples: DslExamplesBox = _
   var graph: DslGraphBox = _
   var descr: OutputArea = _
-  var dsllib:DslLibBox = _
-  var dsllibout:DslLibOutputArea = _
+//  var dsllib:DslLibBox = _
+//  var dsllibout:DslLibOutputArea = _
   var aut:DslAutomataBox = _
+//  var sb:SBComposerBox = _
+//  var sbRes:SBAnalysisBox = _
 
 
-  @JSExportTopLevel("reolive.ARx.main")
+  @JSExportTopLevel("reolive_ARx_main")
   def main(content: html.Div): Unit = {
 
     val program =
@@ -39,7 +42,7 @@ object ARx {
         |alt(x,y)""".stripMargin
 
     // Creating outside containers:
-    val contentDiv = d3.select(content).append("div")
+    val contentDiv = DomNode.select(content).append("div")
       .attr("class", "content")
 
     val rowDiv = contentDiv.append("div")
@@ -62,14 +65,16 @@ object ARx {
 
     descr = new OutputArea
     errors = new OutputArea //(id="Lince")
-    dsllibout = new DslLibOutputArea
+//    dsllibout = new DslLibOutputArea
 
     inputBox = new DslBox(reload(),program,errors)
-    result = new DslAnalysisBox(inputBox,errors)
+    graph = new DslGraphBox(inputBox,errors)
+    result = new DslAnalysisBox(graph,errors)
     examples = new DslExamplesBox(softReload(),List(inputBox,descr))
-    graph = new DslGraphBox(result,errors)
-    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
+//    dsllib = new DslLibBox(softReload(),List(dsllibout,descr))
     aut = new DslAutomataBox(inputBox,errors)
+//    sb = new SBComposerBox(reloadSB(),sbs,errors)
+//    sbRes = new SBAnalysisBox(sb,errors)
 
     inputBox.init(leftColumn, true)
     errors.init(leftColumn)
@@ -77,12 +82,14 @@ object ARx {
     aut.init(rightColumn,visible = false)
     result.init(rightColumn,visible = true)
     descr.init(leftColumn)
-    dsllib.init(leftColumn,visible = true)
-    dsllibout.init(leftColumn)
+//    dsllib.init(leftColumn,visible = true)
+//    dsllibout.init(leftColumn)
     examples.init(leftColumn,visible = true)
-
+//    sb.init(leftColumn,visible = true)
+//    sbRes.init(rightColumn,visible = true)
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/arx")
+    common.Utils.temporaryInfo(rightColumn,"Coordination'20 slides and video presentation: ","http://arca.di.uminho.pt/content/arx-slides-20.pdf")
 
     // default button
     if (examples.loadButton("alt")) {
@@ -98,14 +105,19 @@ object ARx {
     */
   private def reload(): Unit = {
     descr.clear()
-    dsllibout.clear()
+//    dsllibout.clear()
     softReload()
   }
+//  private def reloadSB(): Unit = {
+//    sbRes.update()
+//    errors.clear()
+//  }
+
   private def softReload(): Unit = {
     errors.clear()
     inputBox.update()
-    result.update()
     graph.update()
+    result.update()
     aut.update()
   }
 

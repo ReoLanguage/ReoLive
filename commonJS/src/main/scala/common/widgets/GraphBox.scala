@@ -1,15 +1,11 @@
 package common.widgets
 
+import common.DomElem
 import common.frontend.GraphsToJS
-import org.scalajs.dom
-import org.scalajs.dom.{MouseEvent, html}
-import org.singlespaced.d3js.Selection
+import common.widgets.GraphBox.saveSvg
+//import org.singlespaced.d3js.Selection
 import preo.ast.CoreConnector
 import preo.backend.Circuit
-import preo.backend.Network.Mirrors
-import preo.frontend.Show
-
-import scala.util.Try
 
 class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
                path: String=".", title: String = "Circuit of the instance")
@@ -23,24 +19,27 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
   protected val densityCirc = 0.5 // nodes per 100x100 px
 
 
-  override def init(div: Block, visible: Boolean): Unit = {
+  def init(div: Block, visible: Boolean): Unit = {
     box = GraphBox.appendSvg(super.panelBox(div,visible,
       buttons = List(
 //        Left("&dArr;")-> (() => saveSvg(),"Download image as SVG")
         Right("download")-> (() => saveSvg(),"Download image as SVG")
       )),"circuit", path=path)
-    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
-      .onclick = {e: MouseEvent => update()}
+    whenClickTitle(()=>update())
+    whenClickTitle(()=> if (!isVisible) updateCore())
   }
 
-  override def update(): Unit = if(isVisible) {
+  def updateCore(): Unit = {
     deleteDrawing()
     drawGraph()
   }
 
+  def update(): Unit =
+    if(isVisible) updateCore()
+
 
   protected def drawGraph(): Unit = try{
-    graph = Circuit(dependency.get,true)
+    graph = Circuit(dependency.get,hideClosed = true)
     val size = graph.nodes.size
     val factor = Math.sqrt(size * 10000 / (densityCirc * widthCircRatio * heightCircRatio))
     val width = (widthCircRatio * factor).toInt
@@ -49,6 +48,7 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
     //println("Drawing graph - source: "+dependency.get)
     //println("Drawing graph - produced: "+ graph)
 //    toJs(graph)
+    //println("Drawing graph - produced: "+ GraphsToJS(graph))
     scalajs.js.eval(GraphsToJS(graph))
   }
   catch Box.checkExceptions(errorBox)
@@ -58,65 +58,12 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
 //  protected def toJs(g:Graph):Unit = scalajs.js.eval(GraphsToJS(g))
 
   protected def deleteDrawing(): Unit = {
-    box.selectAll("g").html("")
+    //box.selectAll("g").html("")
+    /// EXPERIMENT WHEN DROPPING d3js
+    box.deleteAll("g")
   }
 
-  protected def saveSvg(): Unit = {
-    scalajs.js.eval(
-      """svgEl = document.getElementById("circuit");
-        |name = "circuit.svg";
-        |
-        |svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        |var svgData = svgEl.outerHTML;
-        |
-        |// Firefox, Safari root NS issue fix
-        |svgData = svgData.replace('xlink=', 'xmlns:xlink=');
-        |// Safari xlink NS issue fix
-        |//svgData = svgData.replace(/NS\d+:href/gi, 'xlink:href');
-        |svgData = svgData.replace(/NS\d+:href/gi, 'href');
-        |// drop "stroke-dasharray: 1px, 0px;"
-        |svgData = svgData.replace(/stroke-dasharray: 1px, 0px;/gi, '');
-        |
-        |var preface = '<?xml version="1.0" standalone="no"?>\r\n';
-        |var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
-        |var svgUrl = URL.createObjectURL(svgBlob);
-        |var downloadLink = document.createElement("a");
-        |downloadLink.href = svgUrl;
-        |downloadLink.download = name;
-        |document.body.appendChild(downloadLink);
-        |downloadLink.click();
-        |document.body.removeChild(downloadLink);
-      """.stripMargin)
-
-//    //val svgEl = dom.document.getElementById("circuit")
-//    val svgEl = box
-//    val name = "circuit.svg"
-//
-//    svgEl.attr("xmlns", "http://www.w3.org/2000/svg")
-//    var svgData = svgEl.html()
-//
-//    // Firefox, Safari root NS issue fix
-//    svgData = svgData.replace("xlink=", "xmlns:xlink=")
-//    // Safari xlink NS issue fix
-//    //svgData = svgData.replace(/NS\d+:href/gi, 'xlink:href');
-//    svgData = svgData.replaceAll("NS\\d+:href", "href")
-//    // drop "stroke-dasharray: 1px, 0px;"
-//    svgData = svgData.replace("stroke-dasharray: 1px, 0px;", "")
-//
-//    val preface = """<?xml version="1.0" standalone="no"?>\r\n"""
-//    val svgBlob = scalajs.js.Dynamic.newInstance(scalajs.js.Dynamic.global.Blob)(
-//      List(preface,svgData), // does not type check... should be "[preface, svgData]"
-//      Map("type" -> "image/svg+xml;charset=utf-8"))
-//    val svgUrl = scalajs.js.Dynamic.global.URL.createObjectURL(svgBlob)
-//    val downloadLink = dom.document.createElement("a")
-//    downloadLink.setAttribute("href",svgUrl.asInstanceOf[String])
-//    downloadLink.setAttribute("download",name)
-//    dom.document.body.appendChild(downloadLink)
-//    scalajs.js.Dynamic.global.downloadLink.click()
-//    dom.document.body.removeChild(downloadLink)
-  }
-
-  def showFs(fs:Set[String]) = if (isVisible) {
+  def showFs(fs:Set[String]): Unit = if (isVisible) {
     val showCircuit =
       s"""
          |var fs = new Set(${fs.map(s=> s""""$s"""").mkString("[",",","]")});
@@ -134,19 +81,18 @@ class GraphBox(dependency: Box[CoreConnector], errorBox: OutputArea,
 
     scalajs.js.eval(showCircuit)
   }
-
-
-    }
+}
 
 object GraphBox {
-  type Block = Selection[dom.EventTarget]
+  type Block = DomElem //Selection[dom.EventTarget]
 
-  private var width = 700
-  private var height = 400
+  private val width = 700
+  private val height = 400
 
+  /** appends a basic SVG blocl to `div` */
   def appendSvg(div: Block,name: String, path:String = "."): Block = {
     val svg = div.append("svg")
-      .attr("style","margin: auto;")
+//      .attr("style","margin: auto;")
       .attr("viewBox",s"0 0 $width $height")
       .attr("preserveAspectRatio","xMinYMin meet")
       .attr("id",name)
@@ -340,4 +286,62 @@ object GraphBox {
 
     svg
   }
+
+  /** Calls JS code to download the SVG `element` as a file. */
+  def saveSvg(element:String = "circuit"): Unit = {
+    scalajs.js.eval(
+      """svgEl = document.getElementById("circuit");
+        |name = "circuit.svg";
+        |
+        |svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        |var svgData = svgEl.outerHTML;
+        |
+        |// Firefox, Safari root NS issue fix
+        |svgData = svgData.replace('xlink=', 'xmlns:xlink=');
+        |// Safari xlink NS issue fix
+        |//svgData = svgData.replace(/NS\d+:href/gi, 'xlink:href');
+        |svgData = svgData.replace(/NS\d+:href/gi, 'href');
+        |// drop "stroke-dasharray: 1px, 0px;"
+        |svgData = svgData.replace(/stroke-dasharray: 1px, 0px;/gi, '');
+        |
+        |var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+        |var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+        |var svgUrl = URL.createObjectURL(svgBlob);
+        |var downloadLink = document.createElement("a");
+        |downloadLink.href = svgUrl;
+        |downloadLink.download = name;
+        |document.body.appendChild(downloadLink);
+        |downloadLink.click();
+        |document.body.removeChild(downloadLink);
+      """.stripMargin)
+
+    //    //val svgEl = dom.document.getElementById("circuit")
+    //    val svgEl = box
+    //    val name = "circuit.svg"
+    //
+    //    svgEl.attr("xmlns", "http://www.w3.org/2000/svg")
+    //    var svgData = svgEl.html()
+    //
+    //    // Firefox, Safari root NS issue fix
+    //    svgData = svgData.replace("xlink=", "xmlns:xlink=")
+    //    // Safari xlink NS issue fix
+    //    //svgData = svgData.replace(/NS\d+:href/gi, 'xlink:href');
+    //    svgData = svgData.replaceAll("NS\\d+:href", "href")
+    //    // drop "stroke-dasharray: 1px, 0px;"
+    //    svgData = svgData.replace("stroke-dasharray: 1px, 0px;", "")
+    //
+    //    val preface = """<?xml version="1.0" standalone="no"?>\r\n"""
+    //    val svgBlob = scalajs.js.Dynamic.newInstance(scalajs.js.Dynamic.global.Blob)(
+    //      List(preface,svgData), // does not type check... should be "[preface, svgData]"
+    //      Map("type" -> "image/svg+xml;charset=utf-8"))
+    //    val svgUrl = scalajs.js.Dynamic.global.URL.createObjectURL(svgBlob)
+    //    val downloadLink = dom.document.createElement("a")
+    //    downloadLink.setAttribute("href",svgUrl.asInstanceOf[String])
+    //    downloadLink.setAttribute("download",name)
+    //    dom.document.body.appendChild(downloadLink)
+    //    scalajs.js.Dynamic.global.downloadLink.click()
+    //    dom.document.body.removeChild(downloadLink)
+  }
+
+
 }

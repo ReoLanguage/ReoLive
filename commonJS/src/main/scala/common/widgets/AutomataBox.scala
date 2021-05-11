@@ -55,6 +55,8 @@ class AutomataBox(dependency: Box[CoreConnector], errorBox: OutputArea)
   catch Box.checkExceptions(errorBox,"Automata")
 
   private def deleteAutomaton(): Unit = {
-      svg.selectAll("g").html("")
+    //svg.selectAll("g").html("")
+    /// EXPERIMENT WHEN DROPPING d3js
+    svg.deleteAll("g")
     }
 }

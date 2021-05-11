@@ -1,26 +1,23 @@
 package common.widgets.arx
 
+import common.frontend.AutomataToVisJS
 import common.widgets.{Box, OutputArea}
 import dsl.DSL
-import dsl.analysis.semantics.{Guard, SBAutomata}
 import dsl.analysis.semantics.StreamBuilder.StreamBuilderEntry
-import dsl.analysis.syntax.Program
-import dsl.analysis.types.{Context, TExp}
-import dsl.backend.{Net, Show}
-import org.scalajs.dom.EventTarget
-import org.singlespaced.d3js.Selection
+import dsl.analysis.types.TExp
+import dsl.backend.Show
+//import org.singlespaced.d3js.Selection
 
 /**
   * Created by guillerminacledou on 2019-06-07
   */
 
 
-class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
-  extends Box[Program]("Analysis of the program", List(program)) {
+class DslAnalysisBox(circuitBox: DslGraphBox, errorBox: OutputArea)
+  extends Box[Unit]("Analysis of the program", List(circuitBox)) {
   var box: Block = _
-  var prog: Program = _
 
-  override def get: Program = prog
+  override def get: Unit = {}
 
   override def init(div: Block, visible: Boolean): Unit = {
     box = super.panelBox(div, visible, buttons = List())
@@ -33,46 +30,53 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
 
   protected def analyse():Unit = try {
     this.clear()
-    prog = DSL.parse(program.get)
-    val (tprog,tctx) = DSL.typeCheck(prog)
-    //val (sbprog,sbOuts,sbCtx) = DSL.encode(tprog,tctx)
-    val sbCtx = DSL.encode(tprog,tctx)
 
-    var out = box.append("div").attr("class", "sb-result")
+    val (sbCtx,types,net,nID) = circuitBox.get
+
+//    prog = DSL.parse(program.get)
+//    val (tprog,tctx) = DSL.typeCheck(prog)
+//    //val (sbprog,sbOuts,sbCtx) = DSL.encode(tprog,tctx)
+//    val sbCtx = DSL.encode(tprog,tctx)
+
+    val out = box.append("div").attr("class", "sb-result")
       .append("ul")
       .attr("class", "list-group list-group-flush mb-3")
-      .style("margin-bottom","0px")
+      .style("margin-bottom", "0px")
 
     val primFuns= DSL.prelude.primitiveFunctionNames()
 
     // filter out primitive functions and 1-1 undefined functions
-    val functionsInfo:Map[String,(TExp,StreamBuilderEntry)] =
-      tctx.functions.filterNot(f=>primFuns.contains(f._1) || !sbCtx.contains(f._1))
-        .map(f=> f._1 -> (f._2.tExp,sbCtx(f._1)))
+    val functionsInfo: Map[String, (TExp, StreamBuilderEntry)] =
+      types.functions.filterNot(f => primFuns.contains(f._1) || !sbCtx.contains(f._1))
+        .map(f => f._1 -> (f._2.tExp, sbCtx(f._1)))
 
-    for( (fun,(texp,(sb,inSeq,outSeq))) <- functionsInfo) {
+//    var functionsInfo:Map[String,(TExp,StreamBuilderEntry)] =
+//      tctx.functions.filterNot(f=>primFuns.contains(f._1) || !sbCtx.contains(f._1))
+//        .map(f=> f._1 -> (f._2.tExp,sbCtx(f._1)))
 
-      var li = out.append("li")
+    for( (fun,(texp,(sb, _,outSeq,_))) <- functionsInfo) {
+
+      val li = out.append("li")
         .attr("class", "list-group-item lh-condensed")
-        .style("margin","5px")
+        .style("margin", "5px")
 
-      var div = li.append("div")
+      val div = li.append("div")
         .style("display", "flex")
         .style("justify-content", "fix-start")
 
-      var elemTitle = div.append("span")
+      val elemTitle = div.append("span")
         .style("font-weight", "600")
         .attr("class", "element-name").text(fun+" :: ")//.text("Program:")
 
-      var elemType = div.append("span")
+      val elemType = div.append("span")
         .style("text-align", "left")
       elemType.append("span")
         .style("margin", "5px")
         .text(Show(texp))//.text(Show(tctx.functions("program").tExp))
 
-      var info = li.append("div")
+      val info = li.append("div")
 
-      var mems = info.append("div")
+      val mems = info.append("div")
         .style("display", "flex")
         .style("justify-content", "fix-start")
         .style("margin", "2px 10px 0px 0px")
@@ -82,7 +86,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
         .style("margin-left", "5px")
         .text(sb.memory.mkString(", "))
 
-      var inputs = info.append("div")
+      val inputs = info.append("div")
         .style("display", "flex")
         .style("justify-content", "fix-start")
         .style("margin", "2px 10px 0px 0px")
@@ -101,7 +105,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
       //   .style("margin-left", "5px")
       //   .text(sb.outputs.mkString(", "))
 
-      var outseq = info.append("div")
+      val outseq = info.append("div")
         .style("display", "flex")
         .style("justify-content", "fix-start")
         .style("margin", "2px 10px 0px 0px")
@@ -112,7 +116,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
         .style("text-decoration","overline")
         .text(outSeq.mkString(", "))
 
-      var initinfo = info.append("div")
+      val initinfo = info.append("div")
         .style("display", "flex")
         .style("justify-content", "fix-start")
         .style("margin", "2px 10px 0px 0px")
@@ -122,7 +126,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
         .style("margin-left", "5px")
         .text(if (sb.init.isEmpty) "∅" else sb.init.map(Show(_)).mkString(", "))
 
-      var sbs = info.append("div")
+      val sbs = info.append("div")
         .style("display", "flex")
         .style("justify-content", "fix-start")
         .style("margin", "2px 10px 0px 0px")
@@ -146,6 +150,7 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
           //.attr("class", "alert alert-info")
           .attr("class","sb-box")
           .style("padding","5px")
+          .style("background-color","rgba(255, 255, 255,0.4)")
           .style("color","#008900")
           .text(Show(gc.guard))
         row.append("div")
@@ -158,10 +163,55 @@ class DslAnalysisBox(program: Box[String], errorBox: OutputArea)
           //.attr("class", "alert alert-success")
           .attr("class", "sb-box")
           .style("padding","5px")
-          .style("background-color","white")
+//          .style("background-color","white")
+          .style("background-color","rgba(255, 255, 255,0.4)")
           .style("color","#0F024F")
           .text(if (gc.cmd.isEmpty) "∅" else gc.cmd.map(c=>Show(c)).mkString(", "))
+//        row.append("div")
+//          .style("margin", "auto 5px")
+//          .style("text-align", "center")
+//          .style("padding","5px")
+//          .text(
+//            gc.highlights.mkString(",") + " -> " +
+//            gc.highlights.map(m1).mkString(",") + " -> " +
+//            gc.highlights.map(m1).map(x => x.flatMap(nID)).mkString(",") + " -> "+
+//            gc.highlights.flatMap(nID).mkString(",") + " -> " +
+//            gc.highlights.flatMap(m1).flatMap(nID).mkString(",")
+////            highlight(gc.highlights.flatMap(net.mirror).flatMap(nID))
+//            )
+        def m1(s:String): Set[String] = net.mirror(s)+s
+        val hls = gc.highlights.flatMap(m1).flatMap(nID)
+        def onEnter(): Any = {
+          scala.scalajs.js.eval(highlight(hls))
+          row.style("background-color","rgb(202, 238, 254)") // light blue
+
+        }
+        def onLeave(): Any = {
+          scala.scalajs.js.eval(deHighlight(hls))
+          row
+            .resetStyle()
+            .style("display", "flex")
+            .style("margin", "5px")
+            .style("justify-content", "fix-start")
+            .style("background-color","white") // light blue
+        }
+        row.on("mouseenter", onEnter)
+        row.on("mouseleave", onLeave)
       }
+
+      def highlight(ports:Iterable[Int]): String = {
+        s"""[${ports.mkString(",")}].forEach(function(portId) {
+           |  var p = document.getElementById("gr_"+portId);  //("gr_"+el);
+           |  ${AutomataToVisJS.defaultHl("p")}
+           |})""".stripMargin
+      }
+      def deHighlight(ports:Iterable[Int]): String = {
+        s"""[${ports.mkString(",")}].forEach(function(portId) {
+           |  var p = document.getElementById("gr_"+portId);  //("gr_"+el);
+           |  ${AutomataToVisJS.defaultDeHl("p")}
+           |})""".stripMargin
+      }
+
        // .style("margin-left", "5px")
 
 //      // for each guarded command:

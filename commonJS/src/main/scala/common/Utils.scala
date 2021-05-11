@@ -6,9 +6,8 @@ import java.util.Base64
 import common.widgets.Box.Block
 import common.widgets.OutputArea
 import org.scalajs.dom
-import org.scalajs.dom.XMLHttpRequest
-import org.scalajs.dom.EventTarget
-import org.singlespaced.d3js.Selection
+import org.scalajs.dom.{EventTarget, XMLHttpRequest, document}
+//import org.singlespaced.d3js.Selection
 
 object Utils {
 
@@ -86,7 +85,15 @@ object Utils {
   }
 
 
- def moreInfo(block: Selection[dom.EventTarget],ref: String): Unit = {
+ def moreInfo(block: DomNode,ref: String): Unit = {
+//   val more2 = document.createElement("div")
+//   more2.setAttribute("class","panel-group")
+//   val p2 = document.createElement("p")
+//   more2.appendChild(p2)
+//   block.appendChild(more2)
+//   p2.setAttribute("style","...")
+//
+     ////////
     val more = block.append("div")
         .attr("class","panel-group")
         .append("p")
@@ -102,11 +109,55 @@ object Utils {
         .text(ref)
  }
 
+  def temporaryInfo(block: DomNode,title:String,ref: String): Unit = {
+    val more = block.append("div")
+      .attr("class","panel-group")
+      .append("p")
+    more
+      .style("font-size","larger")
+      .style("text-align","center")
+      .style("padding-top","0px")
+    more
+      .text(title)
+      .append("a")
+      .attr("href",ref)
+      .attr("target","#")
+      .text(ref)
+  }
+
   /**
     * Opens a url in the browser
     * @param url the url to open
     */
   def goto(url:String):Unit = {
     org.scalajs.dom.window.open(url)
+  }
+
+  def downloadSvg(element:String): Unit = {
+    scalajs.js.eval(
+      s"""svgEl = document.getElementById("$element");
+        |name = "circuit.svg";
+        |
+        |svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        |var svgData = svgEl.outerHTML;
+        |
+        |// Firefox, Safari root NS issue fix
+        |svgData = svgData.replace('xlink=', 'xmlns:xlink=');
+        |// Safari xlink NS issue fix
+        |//svgData = svgData.replace(/NS\\d+:href/gi, 'xlink:href');
+        |svgData = svgData.replace(/NS\\d+:href/gi, 'href');
+        |// drop "stroke-dasharray: 1px, 0px;"
+        |svgData = svgData.replace(/stroke-dasharray: 1px, 0px;/gi, '');
+        |
+        |var preface = '<?xml version="1.0" standalone="no"?>\\r\\n';
+        |var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+        |var svgUrl = URL.createObjectURL(svgBlob);
+        |var downloadLink = document.createElement("a");
+        |downloadLink.href = svgUrl;
+        |downloadLink.download = name;
+        |document.body.appendChild(downloadLink);
+        |downloadLink.click();
+        |document.body.removeChild(downloadLink);
+      """.stripMargin)
   }
 }
