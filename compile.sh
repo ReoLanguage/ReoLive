@@ -39,6 +39,7 @@ ln -sf ../../site/index.html
 ln -sf ../../site/reo.html
 ln -sf ../../site/hubs.html
 ln -sf ../../site/lince.html
+ln -sf ../../site/feta.html
 cd ../../
 
 

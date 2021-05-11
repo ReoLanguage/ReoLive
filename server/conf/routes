@@ -12,6 +12,8 @@ GET     /lince                      controllers.HomeController.lince
 
 GET     /hubs                       controllers.HomeController.hubs
 
+GET     /feta                       controllers.HomeController.feta
+
 # GET     /                         controllers.Assets.versioned(path="/public", file="index.html")
 
 # GET     /about                    controllers.HomeController.about
@@ -28,7 +30,8 @@ GET     /treo                       controllers.HomeController.onlineTreo
 
 GET     /fullhubs                   controllers.HomeController.onlineVirtuoso
 
-GET     /feta                       controllers.HomeController.onlineFeta
+GET     /onlinefeta                 controllers.HomeController.onlineFeta
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

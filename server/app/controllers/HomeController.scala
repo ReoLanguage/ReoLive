@@ -36,6 +36,10 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Found("/assets/hubs.html")
   }
 
+  def feta = Action {
+    Found("/assets/feta.html")
+  }
+
 //  def about = Action {
 //    Ok(views.html.about())
 //  }
