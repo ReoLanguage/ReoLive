@@ -1,4 +1,4 @@
-package common.widgets.choreoMPST
+package common.widgets.choreography
 
 import common.widgets.{Box, CodeBox, OutputArea}
 
@@ -8,13 +8,13 @@ import common.widgets.{Box, CodeBox, OutputArea}
 
 
 class ChoreoBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
-  extends Box[String]("Choreo", Nil) with CodeBox {
+  extends Box[String]("Choreography", Nil) with CodeBox {
 
     override protected var input: String = default
     override protected val boxId: String = "choreoBox"
     override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
       List(
-        Right("refresh") -> (() => reload, "Load the choreography (shift-enter)")
+        Right("refresh") -> (() => reload(), "Load the choreography (shift-enter)")
       )
 
     override protected val codemirror: String = "choreo"

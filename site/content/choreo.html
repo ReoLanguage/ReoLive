@@ -25,16 +25,29 @@
 </body>
 
 <script type="text/javascript" src="../js/static/vis-network.min.js"></script>
+<!--<script type="text/javascript" src="../js/static/cytoscape/cytoscape.min.js"></script>-->
+<!--<script type="text/javascript" src="../js/static/cytoscape/dagre.js"></script>-->
+<!--<script type="text/javascript" src="../js/static/cytoscape/cytoscape-dagre.js"></script>-->
+<!--<script type="text/javascript" src="../js/static/cytoscape/graphlib.js"></script>-->
 <script type="text/javascript" src="../js/static/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="../js/static/bootstrap.min.js"></script>
 <script type="text/javascript" src="../js/static/d3.v4.min.js"></script>
+<script type="text/javascript" src="../js/static/d3-zoom.min.js"></script>
+<script type="text/javascript" src="../js/static/d3-selection.min.js"></script>
 <!--<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>-->
 <script type="text/javascript" src="../js/static/codemirror/codemirror.js"></script>
 <script type="text/javascript" src="../js/static/codemirror/addon/edit/matchbrackets.js"></script>
 <script type="text/javascript" src="../js/static/codemirror/mode/choreo/choreo.js"></script>
 <script type="text/javascript" src="../js/gen/local_js-fastopt.js"></script>
 <script type="text/javascript" src="../js/static/mermaid.min.js"></script>
-<script>mermaid.mermaidAPI.initialize({ startOnLoad:false,logLevel: 1});</script>
+<script>
+    var config = {
+        startOnLoad:false,
+        logLevel:'fatal',
+        arrowMarkerAbsolute:true
+    };
+    mermaid.mermaidAPI.initialize(config);
+</script>
 
 <script>
     reolive_Choreo_main(document.getElementById('contentWrap'));

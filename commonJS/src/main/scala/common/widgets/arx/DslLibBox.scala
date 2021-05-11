@@ -11,7 +11,7 @@ import scala.scalajs.js.UndefOr
 
 
 class DslLibBox(reload: => Unit, toSet: List[Setable[String]]) extends Box[Unit]("DSL Library", Nil) {
-  override def get: Unit = Unit
+  override def get: Unit = ()
 
   /**
     * Executed once at creation time, to append the content to the inside of this box

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" class="noscroll full">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="Online Tools for Featured Extended Team Automata">
+  <meta name="author" content="">
+
+  <title>Online Tools for Featured Extended Team Automata</title>
+
+  <!-- icons -->
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="mask-icon" href="favicon.svg" color="#34569c">
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap theme -->
+  <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+
+  <!-- Custom styles for this template -->
+  <!-- <link href="theme.css" rel="stylesheet"> -->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <style>
+
+    .links line {
+      stroke: #999;
+      stroke-opacity: 0.6;
+      stroke-width: 2.0px;
+    }
+
+    .nodes circle {
+      stroke: #fff;
+      stroke-width: 1.5px;
+    }
+
+  </style>
+</head>
+
+<body class="full">
+
+<div class="navbar navbar-feta"> <!-- navbar-fixed-top -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#onlinefeta" data-toggle="tab" data-target="#onlinefeta" onclick='load_WS("onlinefeta")'>
+      <!-- <img id="reolivelogo" src="....png" alt="ReoLive logo"> -->
+      FETA
+    </a>
+  </div>
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav navbar-left" id="myTab">
+      <!--~~~~~~~~~~~~~~~~~
+        CHANGE TABS HERE
+      ~~~~~~~~~~~~~~~~~~-->
+      <!-- <li><a href="#families" data-toggle="tab" aria-expanded="true">Reo Families</a></li> -->
+      <!-- <li><a href="#lince" data-toggle="tab" aria-expanded="false">Hybrid Programs</a></li> -->
+      <!-- <li><a href="#about" data-toggle="tab" aria-expanded="false">About</a></li> -->
+      <!-- <li><a href="#reo" data-toggle="tab" onclick='load_WS("reo")'>Reo</a> -->
+      <!-- <li><a href="#lwReo" data-toggle="tab" onclick='load_home("lwReo")'>LW Reo</a> -->
+      <!-- <li style="display:none;"><a href="#reo2" data-toggle="tab" onclick='load_WS("reo2")'>Online Reo2</a> -->
+      <!-- <li><a href="#lince" data-toggle="tab" onclick='load_WS("lince")'>Lince</a> -->
+      <!-- <li><a href="#lwLince" data-toggle="tab" onclick='load_home("lwLince")'>LW Lince</a> -->
+<!--      <li><a href="#onlinefeta" data-toggle="tab" onclick='load_WS("on")'>Full Hubs</a>-->
+<!--      <li><a href="#lwHubs" data-toggle="tab" onclick='load_home("lwHubs")'>LW Hubs</a>-->
+<!--      <li><a target="#" href="https://hubs.readthedocs.org">Documentation</a>-->
+      <li><a target="#" href="https://github.com/arcalab/team-a">Development</a>
+        <!-- <li><a href="#treo" data-toggle="tab" onclick='load_WS("treo")'>Treo</a> -->
+        <!-- <li><a href="#arx" data-toggle="tab" onclick='load_home("arx")'>ARx</a> -->
+        <!-- <li><a href="#arcatools" data-toggle="tab" onclick='load_home("arcatools")'>HomeTest</a> -->
+        <!-- <li style="display: none;"><a href="#about" data-toggle="tab" onclick='load_home("about")'>About</a></li> -->
+    </ul>
+    <ul class="nav navbar-nav navbar-right" id="myTab-right">
+      <li><a href="index.html">Back to ArcaTools</a>
+        <!--~~~~~~~~~~~~~~-->
+
+    </ul>
+  </div>
+</div>
+
+
+<div id="content" style="width: 100%; height: calc(100% - 68px);"></div>
+
+
+<!-- ~~~~~~~~~~~~~~~~~ -->
+<!-- ~~~~ FOOTERS ~~~~ -->
+<!-- ~~~~~~~~~~~~~~~~~ -->
+
+<div class="panel-footer" id="wrapper-footer">
+  <div id="footer">
+    Copyright 2017-2021 – <a href="http://arca.di.uminho.pt">ARCA.di.uminho.pt</a>
+  </div>
+</div>
+
+</body>
+
+<script src="js/static/jquery-1.10.2.min.js"></script>
+<script src="js/static/bootstrap.min.js"></script>
+
+
+<script>
+      ////////////////////
+      // ACTIVATING TABS BASED ON URL
+      ////////////////////
+      $(function () {
+       var lhash = location.hash;
+       if (lhash=="") { lhash = "#onlinefeta";}
+       var activeTab = $('[href=' + lhash + ']');
+    //    activeTab && activeTab.tab('show');
+       activeTab.tab('show');
+       activeTab.click();
+      });
+
+  </script>
+
+
+<script>
+    function load_home(file) {
+     document.getElementById("content").innerHTML='<object type="text/html" data="content/'+file+'.html" class="full"></object>';
+     window.location.hash = file
+    }
+    function load_WS(service) {
+      // $.ajax('http://localhost:9000/'+service)
+      //   .done(function(response) {
+      //       document.getElementById('content').innerHTML='<h4> Contacting host http://localhost:9001/'+service+'</h4> <h4>...</h4>'
+      //     }).fail(function(err){
+      //       document.getElementById('content').innerHTML='<h4> failed '+err.message+'</h4>'
+      //     })
+
+    // document.getElementById('content').innerHTML='<h4> Contacting host http://localhost:9001/'+service+'</h4>'
+    var url = 'http://localhost:9000/'+service
+    document.getElementById("content").innerHTML='<h4 style="padding:15px;">Loading '+url+'</h4>';
+    document.getElementById("content").innerHTML='<object type="text/html" data="'+url+'" class="full"><h4 style="padding:15px;">"'+url+'" not found. Check if the server is running.</object>';
+    window.location.hash = service
+        // document.getElementById('content').innerHTML='<h4> Contacting host http://localhost:9001/'+service+'</h4> <h4>'+err.message+'</h4>'
+    }
+  </script>
+
+</html>
+

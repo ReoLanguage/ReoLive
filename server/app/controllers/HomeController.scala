@@ -36,6 +36,10 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Found("/assets/hubs.html")
   }
 
+  def feta = Action {
+    Found("/assets/feta.html")
+  }
+
 //  def about = Action {
 //    Ok(views.html.about())
 //  }
@@ -64,10 +68,15 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.onlineVirtuoso())
   }
 
+  def onlineFeta = Action{
+    Ok(views.html.onlineFeta())
+  }
+
+
   def model(id: Long) = Action{
     val file = new File(s"/tmp/model_$id.mcrl2")
     if(file.exists())
-      Ok.sendFile(file, fileName = _ => "model.mcrl2")
+      Ok.sendFile(file, fileName = _ => Some("model.mcrl2"))
     else
       fileNotFound()
   }
@@ -75,7 +84,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def lps(id: Long) = Action{
     val file = new File(s"/tmp/model_$id.lps")
     if(file.exists())
-      Ok.sendFile(file, fileName = _ => "model.lps")
+      Ok.sendFile(file, fileName = _ => Some("model.lps"))
     else
       fileNotFound()
   }
@@ -83,7 +92,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def lts(id: Long) = Action{
     val file = new File(s"/tmp/model_$id.lts")
     if(file.exists())
-      Ok.sendFile(file, fileName = _ => "model.lts")
+      Ok.sendFile(file, fileName = _ => Some("model.lts"))
     else
       fileNotFound()
   }

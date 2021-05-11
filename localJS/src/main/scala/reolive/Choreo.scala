@@ -2,7 +2,7 @@ package reolive
 
 import common.DomNode
 import common.widgets.OutputArea
-import common.widgets.choreoMPST._
+import common.widgets.choreography._
 import org.scalajs.dom.html
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -17,35 +17,24 @@ object Choreo {
   var errorArea:OutputArea = _
   var descriptionArea: OutputArea = _
   var choreo:ChoreoBox = _
+  var choreoInstance:ChoreoInstantiate = _
+  var pomsetInstance:PomsetInstantiate = _
   var choreographyBox:ChoreographyBox = _
   var exampleBox:ChoreoExamplesBox = _
-  var pomsetBox:PomsetBox = _
+  //var pomsetBox:PomsetBox = _
+  var pomsetSimBox:PomsetSimBox = _
+  //var npomsetSimBox:NPomsetSimBox = _
+ // var pomsetCytoBox:PomsetCytoBox = _
+  var bisimBox: BisimBox = _
+  var projBox: ProjectionBox = _
+  var choreoSimBox:ChoreoSimBox = _
+  //var choreoLocalSimBox:ChoreoLocalSimBox = _
 
   @JSExportTopLevel("reolive_Choreo_main")
   def main(content: html.Div): Unit = {
 
     val defaultChoreo =
-      """def send<w>(dp,kp)(k) = {
-        | get(dp) -> w:=dp
-        | get(w,kp) -> k:={w,kp}
-        |}
-        |
-        |def notify<x,y,z>(k)(c1,c2) = {
-        | get(k) -> x:=k
-        | get(x) -> y:=x
-        | get(y) -> z:=y
-        | get(z) -> c1:=z, c2:=z
-        |}
-        |
-        |def check<z>(m)(m)={
-        | get(z) -> m:=z, z:=z
-        |}
-        |
-        |(
-        | dataProd,keyProd >send(w)> kernel ;
-        | kernel > notify(x,y,z)>cons1,cons2
-        |)*
-        ||| (monitor>check(z)>monitor)*"""
+      """a->b:x"""
         .stripMargin
 
     // Creating outside containers:
@@ -73,21 +62,39 @@ object Choreo {
     descriptionArea = new OutputArea
     errorArea = new OutputArea
     choreo = new ChoreoBox(reload(),defaultChoreo,errorArea)
-    choreographyBox = new ChoreographyBox(choreo,errorArea)
+    choreoInstance = new ChoreoInstantiate(choreo,errorArea)
+    pomsetInstance = new PomsetInstantiate(choreoInstance,errorArea)
+    choreographyBox = new ChoreographyBox(choreoInstance,errorArea)
     exampleBox = new ChoreoExamplesBox(softReload(),List(choreo,descriptionArea))
-    pomsetBox = new PomsetBox(choreo,errorArea)
+    //pomsetBox = new PomsetBox(pomsetInstance,errorArea)
+    pomsetSimBox = new PomsetSimBox(pomsetInstance,errorArea)
+//    pomsetCytoBox = new PomsetCytoBox(choreo,errorArea)
+    bisimBox = new BisimBox(choreoInstance,errorArea)
+    projBox = new ProjectionBox(pomsetInstance,errorArea)
+    choreoSimBox = new ChoreoSimBox(choreoInstance,errorArea)
+    //choreoLocalSimBox = new ChoreoLocalSimBox(choreoInstance,errorArea)
+    //npomsetSimBox = new NPomsetSimBox(choreoInstance,errorArea)
 
     choreo.init(leftColumn, true)
     errorArea.init(leftColumn)
     descriptionArea.init(leftColumn)
     exampleBox.init(leftColumn,true)
     choreographyBox.init(rightColumn, true)
-    pomsetBox.init(rightColumn,true)
+//    pomsetCytoBox.init(rightColumn,true)
+//    pomsetBox.init(rightColumn,true)
+    choreoSimBox.init(rightColumn)
+    //choreoLocalSimBox.init(rightColumn)
+    //npomsetSimBox.init(rightColumn)
+    pomsetSimBox.init(rightColumn)
+    bisimBox.init(leftColumn,false)
+    projBox.init(rightColumn,false)
+
+
 
     common.Utils.moreInfo(rightColumn,"https://github.com/arcalab/choreo")
 
     // load default button
-    if (exampleBox.loadButton("streaming")) {
+    if (exampleBox.loadButton("ex4")) {
       softReload()
     }
   }
@@ -104,8 +111,17 @@ object Choreo {
   private def softReload(): Unit = {
     errorArea.clear()
     choreo.update()
+    choreoInstance.update()
+    pomsetInstance.update()
     choreographyBox.update()
-    pomsetBox.update()
+    //pomsetBox.update()
+//    pomsetCytoBox.update()
+    pomsetSimBox.update()
+    bisimBox.update()
+    projBox.update()
+    choreoSimBox.update()
+    //choreoLocalSimBox.update()
+    //npomsetSimBox.update()
   }
 
 }

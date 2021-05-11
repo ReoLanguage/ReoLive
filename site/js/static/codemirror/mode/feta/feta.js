@@ -11,7 +11,7 @@
 })(function(CodeMirror) {
 "use strict";
 
-CodeMirror.defineMode("choreo", function(_config, modeConfig) {
+CodeMirror.defineMode("feta", function(_config, modeConfig) {
 
   function switchState(source, setState, f) {
     setState(f);
@@ -194,11 +194,11 @@ CodeMirror.defineMode("choreo", function(_config, modeConfig) {
 //    setType("keyword")( // where, ...
 //      "def");
 
-    setType("keyword")("!","?","->");
+    setType("keyword")("->","-->","start","default","to","if","by","..");
 
 
-    setType("builtin")( // types and constructors
-      "+","||",";","*","[","]");
+    setType("builtin")(
+      "+","|","&","<-->","[","]","one","many","any","xor","(",")","{","}");
 
 //    setType("builtin")(
 //      );
@@ -229,6 +229,6 @@ CodeMirror.defineMode("choreo", function(_config, modeConfig) {
 
 });
 
-CodeMirror.defineMIME("text/x-choreo", "choreo");
+CodeMirror.defineMIME("text/x-feta", "feta");
 
 });
