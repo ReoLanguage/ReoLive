@@ -3,6 +3,7 @@ val circeVersion = "0.9.3"
 
 lazy val common_settings = Seq(
   scalaVersion := "2.12.10", // 12.4
+  scalacOptions += "-Ypartial-unification",
   libraryDependencies ++= Seq(
     "junit" % "junit" % "4.12",
     "org.choco-solver" % "choco-solver" % "4.0.6",
@@ -19,21 +20,23 @@ lazy val common_settings = Seq(
     // The visualization library is distributed separately as well.
     // It depends on LGPL code
     "org.scalanlp" %% "breeze-viz" % "0.13.2",
-
     // Optimus to solve quadratic programming problem
     "com.github.vagmcs" %% "optimus" % "3.1.2",
-    "com.github.vagmcs" %% "optimus-solver-oj" % "3.1.2"
-  )
+    "com.github.vagmcs" %% "optimus-solver-oj" % "3.1.2",
+    "org.typelevel" %%% "cats-core" % "2.1.1"
+  ),
+  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
   ,
   unmanagedJars in Compile ++= Seq(
     baseDirectory.value / "../lib/reo-1.0b.jar"
   )
 )
 
+
 lazy val server = (project in file("server"))
   .dependsOn(localJS, remoteJS)
   .enablePlugins(PlayScala)
-  .disablePlugins(ScalaJSPlugin, WorkbenchPlugin)
+  .disablePlugins(ScalaJSPlugin) //, WorkbenchPlugin)
   .settings(
     common_settings,
     name := "server",
@@ -45,7 +48,7 @@ lazy val server = (project in file("server"))
       "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
     ),
     libraryDependencies ++= Seq(
-      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
+      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",//"1.1.0",
       "com.typesafe.play" %% "play" % "2.6.11",
       "javax.xml.bind" % "jaxb-api" % "2.3.0",
       // "com.typesafe.play" %% "play-json" % "2.6.9",
@@ -57,7 +60,8 @@ lazy val server = (project in file("server"))
       baseDirectory.value / "../lib/hprog/src/main/scala",
       baseDirectory.value / "../lib/ifta/src/main/scala",
       baseDirectory.value / "../lib/virtuoso/src/main/scala",
-      baseDirectory.value / "../lib/reactiveDsl/src/main/scala"
+      baseDirectory.value / "../lib/reactiveDsl/src/main/scala",
+      baseDirectory.value / "../lib/choreo/src/main/scala"
     )
   )
 
@@ -67,12 +71,12 @@ lazy val javascript_settings = Seq(
   scalacOptions ++= Seq("-unchecked", "-deprecation","-feature"),
   //    hello := {println("Hello World!")},
   libraryDependencies ++= Seq(
-    "be.doeraene" %%% "scalajs-jquery" % "0.9.1",
+    "be.doeraene" %%% "scalajs-jquery" % "1.0.0", //"0.9.1",
     /////
-    "org.scala-js" %%% "scalajs-dom" % "0.9.1",
-    "com.lihaoyi" %%% "scalatags" % "0.6.7",
-    "org.singlespaced" %%% "scalajs-d3" % "0.3.4",
-    "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.0",
+    "org.scala-js" %%% "scalajs-dom" % "1.1.0", //"0.9.1",
+    "com.lihaoyi" %%% "scalatags" % "0.9.1", //"0.6.7",
+    //"org.singlespaced" %%% "scalajs-d3" % "0.3.4",
+    "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2",//"1.1.0",
     "io.circe" %% "circe-core" % circeVersion, // json parser
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion
@@ -83,14 +87,15 @@ lazy val javascript_settings = Seq(
     baseDirectory.value / "../lib/hprog/src/main/scala",
     baseDirectory.value / "../lib/ifta/src/main/scala",
     baseDirectory.value / "../lib/virtuoso/src/main/scala",
-    baseDirectory.value / "../lib/reactiveDsl/src/main/scala"
+    baseDirectory.value / "../lib/reactiveDsl/src/main/scala",
+    baseDirectory.value / "../lib/choreo/src/main/scala"
   )
 )
 
 
 
 lazy val commonJS = (project in file("commonJS"))
-  .enablePlugins(ScalaJSPlugin, WorkbenchPlugin)
+  .enablePlugins(ScalaJSPlugin) //, WorkbenchPlugin)
   .disablePlugins(PlayScala)
   .settings(
     common_settings,

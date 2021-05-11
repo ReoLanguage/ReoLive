@@ -110,13 +110,12 @@ class RemoteIFTABox(dependency:Box[CoreConnector], iftaAutBox:IFTABox,circuitBox
 
     val renamedSols = sol.map(ft => Feat(ft)).map(ft => Show(iftaAut.getRenamedFe(ft))).mkString(",")
 
-    val b = solutionsBox.append("button").text(
+    val b = solutionsBox.append("button").textEl(
       if (renamedSols == "") "⊥" else renamedSols)
-    b.on("click", { (e: EventTarget, a: Int, b: UndefOr[Int]) => {
+    b.on("click", () => { //{ (e: EventTarget, a: Int, b: UndefOr[Int]) => {
       iftaAutBox.showFs(sol)
       circuitBox.showFs(sol4circuit)
-    }
-    }: b.DatumFunction[Unit])
+    }) //: b.DatumFunction[Unit])
   }
 
 }

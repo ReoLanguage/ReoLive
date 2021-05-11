@@ -109,7 +109,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     """// Bouncing ball example
           |v:=5; p:=10; c:=0;
           |while (c<4) do {
-          |  v'=-9.8, p'=v until_0.001 p<0 /\ v<0;
+          |  v'=-9.8, p'=v until_0.01 p<0 /\ v<0;
           |  v:=-0.5*v; c:=c+1
           |}""".stripMargin ->
         descr("Bouncing Ball","Event-Driven (ED) example, using steps of 0.001. " +
