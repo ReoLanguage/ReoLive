@@ -260,7 +260,7 @@ unzip_ =
     for (ops <- buttons ) yield genButton(ops,buttonsDiv)
   }
 
-  override def update: Unit = ()
+  override def update(): Unit = ()
 
   protected def genButton(ss:List[String],buttonsDiv:Block): Unit = {
     ss match {

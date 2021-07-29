@@ -13,7 +13,7 @@ class DslBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
   override protected val boxId: String = "newDsl"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("refresh") -> (() => reload, "Load the program (shift-enter)")
+      Right("refresh") -> (() => reload(), "Load the program (shift-enter)")
     )
 
   override protected val codemirror: String = "dsl"

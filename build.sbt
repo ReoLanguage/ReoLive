@@ -30,7 +30,7 @@ lazy val common_settings = Seq(
   ),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
   ,
-  unmanagedJars in Compile ++= Seq(
+  Compile / unmanagedJars ++= Seq(
     baseDirectory.value / "../lib/reo-1.0b.jar"
   )
 )
@@ -57,7 +57,7 @@ lazy val server = (project in file("server"))
       jdbc , ehcache , ws , specs2 % Test , guice
     ),
     // unmanagedResourceDirectories in Test +=  Seq(baseDirectory ( _ /"target/web/public/test" )),
-    unmanagedSourceDirectories in Compile ++= Seq(
+    Compile / unmanagedSourceDirectories ++= Seq(
       baseDirectory.value / "../lib/preo/src/main/scala",
       baseDirectory.value / "../lib/hprog/src/main/scala",
       baseDirectory.value / "../lib/ifta/src/main/scala",
@@ -92,7 +92,7 @@ lazy val javascript_settings = Seq(
     "io.circe" %% "circe-parser" % circeVersion
   )
   ,
-  unmanagedSourceDirectories in Compile ++= Seq(
+  Compile / unmanagedSourceDirectories ++= Seq(
     baseDirectory.value / "../lib/preo/src/main/scala",
     baseDirectory.value / "../lib/hprog/src/main/scala",
     baseDirectory.value / "../lib/ifta/src/main/scala",

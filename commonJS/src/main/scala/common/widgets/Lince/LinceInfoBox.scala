@@ -22,7 +22,7 @@ class LinceInfoBox(dependency: Box[String], errorArea: OutputArea)
       .attr("id", "HProgBox")
   }
 
-  override def update: Unit = {
+  override def update(): Unit = {
 
     block.text("")
     DSL.parseWithError(dependency.get) match {
