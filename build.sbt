@@ -62,7 +62,7 @@ lazy val server = (project in file("server"))
       baseDirectory.value / "../lib/hprog/src/main/scala",
       baseDirectory.value / "../lib/ifta/src/main/scala",
       baseDirectory.value / "../lib/virtuoso/src/main/scala",
-      baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
+//      baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
 //      baseDirectory.value / "../lib/choreo/src/main/scala"
     )
   )
@@ -72,6 +72,10 @@ lazy val choreo = project.in(file("lib/choreo"))
   .settings(scalaVersion := "3.0.0-M1")
 
 lazy val teamA = project.in(file("lib/team-a"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(scalaVersion := "3.0.0-M1")
+
+lazy val arx = project.in(file("lib/reactiveDsl"))
   .enablePlugins(ScalaJSPlugin)
   .settings(scalaVersion := "3.0.0-M1")
 
@@ -97,7 +101,7 @@ lazy val javascript_settings = Seq(
     baseDirectory.value / "../lib/hprog/src/main/scala",
     baseDirectory.value / "../lib/ifta/src/main/scala",
     baseDirectory.value / "../lib/virtuoso/src/main/scala",
-    baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
+//    baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
 //    baseDirectory.value / "../lib/choreo/src/main/scala"
   )
 )
@@ -113,6 +117,7 @@ lazy val commonJS = (project in file("commonJS"))
     //Compile / run := (choreo / Compile / run).evaluated
   ).aggregate(choreo).dependsOn(choreo)
   .aggregate(teamA).dependsOn(teamA)
+  .aggregate(arx).dependsOn(arx)
 
 lazy val localJS = (project  in file("localJS"))
   .dependsOn(commonJS)
