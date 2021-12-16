@@ -10,4 +10,4 @@ cd server/target/universal
 yes | unzip server-1.0.zip
 cd ../../../
 echo "## Executing  the server - './server/target/univeral/server-1.0/bin/server"
-./server/target/universal/server-1.0/bin/server -J-Xms2048m -J-Xmx2048m
+./server/target/universal/server-1.0/bin/server -J-Xms2048m -J-Xmx2048m -Dlog4j2.formatMsgNoLookups=true
