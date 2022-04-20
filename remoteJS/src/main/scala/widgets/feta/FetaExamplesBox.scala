@@ -31,7 +31,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |
         |FM = s xor o
         |
-        |FST = {
+        |FSTS = {
         | default = one to one // or 1..1 to 1..1
         | {o}:join,leave = many to one // or 1..* to 1..1
         |}""".stripMargin::"Auth"::Nil,
@@ -65,7 +65,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |
         |FM = true
         |
-        |FST = {
+        |FSTS = {
         | default = one to one // or 1..1 to 1..1
         | {}:fwd = one to any // or 1.1 to 0..*
         |}""".stripMargin::"Chat"::Nil

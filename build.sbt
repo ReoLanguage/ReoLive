@@ -30,7 +30,7 @@ lazy val common_settings = Seq(
   ),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
   ,
-  unmanagedJars in Compile ++= Seq(
+  Compile / unmanagedJars ++= Seq(
     baseDirectory.value / "../lib/reo-1.0b.jar"
   )
 )
@@ -57,12 +57,12 @@ lazy val server = (project in file("server"))
       jdbc , ehcache , ws , specs2 % Test , guice
     ),
     // unmanagedResourceDirectories in Test +=  Seq(baseDirectory ( _ /"target/web/public/test" )),
-    unmanagedSourceDirectories in Compile ++= Seq(
+    Compile / unmanagedSourceDirectories ++= Seq(
       baseDirectory.value / "../lib/preo/src/main/scala",
       baseDirectory.value / "../lib/hprog/src/main/scala",
       baseDirectory.value / "../lib/ifta/src/main/scala",
       baseDirectory.value / "../lib/virtuoso/src/main/scala",
-      baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
+//      baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
 //      baseDirectory.value / "../lib/choreo/src/main/scala"
     )
   )
@@ -72,6 +72,10 @@ lazy val choreo = project.in(file("lib/choreo"))
   .settings(scalaVersion := "3.0.0-M1")
 
 lazy val teamA = project.in(file("lib/team-a"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(scalaVersion := "3.0.0-M1")
+
+lazy val arx = project.in(file("lib/reactiveDsl"))
   .enablePlugins(ScalaJSPlugin)
   .settings(scalaVersion := "3.0.0-M1")
 
@@ -92,12 +96,12 @@ lazy val javascript_settings = Seq(
     "io.circe" %% "circe-parser" % circeVersion
   )
   ,
-  unmanagedSourceDirectories in Compile ++= Seq(
+  Compile / unmanagedSourceDirectories ++= Seq(
     baseDirectory.value / "../lib/preo/src/main/scala",
     baseDirectory.value / "../lib/hprog/src/main/scala",
     baseDirectory.value / "../lib/ifta/src/main/scala",
     baseDirectory.value / "../lib/virtuoso/src/main/scala",
-    baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
+//    baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
 //    baseDirectory.value / "../lib/choreo/src/main/scala"
   )
 )
@@ -113,6 +117,7 @@ lazy val commonJS = (project in file("commonJS"))
     //Compile / run := (choreo / Compile / run).evaluated
   ).aggregate(choreo).dependsOn(choreo)
   .aggregate(teamA).dependsOn(teamA)
+  .aggregate(arx).dependsOn(arx)
 
 lazy val localJS = (project  in file("localJS"))
   .dependsOn(commonJS)

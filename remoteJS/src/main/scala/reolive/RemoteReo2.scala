@@ -143,15 +143,15 @@ object RemoteReo2 extends{
     */
   private def first_reload(): Unit= {
     descr.clear()
-    errors.clear
-    inputBox.update
-    typeInstanceInfo.update
+    errors.clear()
+    inputBox.update()
+    typeInstanceInfo.update()
   }
 
   private def soft_reload(): Unit= {
-    errors.clear
-    inputBox.update
-    typeInstanceInfo.update
+    errors.clear()
+    inputBox.update()
+    typeInstanceInfo.update()
   }
 
   /**
@@ -161,13 +161,13 @@ object RemoteReo2 extends{
     */
   private def second_reload(): Unit = {
     mcrl2Box.id = typeInstanceInfo.id
-    svg.update
-    svgAut.update
-    mcrl2Box.update
-    ifta.update
-    iftaAut.update
-    uppaalAut.update
-    uppaalNet.update
+    svg.update()
+    svgAut.update()
+    mcrl2Box.update()
+    ifta.update()
+    iftaAut.update()
+    uppaalAut.update()
+    uppaalNet.update()
   }
 
   private def export(): Unit = {

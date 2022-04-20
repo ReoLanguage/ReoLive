@@ -39,7 +39,7 @@ class RemoteIFTABox(dependency:Box[CoreConnector], iftaAutBox:IFTABox,circuitBox
       .attr("id","iftaProducts")
 
     dom.document.getElementById("IFTA Analysis").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
-      .onclick = { e : MouseEvent => if (!isVisible) solveFm else deleteProducts}
+      .onclick = { e : MouseEvent => if (!isVisible) solveFm() else deleteProducts()}
   }
 
   /**
@@ -47,7 +47,7 @@ class RemoteIFTABox(dependency:Box[CoreConnector], iftaAutBox:IFTABox,circuitBox
     *  - update its output value, and
     *  - produce side-effects (e.g., redraw a diagram)
     */
-  override def update(): Unit = if (isVisible) solveFm
+  override def update(): Unit = if (isVisible) solveFm()
 
   private def solveFm():Unit ={
     try {

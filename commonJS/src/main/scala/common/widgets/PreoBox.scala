@@ -7,7 +7,7 @@ class PreoBox (globalReload: =>Unit, export: => Unit,default: String, outputBox:
   override protected val boxId: String = "PreoInputArea"
   override protected val buttons: List[(Either[String, String], (() => Unit, String))] =
     List(
-      Right("refresh")-> (()=>reload,"Load the connector (shift-enter)"),
+      Right("refresh")-> (()=>reload(),"Load the connector (shift-enter)"),
       Left("URL")-> (()=>export,"Generate link with the current connector"))
 
   override protected val codemirror: String = "preo"

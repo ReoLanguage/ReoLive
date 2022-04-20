@@ -72,6 +72,13 @@ abstract class Box[A](val title: String, dependency: List[Box[_]]){
         .style("max-height","18pt")
         .style("margin-left","2pt")
         .style("display","flex")
+        // ----
+        .style("border", "none")
+        .style("background-image", "none")
+        .style("text-shadow", "none")
+        .style("box-shadow", "none")
+        .style("background-color", "transparent")
+        .style("padding", "5px 6px 5px 4px")
       if (name==Right("help")) button
         .style("margin-left","-2pt")
         .style("border", "none")
@@ -187,7 +194,8 @@ object Box {
       .attr("d","M0 0h24v24H0z")
       .attr("fill","none")
     svg.append("path")
-      .attr("d","M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z")
+//      .attr("d","M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z")
+      .attr("d","M 11 2 C 10.448 2 10 2.448 10 3 L 10 11 L 6 11 L 12 17 L 18 11 L 14 11 L 14 3 C 14 2.448 13.552 2 13 2 L 11 2 z M 2 20 L 2 22 L 22 22 L 22 20 L 2 20 z")
 
   }
 

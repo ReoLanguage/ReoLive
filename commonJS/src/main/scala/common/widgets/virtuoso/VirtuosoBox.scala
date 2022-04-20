@@ -12,7 +12,7 @@ class VirtuosoBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
         Right("help") -> (()=>
           common.Utils.goto("https://hubs.readthedocs.io/en/latest/tutorial.html#hub-composer"),
           "See documentation for this widget"),
-        Right("refresh") -> (() => reload, "Load the Hub (shift-enter)")
+        Right("refresh") -> (() => reload(), "Load the Hub (shift-enter)")
       )
 
     override protected val codemirror: String = "virtuoso"

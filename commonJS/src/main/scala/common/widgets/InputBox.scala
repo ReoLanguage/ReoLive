@@ -58,7 +58,7 @@ class InputBox(reload: => Unit, default:String="", id:String="", rows:Int = 10,
   }
 
   //todo: this function can be centralized. maybe....
-  override def update: Unit = {
+  override def update(): Unit = {
     val inputAreaDom = dom.document.getElementById("inputArea_"+id).asInstanceOf[html.TextArea]
     if(input != default || inputAreaDom.value != "")
       input = inputAreaDom.value
