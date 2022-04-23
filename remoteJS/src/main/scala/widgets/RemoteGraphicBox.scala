@@ -55,6 +55,7 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
     //println("before eval")
     errorBox.clear()
     //errorBox.message(s"got reply: ${sageReplyAndWarns}")
+    println(s"[GrBox] got reply: ${sageReplyAndWarns}")
     if (sageReply startsWith "Error")
       errorBox.error(sageReply)
     else try {

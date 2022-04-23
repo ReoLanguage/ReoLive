@@ -121,6 +121,7 @@ class LinceActor(out: ActorRef) extends Actor{
 
   private def getSolver(bounds: (Double,Int), eps:Double, solver: LiveSageSolver, syntax: Syntax): String = {
 
+    println(s"[LinceA] asked to get solver for $syntax")
     val traj = new Traj(syntax, solver, new Distance(eps),bounds)
     traj.doFullRun // fill caches of the solver + warnings & notes
 
