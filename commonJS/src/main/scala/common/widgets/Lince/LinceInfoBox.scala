@@ -25,16 +25,19 @@ class LinceInfoBox(dependency: Box[String], errorArea: OutputArea)
   override def update(): Unit = {
 
     block.text("")
-    DSL.parseWithError(dependency.get) match {
-      case hprog.lang.Parser.Success(result, _) =>
+    try {
+      DSL.parseWithError(dependency.get) match {
+        case Right(result) => //hprog.lang.Parser.Success(result, _) =>
           block //.append("p")
-            .html(Show(result).replace("\n"," <br>\n"))
+            .html(Show(result).replace("\n", " <br>\n"))
           prog = result
-      case hprog.lang.Parser.Failure(msg,_) =>
-        errorArea.error("Parser failure: " + msg)
-      //        instanceInfo.append("p").text("-")
-      case hprog.lang.Parser.Error(msg,_) =>
-        errorArea.error("Parser error: " + msg)
+        case Left(msg) => //hprog.lang.Parser.Failure(msg,_) =>
+          errorArea.error("Parser failure: " + msg)
+        //        instanceInfo.append("p").text("-")
+      }
+    } catch {
+      case msg: Throwable => //hprog.lang.Parser.Error(msg,_) =>
+        errorArea.error("Parser error: " + msg.toString)
       //        instanceInfo.append("p").text("-")
     }
   }

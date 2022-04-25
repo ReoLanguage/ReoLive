@@ -26,6 +26,7 @@ lazy val common_settings = Seq(
     // Optimus to solve quadratic programming problem
     "com.github.vagmcs" %% "optimus" % "3.2.4",
     "com.github.vagmcs" %% "optimus-solver-oj" % "3.2.4",
+    "org.typelevel" %%% "cats-parse" % "0.3.0", // 0.3.4
     "org.typelevel" %%% "cats-core" % "2.1.1"
   ),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
@@ -79,6 +80,10 @@ lazy val arx = project.in(file("lib/reactiveDsl"))
   .enablePlugins(ScalaJSPlugin)
   .settings(scalaVersion := "3.0.0-M1")
 
+//lazy val lince = project.in(file("lib/hprog"))
+//  .enablePlugins(ScalaJSPlugin)
+//  .settings(scalaVersion := "3.0.0-M1")
+
 lazy val javascript_settings = Seq(
 //  Compile/run := {},
   version := "1.0",
@@ -118,6 +123,7 @@ lazy val commonJS = (project in file("commonJS"))
   ).aggregate(choreo).dependsOn(choreo)
   .aggregate(teamA).dependsOn(teamA)
   .aggregate(arx).dependsOn(arx)
+//  .aggregate(lince).dependsOn(lince)
 
 lazy val localJS = (project  in file("localJS"))
   .dependsOn(commonJS)
