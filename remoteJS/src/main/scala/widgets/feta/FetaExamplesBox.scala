@@ -27,7 +27,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |  0 --> 0 by leave
         |}
         |
-        |FS = (u1->user,u2->user,s->server)
+        |FS = (u1:user,u2:user,s:server)
         |
         |FM = s xor o
         |
@@ -36,7 +36,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         | {o}:join,leave = many to one // or 1..* to 1..1
         |}""".stripMargin::"Auth"::Nil,
     "Chat"::
-      """FCA user (confirmL,confirmJ,fwd)
+      """CA user (confirmL,confirmJ,fwd)
         |         (join,msg,leave) = {
         | start 0
         | 0 --> 1 by join
@@ -47,7 +47,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         | 3 --> 0 by confirmL
         |}
         |
-        |FCA server (leave,join,reject,grant,msg)
+        |CA server (leave,join,reject,grant,msg)
         |           (confirmL,confirmJ,ask,fwd) = {
         | start 0
         |  0 --> 1 by join
@@ -61,14 +61,40 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |  5 --> 0 by fwd
         |}
         |
-        |FS = (u1->user,u2->user,s->server)
+        |FS = (u1:user,u2:user,s:server)
         |
-        |FM = true
-        |
-        |FSTS = {
+        |STS = {
         | default = one to one // or 1..1 to 1..1
-        | {}:fwd = one to any // or 1.1 to 0..*
-        |}""".stripMargin::"Chat"::Nil
+        | fwd = one to any // or 1.1 to 0..*
+        |}""".stripMargin::"Chat"::Nil,
+    "Simple"::
+      """CA one (a)(b) = {
+        | start 0
+        | 0 --> 1 by a
+        | 1 --> 0 by b
+        |}
+        |
+        |CA two (b)(a) = {
+        | start 0
+        |  0 --> 1 by b
+        |  1 --> 0 by a
+        |}
+        |
+        |CA three (a)() = {
+        | start 0
+        | 0 --> 0 by a
+        |}
+        |
+        |CA four ()(a) = {
+        | start 0
+        |  0 --> 0 by a
+        |}
+        |
+        |FS = (c1:one, c2:two, c3:three, c4:four)
+        |
+        |STS = {
+        | default = one to one
+        |}""".stripMargin::"Simple"::Nil
   )
 
 }
