@@ -14,9 +14,9 @@ import widgets.RemoteBox
  */
 
 class FetaGraphBox(code: Box[String], errorBox: OutputArea)
-  extends Box[Unit]("FETA", List(code)) {
+  extends Box[Unit]("(F)ETA diagram", List(code)) {
 
-  val feta:String = ""
+  val feta:String = "Feta"
   private var box:Block = _
   var spec:Specification = _
 
@@ -30,42 +30,42 @@ class FetaGraphBox(code: Box[String], errorBox: OutputArea)
    */
   override def init(div: Block, visible: Boolean): Unit = {
     box = panelBox(div, visible, buttons = List(
-      Right("download") -> (() => Utils.downloadSvg("svgFeta"), "Download SVG")
+      Right("download") -> (() => Utils.downloadSvg(s"svg$feta"), "Download SVG")
     )).append("div")
       .attr("class", "mermaid")
-      .attr("id", "fetaGraphBox")
+      .attr("id", s"${feta}GraphBox")
       .style("text-align", "center")
-      .append("div").attr("id", "svgFeta")
+      .append("div").attr("id", s"svg$feta")
 
-    dom.document.getElementById("FETA").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = { e: MouseEvent => if (!isVisible) showGraph() }
   }
 
-    /**
-     * Block of code that should read the dependencies and:
-     *  - update its output value, and
-     *  - produce side-effects (e.g., redraw a diagram)
-     */
-    override def update(): Unit = if(isVisible) showGraph()
+  /**
+   * Block of code that should read the dependencies and:
+   *  - update its output value, and
+   *  - produce side-effects (e.g., redraw a diagram)
+   */
+  override def update(): Unit = if(isVisible) showGraph()
 
-    def showGraph():Unit = {
-      try {
+  def showGraph():Unit = {
+    try {
 
-        spec = DSL.parse(code.get)
-        val fm = spec.fm
-        val fmInfo = s"""{ "fm":     "${fm.simplify.toString}", """ +
-                     s"""  "feats":  "${spec.fcas.flatMap(f=>f.features).mkString("(",",",")")}" }"""
+      spec = DSL.parse(code.get)
+      val fm = spec.fm
+      val fmInfo = s"""{ "fm":     "${fm.simplify.toString}", """ +
+                   s"""  "feats":  "${spec.fcas.flatMap(f=>f.features).mkString("(",",",")")}" }"""
 
-        RemoteBox.remoteCall("ifta", fmInfo, showGraph)
+      RemoteBox.remoteCall("ifta", fmInfo, showGraph)
 
-      } catch Box.checkExceptions(errorBox)
-    }
-
-    def showGraph(data:String):Unit = try {
-      val products = FDSL.parseProducts(data)
-      val feta = DSL.interpretInServer(spec,products)
-      val mermaid = DSL.toMermaid(feta)
-      val mermaidJs = MermaidJS(mermaid,"fetaGraphBox","svgFeta")
-      scalajs.js.eval(mermaidJs)
     } catch Box.checkExceptions(errorBox)
   }
+
+  def showGraph(data:String):Unit = try {
+    val products = FDSL.parseProducts(data)
+    val fetaSpec = DSL.interpretInServer(spec,products)
+    val mermaid = DSL.toMermaid(fetaSpec)
+    val mermaidJs = MermaidJS(mermaid,s"${feta}GraphBox",s"svg$feta")
+    scalajs.js.eval(mermaidJs)
+  } catch Box.checkExceptions(errorBox)
+}

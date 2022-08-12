@@ -52,9 +52,9 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
 //  }
 
   def draw(sageReply: String): Unit = {
-    //println("before eval")
     errorBox.clear()
-    //errorBox.message(s"got reply: ${sageReplyAndWarns}")
+    errorBox.message("Got reply. Drawing")
+//    errorBox.message(s"got reply: ${sageReplyAndWarns}")
     if (sageReply startsWith "Error")
       errorBox.error(sageReply)
     else try {
@@ -111,6 +111,7 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
 
 
   private def redraw(range: Option[(Double,Double)],hideCont:Boolean): Unit = try {
+    errorBox.message("Redrawing")
     (lastSyntax,lastSolver) match {
       case (Some(syntax),Some(solver)) =>
 //        val e = getEps
@@ -126,6 +127,7 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
 //        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings
         val js = TrajToJS(traj,range,hideCont)
         scalajs.js.eval(js)
+        errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
     }
   }

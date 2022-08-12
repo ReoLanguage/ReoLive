@@ -51,11 +51,14 @@ class FETAInfoBox(code: Box[String], errorBox: OutputArea)
       val fmInfo = s"""{ "fm":     "${fm.simplify.toString}", """ +
         s"""  "feats":  "${spec.fcas.flatMap(f=>f.features).mkString("(",",",")")}" }"""
 
+      import fta.view.Show.showFE
+      errorBox.message(s"waiting to solve ${showFE(fm)}")
       RemoteBox.remoteCall("ifta", fmInfo, showInfo )
 
     } catch Box.checkExceptions(errorBox)
 
-  def showInfo(data:String):Unit = {
+  def showInfo(data:String):Unit = try {
+    errorBox.clear()
     val products = FDSL.parseProducts(data)
     val feta = DSL.interpretInServer(spec,products)
 
@@ -65,6 +68,11 @@ class FETAInfoBox(code: Box[String], errorBox: OutputArea)
       .append("strong")
       .text(s"Products: ${feta.products.size} \n")
     box.append("ul").html(feta.products.map(p=> p.mkString("{",",","}")).mkString("<li>",",","</li>"))
+
+    box.append("p")
+      .append("strong")
+      .text(s"Products Again: ${products.size} \n")
+    box.append("ul").html(products.map(p => p.mkString("{", ",", "}")).mkString("<li>", ",", "</li>"))
 
     box.append("p")
       .append("strong")
@@ -99,6 +107,7 @@ class FETAInfoBox(code: Box[String], errorBox: OutputArea)
     )
 
 
-  }
+  } catch Box.checkExceptions(errorBox,"FETA-info")
+
 
 }

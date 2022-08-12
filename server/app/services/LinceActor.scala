@@ -46,7 +46,9 @@ class LinceActor(out: ActorRef) extends Actor{
     props.load(new FileInputStream("global.properties"))
     val sagePath = props.getProperty("sagePath")
 
-    callSage(cleanMsg,sagePath)
+    val res = callSage(cleanMsg,sagePath)
+//    println(s"sending reply: $res")
+    res
   }
 
   private def callSage(progAndEps: String, sagePath:String): String = {
@@ -122,7 +124,9 @@ class LinceActor(out: ActorRef) extends Actor{
   private def getSolver(bounds: (Double,Int), eps:Double, solver: LiveSageSolver, syntax: Syntax): String = {
 
     val traj = new Traj(syntax, solver, new Distance(eps),bounds)
+//    println("=== Running Sage to get solver")
     traj.doFullRun // fill caches of the solver + warnings & notes
+//    println("=== Done Running Sage to get solver")
 
     traj.getWarnings
         .foreach(warns => solver.addWarnings(warns.toList))
@@ -134,6 +138,7 @@ class LinceActor(out: ActorRef) extends Actor{
       .mkString("\n")}")
 
     solver.closeWithoutWait()
+//    println("=== Done wrapping Sage - replying")
     replySage
   }
 

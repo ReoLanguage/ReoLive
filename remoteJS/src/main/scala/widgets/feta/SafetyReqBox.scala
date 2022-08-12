@@ -1,20 +1,33 @@
 package widgets.feta
 
 import common.widgets.{Box, OutputArea}
+import fta.backend.MmCRL2._
+import fta.features.FExp
 import fta.{DSL, Specification, TeamLogic}
 import ifta.{DSL => FDSL}
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
-import widgets.RemoteBox
+import widgets.{RemoteBox, RemoteMcrl2GenBox}
 
-class SafetyReqBox(code: Box[String], errorBox: OutputArea)
-  extends Box[Unit]("Safety Requirements Characterisation", List(code)) {
+class SafetyReqBox(code: Box[String],
+//                   var mCRL2Box: RemoteMcrl2GenBox,
+                   errorBox: OutputArea)
+  extends Box[(String,List[(String,String)])]("Safety Requirements Characterisation", List(code)) {
 
 
   protected var box: Block = _
   protected var spec: Specification = _
+  protected var mCRL2: String = ""
+  protected var formulas: List[(String,String)] = Nil // name and formula
+  protected var mCRL2Box: RemoteMcrl2GenBox = _
+  protected var mermaidBox: MermaidGraphBox = _
 
-  override def get: Unit = ()
+
+  def setMCRL2(m:RemoteMcrl2GenBox) = mCRL2Box=m
+  def setMermaid(m:MermaidGraphBox) = mermaidBox=m
+
+  /** Produces the mCRL2 specification code and the mCRL2 formulas to be verified. */
+  override def get: (String,List[(String,String)]) = (mCRL2,formulas)
 
   /**
    * Executed once at creation time, to append the content to the inside of this box
@@ -27,7 +40,7 @@ class SafetyReqBox(code: Box[String], errorBox: OutputArea)
       .append("div")
       .attr("id", "safetyReqBox")
       .style("margin", "10px")
-    dom.document.getElementById("Safety Requirements Characterisation").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = { e: MouseEvent => if (!isVisible) show() }
   }
 
@@ -37,10 +50,17 @@ class SafetyReqBox(code: Box[String], errorBox: OutputArea)
    *  - update its output value, and
    *  - produce side-effects (e.g., redraw a diagram)
    */
-  override def update(): Unit = if (isVisible) show()
+  override def update(): Unit = if (isVisible || mCRL2Box.isVisible || mermaidBox.isVisible) show()
+
+  def forceUpdate(): Unit = show() // will also trigger the checkMcrl2
+
+  def setMcrl2(_mCRL2Box: RemoteMcrl2GenBox) =
+    mCRL2Box = _mCRL2Box
 
   def show(): Unit =
     try {
+      mCRL2 = ""
+      formulas = Nil
       spec = DSL.parse(code.get)
       val fm = spec.fm
       val fmInfo =
@@ -55,12 +75,114 @@ class SafetyReqBox(code: Box[String], errorBox: OutputArea)
     val products = FDSL.parseProducts(data)
     val feta = DSL.interpretInServer(spec, products)
 
+    if (products.isEmpty) {
+      errorBox.error("No products found.")
+      return
+    }
+    val prod: FExp.Product = products.head
+    if (products.size>1)
+      errorBox.message(s"${products.size} products found. Using product {${prod.mkString(",")}}.")
+
+    val par = parallel(feta.s.components.map(toParamProcess(_,Some(prod))))
+    val all = wrapAllowFSys(feta, par)
+    mCRL2 = all.code
+    val formula1 = "Receptiveness" -> toMuFormula(TeamLogic.getReceptivenesReq(feta.s, feta.fst, prod))
+    val formula2 = "Weak Receptiveness" -> toMuFormula(TeamLogic.getWeakReceptivenesReq(feta.s, feta.fst, prod))
+
+    formulas = List(formula1,formula2)
+
+    // got all information
+    // 1. call the mCRL2Box to update
+    if (mermaidBox.isVisible)
+         mCRL2Box.forceUpdate() // run mCRL2 even if invisble
+    else mCRL2Box.update() // run mCRL2 based on its visibility
+//    mCRL2Box.runMcrl2(mCRL2,List(formula))
+
+    // 2. display information
+
     box.text("")
 
     box.append("p")
       .append("strong")
       .text(s"Receptiveness: \n")
     box.append("pre")
-      .text(TeamLogic.getReceptivenesReq(feta.s, feta.fst).toString)
+      .text(formula1._2)
+
+    box.append("p")
+      .append("strong")
+      .text(s"Weak Receptiveness: \n")
+    box.append("pre")
+      .text(formula2._2)
+
+    box.append("p")
+      .append("strong")
+      .text(s"mCRL2 full system: \n")
+    box.append("pre")
+      .text(mCRL2)
+
+
+    ////
+
+//    box.append("p")
+//      .append("strong")
+//      .text(s"-- Experiments from here --\n")
+//
+//
+//    box.append("p")
+//      .append("strong")
+//      .text(s"Weak Receptiveness Debug: \n")
+//    box.append("pre")
+//      .text(TeamLogic.getWeakReceptivenesReq(feta.s, feta.fst, prod).toString+"\n\n\n"+
+//              toMuFormula(TeamLogic.getWeakReceptivenesReq(feta.s, feta.fst, prod)))
+//
+//    box.append("p")
+//      .append("strong")
+//      .text(s"Receptiveness Debug: \n")
+//    box.append("pre")
+//      .text(TeamLogic.getReceptivenesReq(feta.s, feta.fst, prod).toString)
+//
+//
+//    box.append("p")
+//      .append("strong")
+//      .text(s"Receptiveness Debug: \n")
+//    box.append("pre")
+//      .text(TeamLogic.getReceptivenesReq(feta.s, feta.fst, prod).toString)
+//
+//    box.append("p")
+//      .append("strong")
+//      .text(s"mCRL2 experiment: \n")
+////    box.append("pre")
+////      .text(MmCRL2Spec(
+////        Map("P1"-> ((Act("a1") > Proc("P2")) + (Act("a2") > Proc("P1"))),
+////            "P2"-> Proc("0")),
+////        Proc("P1")
+////      ).code)
+//    for (fca<-feta.s.components) {
+//      box.append("pre")
+//        .text(toProcess(fca, None).code)
+//    }
+////    val par = parallel(feta.s.components.map(toParamProcess(_)))
+////    val all = wrapAllowFSys(feta,par)
+//    val justFeta = wrapAllowFETA(feta,prod,par)
+//    val extendedFeta = wrapAllowFETAExtended(feta,prod,par)
+//
+//    // Note to self: getting Allowed transitions requires traversing (several times) throughout all
+//    // of the transitions of the FSystem (taus + comm actions alone + communicating actions that match)
+//
+//    // Note 2: this "extendedFeta" optimisation seems not as great as it sounded originally: avoids longer
+//    // list of "allowed" in mCRL2 in the presence of longer number of combinations, but before producing mCRL2
+//    // this list still needs to produce all combinations (before filtering to the allowed ones). But this means
+//    // that probably AllowFeta and AllowFetaExtended can be further optimised (but not for here).
+//
+//    box.append("pre")
+//      .text(all.code)
+//
+//    box.append("pre")
+//      .text(justFeta.code)
+//
+//    box.append("pre")
+//      .text(extendedFeta.code)
+
+    // Approach:
   }
 }

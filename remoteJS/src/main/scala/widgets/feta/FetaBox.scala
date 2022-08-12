@@ -7,7 +7,7 @@ import common.widgets.{Box, CodeBox, OutputArea}
  */
 
 class FetaBox(globalReload: =>Unit, default: String, outputBox: OutputArea)
-  extends Box[String]("FETA Specification", Nil) with CodeBox {
+  extends Box[String]("(F)ETA Specification", Nil) with CodeBox {
 
   override protected var input: String = default
   override protected val boxId: String = "fetaBox"

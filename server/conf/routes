@@ -54,4 +54,6 @@ GET     /treoWS                     controllers.TreoController.socket
 
 GET     /ifta                       controllers.IFTAController.socket
 
+GET     /checkMcrl2                 controllers.Mcrl2Controller.socket
+
 GET     /verifyta                   controllers.VerifytaController.socket

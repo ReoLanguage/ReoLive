@@ -2,8 +2,12 @@ package reolive
 
 import common.DomNode
 import common.widgets.OutputArea
-import widgets.feta.{FCABox, FETAInfoBox, FetaBox, FetaExamplesBox, FetaGraphBox, SafetyReqBox}
+import fta.{DSL, TeamLogic}
+import widgets.feta.{FCABox, FETAInfoBox, FSysGraphBox, FetaBox, FetaExamplesBox, FetaGraphBox, MermaidGraphBox, SafetyReqBox}
 import org.scalajs.dom.html
+import widgets.RemoteMcrl2GenBox
+import fta.backend.MmCRL2._
+import fta.features.FExp
 
 import scala.scalajs.js.annotation.JSExportTopLevel
 
@@ -17,10 +21,13 @@ object RemoteFeta {
   var descriptionArea: OutputArea = _
   var fetaBox: FetaBox = _
   var fetaGraphBox: FetaGraphBox = _
+  var fSysGraphBox: FSysGraphBox = _
   var examples:FetaExamplesBox = _
   var fcaBox: FCABox = _
   var fetaInfo:FETAInfoBox = _
   var safetyReq:SafetyReqBox = _
+  var mcrl2:RemoteMcrl2GenBox = _
+  var evGraphBox:MermaidGraphBox = _
 
   @JSExportTopLevel("reolive_RemoteFeta_main")
   def main(content: html.Div): Unit = {
@@ -52,24 +59,54 @@ object RemoteFeta {
     errorArea = new OutputArea
     fetaBox = new FetaBox(reload(), "", errorArea)
     fetaGraphBox = new FetaGraphBox(fetaBox, errorArea)
+    fSysGraphBox = new FSysGraphBox(fetaBox, errorArea)
     examples = new FetaExamplesBox(softReload(),List(fetaBox,descriptionArea))
     fcaBox = new FCABox(fetaBox,errorArea)
     fetaInfo = new FETAInfoBox(fetaBox,errorArea)
+
     safetyReq = new SafetyReqBox(fetaBox,errorArea)
+    evGraphBox = new MermaidGraphBox("View mCRL2 evidence",errorArea)
+    def mermaidCallback(): Unit =
+      if (evGraphBox.isVisible) evGraphBox.update()
+    mcrl2 = new RemoteMcrl2GenBox(safetyReq,header="Verification in mCRL2",callback = mermaidCallback, errorBox=errorArea)
+    //
+    safetyReq.setMCRL2(mcrl2)
+    safetyReq.setMermaid(evGraphBox)
+    evGraphBox.setMCRL2(mcrl2)
+
+//    def getMcrl2Specs: (String,List[String]) = {
+////      s"""{ "fm":     "${fm.simplify.toString}", """ +
+////        s"""  "feats":  "${spec.fcas.flatMap(f => f.features).mkString("(", ",", ")")}" }"""
+//      val spec = DSL.parse(fetaBox.get)
+//      /// from IftaActor, to solve the feature model
+//      val fm: FExp = spec.fm.simplify
+//      val feats: Set[String] = spec.fcas.flatMap(f => f.features)
+////      val strResult = fm.products(feats).map(p => p.mkString("(", ",", ")")).mkString("(", ",", ")")
+//      ///
+//
+//      val feta = DSL.interpretInServer(spec, fm.products(feats))
+//      val par = parallel(feta.s.components.map(toParamProcess(_)))
+//      val all = wrapAllowFSys(feta, par)
+//      val forms = List(toMuFormula(TeamLogic.getReceptivenesReq(feta.s, feta.fst)))
+//      all.code -> forms
+//    }
 
     fetaBox.init(leftColumn, true)
     errorArea.init(leftColumn)
     descriptionArea.init(leftColumn)
-    fetaGraphBox.init(rightColumn, true)
+    fetaGraphBox.init(rightColumn, false)
+    fSysGraphBox.init(rightColumn, false)
     examples.init(leftColumn,true)
     fcaBox.init(rightColumn,false)
-    fetaInfo.init(leftColumn,true)
+    fetaInfo.init(leftColumn,false)
+    evGraphBox.init(rightColumn,false)
+    mcrl2.init(rightColumn,true)
     safetyReq.init(rightColumn,true)
 
     common.Utils.moreInfo(rightColumn, "https://github.com/arcalab/team-a")
 
     // load default button
-    if (!examples.loadButton("Auth")) {
+    if (!examples.loadButton("Race (ETA)")) {
       reload()
     }
   }
@@ -87,9 +124,12 @@ object RemoteFeta {
     errorArea.clear()
     fetaBox.update()
     fetaGraphBox.update()
+    fSysGraphBox.update()
     fcaBox.update()
     fetaInfo.update()
     safetyReq.update()
+    mcrl2.update()
+    evGraphBox.update()
   }
 
 }
