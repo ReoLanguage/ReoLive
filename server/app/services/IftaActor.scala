@@ -25,8 +25,8 @@ class IftaActor(out:ActorRef) extends Actor {
   private def process(msg:String):String = {
     val (fmS,featsS) = parseMsg(msg)
     try {
-      var fm:FExp = DSL.parseEfficientFexp(fmS)
-      var feats:Set[String] = DSL.parserFeats(featsS)
+      val fm:FExp = DSL.parseEfficientFexp(fmS)
+      val feats:Set[String] = DSL.parserFeats(featsS)
       fm.products(feats).map(p => p.mkString("(",",",")")).mkString("(",",",")")
     } catch {
       case p:ParseException =>

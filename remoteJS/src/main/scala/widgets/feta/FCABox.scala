@@ -15,7 +15,7 @@ import widgets.RemoteBox
  */
 
 class FCABox(code: Box[String], errorBox: OutputArea)
-  extends Box[Unit]("FCA", List(code)) {
+  extends Box[Unit]("(F)CA", List(code)) {
 
 
   private var box:Block = _
@@ -37,7 +37,7 @@ class FCABox(code: Box[String], errorBox: OutputArea)
       .style("align-content","flex-start")
       //.style("justify-content", "flex-start")
       .style("padding","5px 1px 5px 15px")
-    dom.document.getElementById("FCA").firstChild.firstChild.firstChild.asInstanceOf[html.Element]
+    dom.document.getElementById(title).firstChild.firstChild.firstChild.asInstanceOf[html.Element]
       .onclick = {e: MouseEvent => if(!isVisible) showFCA() }
   }
 
