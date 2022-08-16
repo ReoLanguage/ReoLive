@@ -71,11 +71,6 @@ class FETAInfoBox(code: Box[String], errorBox: OutputArea)
 
     box.append("p")
       .append("strong")
-      .text(s"Products Again: ${products.size} \n")
-    box.append("ul").html(products.map(p => p.mkString("{", ",", "}")).mkString("<li>", ",", "</li>"))
-
-    box.append("p")
-      .append("strong")
       .text(s"Featured System: \n")
     box.append("ul").html(
       s"""<li> # transitions: ${feta.s.trans.size}

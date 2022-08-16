@@ -48,7 +48,7 @@ class Mcrl2Actor(out:ActorRef) extends Actor {
       val pw = new PrintWriter(file)
       pw.write(spec)
       pw.close
-      println(s"Wrote $fPath")
+//      println(s"Wrote $fPath")
       var res: List[(String,String)] = Nil // (true/false, mermaidEvidence)
       ///
       for (prop <- props) {
@@ -59,22 +59,16 @@ class Mcrl2Actor(out:ActorRef) extends Actor {
         val pw = new PrintWriter(fileP)
         pw.write(prop)
         pw.close
-        println(s"Wrote $fPathP")
+        //println(s"Wrote $fPathP")
 
         s"$timeout ${mcrl2Path}mcrl22lps $fPath ${fPath}.lps".!
-        println("wrote LPS")
-
-//        println(s"${mcrl2Path}lps2pbes $fPath.lps --formula=$fPath.mcf $fPath.pbes")
+//        println("wrote LPS")
         s"$timeout ${mcrl2Path}lps2pbes $fPath.lps -c --formula=$fPathP $fPath.pbes".!
 //        val status = s"${mcrl2Path}lps2pbes $fPath.lps --formula=$fPathP $fPath.pbes".!(ProcessLogger(stdout append _, stderr append _))
 //        if (status == 0) println(s"Generated PBES: ${(status, stdout.toString)}")
 //        else println(s"Generated PBES with error: ${(status, stderr.toString)}")
 
-        val solved = s"$timeout ${mcrl2Path}pbessolve --file=${fPath}.lps ${fPath}.pbes".!!.dropRight(1)
-        println(s"solved: `$solved`")
-//        s"${mcrl2Path}lpspp $fPath.pbes.evidence.lps".!
-//        println("wrote LPS")
-//        res ::= solve
+        val solved = s"$timeout ${mcrl2Path}pbessolve -q --file=${fPath}.lps ${fPath}.pbes".!!.dropRight(1)
 
 //        for (typ <- List("aut","fsm","dot")) {
 //          res ::= s" --- $typ ---"
@@ -108,7 +102,7 @@ class Mcrl2Actor(out:ActorRef) extends Actor {
       res += s"""  ${mt.group(1)}(( )) --"${mt.group(2)}"--> ${mt.group(3)}(( ))\n"""
 //      res += s"""  ${mt.group(1)}(( )) --AAA--> ${mt.group(3)}(( ))\n"""
     }
-    res += "  0((#))\n  style 0 fill:#5f5,stroke:#333,stroke-width:4px"
+    res += "  0(( ))\n  style 0 fill:#5f5,stroke:#333,stroke-width:4px"
     res
   }
 

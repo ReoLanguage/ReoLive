@@ -61,6 +61,7 @@ class SafetyReqBox(code: Box[String],
     try {
       mCRL2 = ""
       formulas = Nil
+      mermaidBox.feta = None
       spec = DSL.parse(code.get)
       val fm = spec.fm
       val fmInfo =
@@ -74,6 +75,7 @@ class SafetyReqBox(code: Box[String],
   def showInfo(data: String): Unit = {
     val products = FDSL.parseProducts(data)
     val feta = DSL.interpretInServer(spec, products)
+    mermaidBox.feta = Some(feta)
 
     if (products.isEmpty) {
       errorBox.error("No products found.")
@@ -88,8 +90,10 @@ class SafetyReqBox(code: Box[String],
     mCRL2 = all.code
     val formula1 = "Receptiveness" -> toMuFormula(TeamLogic.getReceptivenesReq(feta.s, feta.fst, prod))
     val formula2 = "Weak Receptiveness" -> toMuFormula(TeamLogic.getWeakReceptivenesReq(feta.s, feta.fst, prod))
+    val formula3 = "Responsiveness" -> toMuFormula(TeamLogic.getResponsivenesReq(feta.s, feta.fst, prod))
+    val formula4 = "Weak Responsiveness" -> toMuFormula(TeamLogic.getWeakResponsivenesReq(feta.s, feta.fst, prod))
 
-    formulas = List(formula1,formula2)
+    formulas = List(formula1,formula3,formula2,formula4)
 
     // got all information
     // 1. call the mCRL2Box to update
@@ -110,9 +114,21 @@ class SafetyReqBox(code: Box[String],
 
     box.append("p")
       .append("strong")
+      .text(s"Responsiveness: \n")
+    box.append("pre")
+      .text(formula3._2)
+
+    box.append("p")
+      .append("strong")
       .text(s"Weak Receptiveness: \n")
     box.append("pre")
       .text(formula2._2)
+
+    box.append("p")
+      .append("strong")
+      .text(s"Weak Responsiveness: \n")
+    box.append("pre")
+      .text(formula4._2)
 
     box.append("p")
       .append("strong")

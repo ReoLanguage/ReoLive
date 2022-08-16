@@ -62,7 +62,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |}""".stripMargin :: "Race example" :: Nil,
     "Chat (ETA)"::
       """CA user (confirmL,confirmJ,fwd)
-        |         (join,msg,leave) = {
+        |         (leave,join,msg) = {
         | start 0
         | 0 --> 1 by join
         | 1 --> 2 by confirmJ
@@ -72,8 +72,9 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         | 3 --> 0 by confirmL
         |}
         |
-        |CA server (leave,join,reject,grant,msg)
-        |           (confirmL,confirmJ,ask,fwd) = {
+        |CA server (leave,join,msg)
+        |           (confirmL,confirmJ,fwd) = {
+        | // internal: reject, grant, ask
         | start 0
         |  0 --> 1 by join
         |  1 --> 0 by confirmJ

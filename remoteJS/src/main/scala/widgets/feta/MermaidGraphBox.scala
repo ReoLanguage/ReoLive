@@ -3,11 +3,14 @@ package widgets.feta
 import common.Utils
 import common.frontend.MermaidJS
 import common.widgets.{Box, OutputArea}
+import fta.eta.System.SysLabelComm
 import org.scalajs.dom
 import org.scalajs.dom.{MouseEvent, html}
 import fta.{DSL, Specification}
 import ifta.{DSL => FDSL}
 import widgets.{RemoteBox, RemoteMcrl2GenBox}
+
+import scala.util.matching.Regex
 
 /**
   * Created by guillecledou on 21/04/2021
@@ -21,6 +24,7 @@ class MermaidGraphBox(header: String, errorBox: OutputArea)
   protected var mCRL2Box: RemoteMcrl2GenBox = _
   protected var spec:Specification = _
   protected var id = "I"+header.hashCode
+  var feta: Option[fta.feta.FETA] = None // set externally by SafetyReqBox
 
   /** mCRL2 box MUST be set before updating. */
   def setMCRL2(m:RemoteMcrl2GenBox) = mCRL2Box=m
@@ -46,7 +50,7 @@ class MermaidGraphBox(header: String, errorBox: OutputArea)
 
   private def waiting(): Unit = {
     box.html ("") //clear
-    box.append ("p").text ("Waiting...")
+    box.append ("p").text ("Waiting for mCRL2's evidences")
   }
 
   private def setUp(id:String): Unit = {
@@ -72,15 +76,41 @@ class MermaidGraphBox(header: String, errorBox: OutputArea)
     box.html("") //clear
     var index = 0
     for ((solved,(pName,mermaid)) <- mCRL2Box.get if mermaid != "") { // just processing the first message
+      val fixed = fixMermaid(mermaid)
       val newId = id+index
       index += 1
-      val mermaidJs = MermaidJS(mermaid, s"${newId}GraphBox", s"svg${newId}")
+      val mermaidJs = MermaidJS(fixed, s"${newId}GraphBox", s"svg${newId}")
       box.append("p")
         .style("text-align","center")
         .append("strong")
-        .text(s"$pName: $solved (total: ${mCRL2Box.get.size})")
+        .text(s"$pName: $solved")
       setUp(newId)
       scalajs.js.eval(mermaidJs)
     }
   } catch Box.checkExceptions(errorBox)
+
+  private def fixMermaid(merm: String): String = {
+    val re = "\"([^\"]+)\"".r
+    re.replaceAllIn(merm, m => "\""+mkAction(m.group(1))+"\"")
+
+  }
+
+  private def mkAction(acts:String): String = try {
+    val acts2 = acts // "comp1_act1|comp2_act2
+      .split('|') // Array(comp1_act1, "comp2_act2")
+      .map(a => a.split("_",2))
+    val actNames = acts2.map(_.tail.head).toSet
+    if (actNames.size!=1) return acts
+    val actName = actNames.head
+    val comps = acts2.map(_.head).toSet
+    if (feta.get.communicating(actName)) {
+      val ins = comps.filter(c => feta.get.s.components.exists(fca=>fca.name==c && fca.inputs(actName)))
+      val outs = comps--ins
+      s"{${outs.mkString(",")}} $actName {${ins.mkString(",")}}"
+    } else
+      s"$actName @ ${comps.map(_.toString).mkString(",")}"
+  } catch {
+    case _:Throwable => acts
+  }
+
 }
