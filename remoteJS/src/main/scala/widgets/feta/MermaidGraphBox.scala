@@ -41,6 +41,13 @@ class MermaidGraphBox(header: String, errorBox: OutputArea)
     box = panelBox(div, visible, buttons = List(
       Right("download") -> (() => Utils.downloadSvg(s"svg${id}"), "Download SVG")
     ))
+      .append("div")
+      .style("display", "flex")
+      .style("flex-flow", "row wrap")
+      .style("align-items", "baseline")
+      .style("align-content", "flex-start")
+      //.style("justify-content", "flex-start")
+      .style("padding", "5px 1px 5px 15px")
 
     waiting()
 
@@ -53,15 +60,15 @@ class MermaidGraphBox(header: String, errorBox: OutputArea)
     box.append ("p").text ("Waiting for mCRL2's evidences")
   }
 
-  private def setUp(id:String): Unit = {
-    box
-      .append("div")
-      .attr("class", "mermaid")
-      .attr("id", s"${id}GraphBox")
-      .style("text-align", "center")
-      .append("div").attr("id", s"svg${id}")
-
-  }
+//  private def setUp(id:String): Unit = {
+//    box
+//      .append("div")
+//      .attr("class", "mermaid")
+//      .attr("id", s"${id}GraphBox")
+//      .style("text-align", "center")
+//      .append("div").attr("id", s"svg${id}")
+//
+//  }
 
   /**
     * Block of code that should read the dependencies and:
@@ -72,22 +79,42 @@ class MermaidGraphBox(header: String, errorBox: OutputArea)
 
   def showGraph():Unit = try {
     waiting()
-    if (mCRL2Box.get.isEmpty) return // nothing yet
+    if (mCRL2Box.get.isEmpty || feta.isEmpty) return // nothing yet
     box.html("") //clear
     var index = 0
     for ((solved,(pName,mermaid)) <- mCRL2Box.get if mermaid != "") { // just processing the first message
       val fixed = fixMermaid(mermaid)
       val newId = id+index
       index += 1
-      val mermaidJs = MermaidJS(fixed, s"${newId}GraphBox", s"svg${newId}")
-      box.append("p")
-        .style("text-align","center")
-        .append("strong")
-        .text(s"$pName: $solved")
-      setUp(newId)
-      scalajs.js.eval(mermaidJs)
+      showOne(s"$pName: $solved", fixed, newId)
+//      val mermaidJs = MermaidJS(fixed, s"${newId}GraphBox", s"svg${newId}")
+//      box.append("p")
+//        .style("text-align","center")
+//        .append("strong")
+//        .text(s"$pName: $solved")
+//      setUp(newId)
+//      scalajs.js.eval(mermaidJs)
     }
   } catch Box.checkExceptions(errorBox)
+
+
+  private def showOne(title:String,mermaid:String,id:String) = {
+    val mbox = box.append("div")
+      .style("text-align", "center")
+//      .style("min-width","50rem")
+    mbox.append("h4")
+      .style("margin-left", "1rem")
+      .style("margin-right", "1rem")
+      .text(s"${title}")
+    mbox.append("div")
+      .attr("class", "mermaid")
+      .attr("id", s"${id}GraphBox")
+      .style("text-align", "center")
+      .append("div").attr("id", s"svg${id}")
+
+    val mermaidJs = MermaidJS(mermaid, s"${id}GraphBox", s"svg${id}")
+    scalajs.js.eval(mermaidJs)
+  }
 
   private def fixMermaid(merm: String): String = {
     val re = "\"([^\"]+)\"".r
