@@ -82,6 +82,8 @@ class SafetyReqBox(code: Box[String],
       return
     }
     val prod: FExp.Product = products.head
+    if (products.size == 1 && products.head.nonEmpty)
+      errorBox.message(s"Only 1 product found: {${products.head.mkString(",")}}.")
     if (products.size>1)
       errorBox.message(s"${products.size} products found. Using product {${prod.mkString(",")}}.")
 
