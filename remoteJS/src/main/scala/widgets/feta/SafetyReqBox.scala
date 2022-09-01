@@ -12,7 +12,7 @@ import widgets.{RemoteBox, RemoteMcrl2GenBox}
 class SafetyReqBox(code: Box[String],
 //                   var mCRL2Box: RemoteMcrl2GenBox,
                    errorBox: OutputArea)
-  extends Box[(String,List[(String,String)])]("Safety Requirements Characterisation", List(code)) {
+  extends Box[(String,List[(String,String)])]("Safety Requirements Characterisation in mCRL2", List(code)) {
 
 
   protected var box: Block = _
@@ -85,7 +85,7 @@ class SafetyReqBox(code: Box[String],
     if (products.size == 1 && products.head.nonEmpty)
       errorBox.message(s"Only 1 product found: {${products.head.mkString(",")}}.")
     if (products.size>1)
-      errorBox.message(s"${products.size} products found. Using product {${prod.mkString(",")}}.")
+      errorBox.message(s"${products.size} products found. Using product {${prod.mkString(",")}} in the Safety Requirements Characterisation in mCRL2.")
 
     val par = parallel(feta.s.components.map(toParamProcess(_,Some(prod))))
     val all = wrapAllowFSys(feta, par)

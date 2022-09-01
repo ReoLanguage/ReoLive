@@ -33,10 +33,10 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |  0 --> 0 by a
         |}
         |
-        |FS = (c1:one, c2:two, c3:three, c4:four)
+        |S = (c1:one, c2:two, c3:three, c4:four)
         |
         |STS = {
-        | default = one to one
+        | default = 1 to 1
         |}""".stripMargin :: "Simple" :: Nil,
     "Race (ETA)" ::
       """//Race example
@@ -54,7 +54,7 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         | 2 --> 0 by finish
         |}
         |
-        |FS = (r1:runner, r2:runner, c:controller)
+        |S = (r1:runner, r2:runner, c:controller)
         |
         |STS = {
         | default = 1 to 1 // or "one to one", or "1..1 to 1..1"
@@ -87,11 +87,11 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |  5 --> 0 by fwd
         |}
         |
-        |FS = (u1:user,u2:user,s:server)
+        |S = (u1:user,u2:user,s:server)
         |
         |STS = {
-        | default = one to one // or 1..1 to 1..1
-        | fwd = one to any // or 1.1 to 0..*
+        | default = 1 to 1 // or 1..1 to 1..1, or one to one
+        | fwd = 1 to * // or 1..1 to 0..*, or one to any
         |}""".stripMargin::"Chat"::Nil,
 
     "Auth (FETA)" ::
@@ -116,8 +116,8 @@ class FetaExamplesBox(reload: => Unit, toSet: List[Setable[String]])
         |FM = s xor o
         |
         |FSTS = {
-        | default = one to one // or 1..1 to 1..1
-        | {o}:join,leave = many to one // or 1..* to 1..1
+        | default = 1 to 1 // or one to one, or 1..1 to 1..1
+        | {o}:join,leave = 1..* to 1 // or many to one, or 1..* to 1..1
         |}""".stripMargin :: "Auth" :: Nil
   )
 
