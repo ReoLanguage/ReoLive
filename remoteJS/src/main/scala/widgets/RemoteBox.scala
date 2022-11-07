@@ -16,6 +16,7 @@ object RemoteBox {
     * @param callback function that is called when receiving the message.
     */
   def remoteCall(service: String, send:String, callback: String=>Unit): Unit = {
+//    val socket = new WebSocket(s"ws://194.117.27.128/$service")
     val socket = new WebSocket(s"ws://localhost:9000/$service")
 
     socket.onmessage = { e: MessageEvent => {callback(e.data.toString); socket.close()}}

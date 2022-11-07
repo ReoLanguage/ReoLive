@@ -7,7 +7,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
 
   override protected val buttons: Seq[List[String]] = Seq(
     "Basic composition" ->  "150 // maximum time in the plot" ->
-      """v:=0; v'=1 for 2; v'=3 for 2""" ->
+      """v:=0; v'=1 for 2; v'=3 for 2;""" ->
       "Very simple example composing two basic atomic elements."
     ,"Cruise control"->
 //        """x:= -1; v:= 0; a:= 1;
@@ -21,8 +21,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |p:=0; v:=2;
           |while true do {
           |  if v<=10
-          |  then p'=v,v'=5  for 1
-          |  else p'=v,v'=-2 for 1
+          |  then p'=v,v'=5  for 1;
+          |  else p'=v,v'=-2 for 1;
           |}""".stripMargin ->
         descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
       ////
@@ -32,7 +32,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |l:=0;
           |repeat 4 {
           |   l:=0; wait 10 ;
-          |   l:=1; wait 10
+          |   l:=1; wait 10 ;
           |}""".stripMargin ->
         descr("Traffic lights","Alternating between two constant values.")
       ////
@@ -43,8 +43,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |x := 1;
           |x' = -x for 40;
           |x' =  x for 40;
-          |if x == 1 then x:= 2
-          |          else x:= 3""".stripMargin ->
+          |if x == 1 then x:= 2;
+          |          else x:= 3;""".stripMargin ->
       ( "Using approximated values, the value of x at 80 is slightly different " +
         "from 1, yielding a final value of 3 instead of 2. Using our symbolic evaluation, " +
         "Lince obtains the correct value of 2. Note that our experimental warning system, which " +
@@ -55,7 +55,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       """// Solution not naively computed (precise solution involves sin/cos)
           |// Use the online version to use the precise solution.
           |p:=1;v:=1;
-          |p'=v, v'=-p for 8""".stripMargin ->
+          |p'=v, v'=-p for 8;""".stripMargin ->
       ("When involving mutually dependent variables the naive numerical analysis does not work. " +
         "Using symbolic computations we plot precisely the functions with sin/cos.")
       ////
@@ -64,8 +64,8 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       "150 // maximum time in the plot" ->
       """x:= -1; v:= 0; a:= 1;
         |while true do {
-        |	if x <= 0 then a:= 1 else {a:=-1 };
-        |    	x' = v, v' = a  for 0.5
+        |	if x <= 0 then a:= 1; else a:=-1;
+        |    	x' = v, v' = a  for 0.5;
         |}""".stripMargin ->
       descr("Moving particle", "A naive approach for moving a particle to a position x.")
 
@@ -74,19 +74,19 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       "150 // maximum time in the plot" ->
       """y := 10000; v := -1000; a:= 0; g:= 10;
         |while (y >= 1000) do {
-        |	if v <= -100 then { a := (100 - g) }
-        |              else { a:= -g } ;
-        |    y' = v, v' = a for 1
-        |} ;
+        |	if v <= -100 then a := (100 - g);
+        |              else a:= -g;
+        |    y' = v, v' = a for 1;
+        |}
         |while (y >= 25) do {
-        |	if v <= -20 then { a := (20 - g) }
-        |             else { a:= -g } ;
-        |    y' = v, v' = a  for 1
-        |} ;
+        |	if v <= -20 then a := (20 - g);
+        |             else a:= -g;
+        |    y' = v, v' = a  for 1;
+        |}
         |while (y >= 1) do {
-        |	if v <= -1 then { a := (15 - g) }
-        |            else { a:= -g } ;
-        |    y' = v, v' = a  for 0.05
+        |	if v <= -1 then a := (15 - g);
+        |            else a:= -g;
+        |    y' = v, v' = a  for 0.05;
         |}""".stripMargin ->
       descr("A Landing System", //"Experimental Event-Driven case-study. Not yet supported." +
         "Simulating a controller with 3 modes of approximation to land softly.")
@@ -110,7 +110,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |v:=5; p:=10; c:=0;
           |while (c<4) do {
           |  v'=-9.8, p'=v until_0.01 p<0 /\ v<0;
-          |  v:=-0.5*v; c:=c+1
+          |  v:=-0.5*v; c:=c+1;
           |}""".stripMargin ->
         descr("Bouncing Ball","Event-Driven (ED) example, using steps of 0.001. " +
     //"Not yet fully supported." +
@@ -133,10 +133,10 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |  f1'=1, f2'=1 until_0.01
         |       f1>10 \/ f2>10;
         |  if f1>=10 /\ f2<10
-        |    then { f1:=0; f2:=f2+2 }
+        |    then { f1:=0; f2:=f2+2; }
         |    else if f2>=10 /\ f1<10
-        |         then { f2:=0;f1 :=f1 +2 }
-        |         else { f1:=0; f2 :=0 }
+        |         then { f2:=0;f1 :=f1 +2; }
+        |         else { f1:=0; f2 :=0; }
         |}""".stripMargin ->
       descr("Fireflies 2x","Event-Driven (ED) example. " +
         "Every firefly has an internal clock that helps it to know when to flash: " +
@@ -153,10 +153,10 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |  f1'=1, f2'=1, f3'=1
         |  until_0.01 f1>10 \/ f2>10 \/ f3>10;
         |  if f1>=10 /\ f2<10 /\ f3<10
-        |    then { f1:=0; f2:=f2+2; f3:=f3+2 }
+        |    then { f1:=0; f2:=f2+2; f3:=f3+2; }
         |    else if f2>=10 /\ f1<10 /\ f3 < 10
-        |         then { f2:=0;f1 :=f1 +2; f3:=f3+ 2 }
-        |         else { f3:=0; f1 := f1 +2; f2:= f2 +2 }
+        |         then { f2:=0;f1 :=f1 +2; f3:=f3+ 2; }
+        |         else { f3:=0; f1 := f1 +2; f2:= f2 +2; }
         |}""".stripMargin ->
       descr("Fireflies 3x","Event-Driven (ED) Example. " +
         "Every firefly has an internal clock that helps it to know when to flash: " +
