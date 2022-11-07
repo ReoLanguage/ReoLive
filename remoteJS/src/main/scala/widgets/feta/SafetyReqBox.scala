@@ -141,34 +141,34 @@ class SafetyReqBox(code: Box[String],
 
     ////
 
-//    box.append("p")
+//     box.append("p")
 //      .append("strong")
 //      .text(s"-- Experiments from here --\n")
-//
-//
+
+
 //    box.append("p")
 //      .append("strong")
 //      .text(s"Weak Receptiveness Debug: \n")
 //    box.append("pre")
 //      .text(TeamLogic.getWeakReceptivenesReq(feta.s, feta.fst, prod).toString+"\n\n\n"+
 //              toMuFormula(TeamLogic.getWeakReceptivenesReq(feta.s, feta.fst, prod)))
-//
+
 //    box.append("p")
 //      .append("strong")
 //      .text(s"Receptiveness Debug: \n")
 //    box.append("pre")
 //      .text(TeamLogic.getReceptivenesReq(feta.s, feta.fst, prod).toString)
-//
-//
+
+
 //    box.append("p")
 //      .append("strong")
 //      .text(s"Receptiveness Debug: \n")
 //    box.append("pre")
 //      .text(TeamLogic.getReceptivenesReq(feta.s, feta.fst, prod).toString)
-//
+
 //    box.append("p")
 //      .append("strong")
-//      .text(s"mCRL2 experiment: \n")
+//      .text(s"mCRL2 experiments: \n")
 ////    box.append("pre")
 ////      .text(MmCRL2Spec(
 ////        Map("P1"-> ((Act("a1") > Proc("P2")) + (Act("a2") > Proc("P1"))),
@@ -176,6 +176,8 @@ class SafetyReqBox(code: Box[String],
 ////        Proc("P1")
 ////      ).code)
 //    for (fca<-feta.s.components) {
+//      box.append("p")
+//        .text(s"CA ${fca.name}: \n")
 //      box.append("pre")
 //        .text(toProcess(fca, None).code)
 //    }
@@ -183,24 +185,28 @@ class SafetyReqBox(code: Box[String],
 ////    val all = wrapAllowFSys(feta,par)
 //    val justFeta = wrapAllowFETA(feta,prod,par)
 //    val extendedFeta = wrapAllowFETAExtended(feta,prod,par)
-//
+
 //    // Note to self: getting Allowed transitions requires traversing (several times) throughout all
 //    // of the transitions of the FSystem (taus + comm actions alone + communicating actions that match)
-//
+
 //    // Note 2: this "extendedFeta" optimisation seems not as great as it sounded originally: avoids longer
 //    // list of "allowed" in mCRL2 in the presence of longer number of combinations, but before producing mCRL2
 //    // this list still needs to produce all combinations (before filtering to the allowed ones). But this means
 //    // that probably AllowFeta and AllowFetaExtended can be further optimised (but not for here).
-//
+
+//    box.append("p")
+//      .text(s"Full LTS (lts(S)): \n")
 //    box.append("pre")
 //      .text(all.code)
-//
+
+//    box.append("p")
+//      .text(s"ETA (st(S)): \n")
 //    box.append("pre")
 //      .text(justFeta.code)
-//
+
+//    box.append("p")
+//      .text(s"ETA++ (extended with single senders/receivers): \n")
 //    box.append("pre")
 //      .text(extendedFeta.code)
-
-    // Approach:
   }
 }
