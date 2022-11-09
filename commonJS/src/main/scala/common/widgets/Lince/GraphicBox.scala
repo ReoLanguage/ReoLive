@@ -36,7 +36,7 @@ class GraphicBox(program: Box[String], eps: Box[String], errorBox: OutputArea)
   def draw(range:Option[(Double,Double)],hideCont:Boolean): Unit = {
     trajectory match {
       case Some(traj) =>
-        val js = TrajToJS(traj,range,hideCont)
+        val js = TrajToJS(traj,"graphic",range,hideCont)
         //println(s"done\n${js}")
         scala.scalajs.js.eval(js)
       case None =>

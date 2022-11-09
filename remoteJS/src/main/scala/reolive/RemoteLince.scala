@@ -4,6 +4,7 @@ import common.DomNode
 import common.widgets.Lince.{LinceBox, LinceExamplesBox}
 import common.widgets._
 import org.scalajs.dom.html
+import widgets.LocalGraphicBox
 //import org.singlespaced.d3js.d3
 import widgets.{RemoteEvalBox, RemoteGraphicBox}
 
@@ -18,6 +19,7 @@ object RemoteLince {
     //var information: Box[Syntax] = _
     var examples: LinceExamplesBox = _
     var graphic: RemoteGraphicBox = _
+    var localGraphic: LocalGraphicBox = _
     var eval: RemoteEvalBox = _
     var errors: OutputArea = _
     var descr: OutputArea = _
@@ -66,6 +68,7 @@ object RemoteLince {
         refreshLabel = "\"t\" or \"t l\": Maximum time \"t\" when drawing the plot, and maximum \"l\" number of while loop unfolds (default 1000).")
       examples = new LinceExamplesBox(softReload(),inputBox,descr,bounds)
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
+      localGraphic= new LocalGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
       eval   = new RemoteEvalBox(inputBox, errors, bounds, "")
 
       inputBox.init(leftColumn, visible = true)
@@ -76,6 +79,7 @@ object RemoteLince {
       bounds.init(leftColumn,visible = false)
       //information.init(rightColumn,true)
       graphic.init(rightColumn, visible = true)
+      localGraphic.init(rightColumn, visible = false)
       eval.init(rightColumn,visible = false)
 
 
@@ -122,6 +126,7 @@ object RemoteLince {
       perturbation.update()
       bounds.update()
       graphic.update()
+      localGraphic.update()
       eval.update()
     }
 
