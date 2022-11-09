@@ -5,12 +5,12 @@ import hprog.ast.Syntax
 import hprog.backend.TrajToJS
 import hprog.frontend.Deviator
 import hprog.frontend.CommonTypes.Warnings
-import hprog.frontend.solver.{Solver, StaticSageSolver}
+import hprog.frontend.solver.{SimpleSolver, Solver, StaticSageSolver}
 
 class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], bounds: Box[String], errorBox: OutputArea)
-    extends Box[Unit]("Trajectories", List(program)) {
+    extends Box[Unit]("Trajectories (symbolic)", List(program)) {
   var box : Block = _
-  private var lastSolver:Option[StaticSageSolver] = None
+  private var lastSolver:Option[Solver] = None
   private var lastSyntax:Option[Syntax] = None
 //  private var lastWarnings:Option[Warnings] = None
 
@@ -82,7 +82,7 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
 //      val js = TrajToJS(traj)
 //      scalajs.js.eval(js)
     }
-    catch Box.checkExceptions(errorBox, "Trajectories")
+    catch Box.checkExceptions(errorBox, "Trajectories (symbolic)")
 
 //    sageReply.split("§").toList match {
 //      case js::rest =>
@@ -122,16 +122,19 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
         val bs = getBounds(bounds.get)
         //println(s"[GBox] bounds = $bs")
         val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)
-        traj.addWarnings(solver.getWarnings)
+        solver match {
+          case ssolver: StaticSageSolver => traj.addWarnings(ssolver.getWarnings)
+          case _ => {}
+        }
 
 //        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings
-        val js = TrajToJS(traj,range,hideCont)
+        val js = TrajToJS(traj,"graphic",range,hideCont)
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
     }
   }
-  catch Box.checkExceptions(errorBox,"Trajectories")
+  catch Box.checkExceptions(errorBox,"Trajectories (symbolic)")
 
   override def update(): Unit = {
     if (!isVisible) {
@@ -141,6 +144,14 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
 //    else
 //      errorBox.message("traj. visible - working")
     callSage()
+  }
+
+  // alternative version that does NOT call Sage, and uses the numerical version instead
+  private def callSageNumerical() = {
+    errorBox.message("Using numerical version...")
+    lastSyntax = Some(hprog.DSL.parse(program.get))
+    lastSolver = Some(new SimpleSolver())
+    redraw(None, hideCont = true)
   }
 
   private def callSage() = {
