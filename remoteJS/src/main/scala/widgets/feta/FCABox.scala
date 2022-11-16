@@ -1,8 +1,5 @@
 package widgets.feta
 
-import choreo.choreo2.analysis.pomsets.Pomset
-import choreo.choreo2.syntax.Agent
-import choreo.choreo2.view.MermaidPomset
 import common.frontend.MermaidJS
 import common.widgets.{Box, OutputArea}
 import fta.DSL

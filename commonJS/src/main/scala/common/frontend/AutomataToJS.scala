@@ -1,7 +1,5 @@
 package common.frontend
 
-import dsl.analysis.semantics.{SBAutomata, SBState, SBTrans, UpdTrans}
-import hub.{CCons, HubAutomata}
 import preo.backend.Network.Mirrors
 import ifta.analyse.Simplify
 import ifta.{CTrue, ClockCons}
@@ -17,7 +15,6 @@ object AutomataToJS {
   //todo: Maybe create a special abstract automata that has time so that ifta and hub can inherit from it
   def apply[A<:Automata](aut: A, mirrors: Mirrors, boxName:String, portNames:Boolean=false): String = aut match {
     case a: IftaAutomata => generateJS(getInvNodes(a), getLinks(aut, boxName, portNames, mirrors), boxName)
-    case a:HubAutomata => generateJS(getInvNodes(a), getLinks(aut, boxName, portNames, mirrors), boxName)
     case _ => generateJS(getNodes(aut), getLinks(aut, boxName, portNames, mirrors), boxName)
   }
 
@@ -25,10 +22,6 @@ object AutomataToJS {
 //    case a:IftaAutomata => generateJS(getIftaNodes(a) , getLinks(aut,boxName,portNames,mirrors), boxName)
 //    case _              => generateJS(getNodes(aut)   , getLinks(aut,boxName,portNames,mirrors), boxName)
 //  }
-
-
-  def apply(aut:SBAutomata, boxName:String):String =
-    generateJS(getNodes(aut),getLinks(aut,boxName),boxName)
 
 
   /*todo: refactor in different methods or classes to avoid booolean virtuoso, or pass automata for
@@ -560,31 +553,6 @@ object AutomataToJS {
       """
   }
 
-  private def getNodes(aut:SBAutomata):String = {
-    aut.trans.flatMap(processNode(aut.init,_)).mkString("[",",","]")
-  }
-  private def processNode(init:SBState,t:SBTrans):Set[String] = {
-      val from = t.from.hashCode().toString
-      val to = t.to.hashCode().toString
-      val id = t.hashCode().toString
-    val res = Set(s"""{"id": "$from", "group": ${if (t.from==init) "0" else "1"} ,"inv":"${dsl.backend.Show(t.from)}"}""",
-      s"""{"id": "$to", "group": ${if (t.to==init) "0" else "1"} ,"inv":"${dsl.backend.Show(t.to)}"}""",
-      s"""{"id": "$from-1-$to-$id", "group": "2","inv":""}""",
-      s"""{"id": "$to-2-$from-$id", "group": "2" ,"inv":""}""")
-    res
-  }
-  private def getLinks(aut:SBAutomata,name:String) = {
-    aut.trans.flatMap(processEdge(_,name)).mkString("[",",","]")
-  }
-  private def processEdge(t:SBTrans,name:String):Set[String] = {
-      val id = t.hashCode().toString
-      val from = t.from.hashCode().toString
-      val to = t.to.hashCode().toString
-      val lbl = t.label
-      Set(s"""{"id": "${id}" , "source": "$from", "target": "$from-1-$to-$id", "type":"", "start":"start", "end": "end"}""",
-        s"""{"id": "${id}" , "source": "$from-1-$to-$id", "target": "$to-2-$from-$id", "type":"$lbl", "start":"start", "end": "end"}""",
-        s"""{"id": "${id}" , "source": "$to-2-$from-$id", "target": "$to", "type":"", "start":"start", "end": "endarrowout${name}"}""")
-  }
 
   private def getNodes[A<:Automata](aut: A): String =
     aut.getTrans().flatMap(processNode(aut.getInit, _)).mkString("[",",","]")
@@ -595,25 +563,12 @@ object AutomataToJS {
   private def getInvNodes[A<:Automata](aut:A):String = aut match {
     case IftaAutomata(ifta,nifta,cons) =>
       aut.getTrans().flatMap(processNode(aut.getInit,_,ifta.cInv)).mkString("[",",","]")
-    case HubAutomata(ps,sts,init,trans,c,inv,v,tp) =>
-      aut.getTrans().flatMap(processHNode(aut.getInit,_,inv)).mkString("[",",","]")//todo:temporary fix different fun. Probably better Update ifta to work with CCons
   }
 
 
 
   private def getLinks[A<:Automata](aut: A,name:String,portNames:Boolean=false, ms: Mirrors): String =
     aut.getTrans(portNames).flatMap(t => processEdge(expandMirrors(t,ms),name)).mkString("[",",","]")
-
-  private def processHNode(initAut:Int,trans:(Int,Any,String,Int),nodeInvariant:Map[Int,CCons]=Map()): Set[String] = trans match{
-    case (from,lbl,id,to) =>
-      val toInv   = hub.backend.Show(hub.backend.Simplify(nodeInvariant.getOrElse(to,hub.CTrue)))
-      val fromInv = hub.backend.Show(hub.backend.Simplify(nodeInvariant.getOrElse(from,hub.CTrue)))
-      val (gfrom,gto,gp1,gp2) = nodeGroups(initAut,from,to)
-      Set(s"""{"id": "$from", "group": $gfrom ,"inv":"${if (fromInv == "true") "" else fromInv}"}""",
-        s"""{"id": "$to", "group": $gto ,"inv":"${if (toInv == "true") "" else toInv }"}""",
-        s"""{"id": "$from-1-$to-$id", "group": "$gp1","inv":""}""",
-        s"""{"id": "$to-2-$from-$id", "group": "$gp2" ,"inv":""}""")
-  }
 
   private def processNode(initAut:Int,trans:(Int,Any,String,Int),nodeInvariant:Map[Int,ClockCons]=Map()): Set[String] = trans match{
     case (from,lbl,id,to) =>

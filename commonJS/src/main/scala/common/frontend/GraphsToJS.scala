@@ -1,6 +1,5 @@
 package common.frontend
 
-import hub.DSL
 import preo.backend._
 
 import scala.collection.Map
@@ -12,11 +11,6 @@ object GraphsToJS {
   def apply(graph: Circuit): String = {
     val mark = "gr" //graph.hashCode()
     generateJS(getNodes(graph, mark), getLinks(graph, mark))
-  }
-
-  def toVirtuosoJs(graph: Circuit): String = {
-    val mark = "gr" //graph.hashCode()
-    generateJS(getNodes(graph, mark, virtuoso = true), getLinks(graph, mark))
   }
 
   private def generateJS(nodes: String, edges: String): String = {
@@ -453,11 +447,6 @@ object GraphsToJS {
     case Mixed =>
       if (extra.contains("box"))
         "box"
-      else if (virtuoso) {
-        //(extra - "mrg").headOption.getOrElse("xor").toString
-        val hub = extra.filter(e => e.isInstanceOf[String]).asInstanceOf[Set[String]].find(e => (DSL.hubs ++ DSL.primitiveConnectors - "mrg").contains(e))
-        if (hub.isDefined) hub.get else "xor"
-      }
       else if (extra.contains("xor"))
         "xrouter"
       else

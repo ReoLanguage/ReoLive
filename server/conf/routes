@@ -6,29 +6,7 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
-GET     /reo                        controllers.HomeController.reo
-
-GET     /lince                      controllers.HomeController.lince
-
-GET     /hubs                       controllers.HomeController.hubs
-
-GET     /feta                       controllers.HomeController.feta
-
-# GET     /                         controllers.Assets.versioned(path="/public", file="index.html")
-
-# GET     /about                    controllers.HomeController.about
-
-# GET     /remote                   controllers.HomeController.remote
-
-GET     /preo                       controllers.HomeController.onlineReo
-
-GET     /preo2                      controllers.HomeController.onlineReo2
-
-GET     /fulllince                  controllers.HomeController.onlineLince
-
-GET     /treo                       controllers.HomeController.onlineTreo
-
-GET     /fullhubs                   controllers.HomeController.onlineVirtuoso
+# GET     /feta                       controllers.HomeController.feta
 
 GET     /onlinefeta                 controllers.HomeController.onlineFeta
 
@@ -38,8 +16,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 GET     /svg/*file                  controllers.Assets.versioned(path="/public/content/svg", file: Asset)
 
-GET     /message                    controllers.MessageController.socket
-
 GET     /model/:id                  controllers.HomeController.model(id:Long)
 
 GET     /lts/:id                    controllers.HomeController.lts(id:Long)
@@ -48,12 +24,6 @@ GET     /lps/:id                    controllers.HomeController.lps(id:Long)
 
 GET     /modal                      controllers.ModalController.socket
 
-GET     /linceWS                    controllers.LinceController.socket
-
-GET     /treoWS                     controllers.TreoController.socket
-
 GET     /ifta                       controllers.IFTAController.socket
 
 GET     /checkMcrl2                 controllers.Mcrl2Controller.socket
-
-GET     /verifyta                   controllers.VerifytaController.socket

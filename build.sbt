@@ -37,7 +37,7 @@ lazy val common_settings = Seq(
 )
 
 lazy val server = (project in file("server"))
-  .dependsOn(localJS, remoteJS)
+  .dependsOn(remoteJS)
   .enablePlugins(PlayScala)
   .disablePlugins(ScalaJSPlugin) //, WorkbenchPlugin)
   .settings(
@@ -60,29 +60,14 @@ lazy val server = (project in file("server"))
     // unmanagedResourceDirectories in Test +=  Seq(baseDirectory ( _ /"target/web/public/test" )),
     Compile / unmanagedSourceDirectories ++= Seq(
       baseDirectory.value / "../lib/preo/src/main/scala",
-      baseDirectory.value / "../lib/hprog/src/main/scala",
       baseDirectory.value / "../lib/ifta/src/main/scala",
-      baseDirectory.value / "../lib/virtuoso/src/main/scala",
-//      baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
-//      baseDirectory.value / "../lib/choreo/src/main/scala"
     )
   )
-
-lazy val choreo = project.in(file("lib/choreo"))
-  .enablePlugins(ScalaJSPlugin)
-  .settings(scalaVersion := "3.0.0-M1")
 
 lazy val teamA = project.in(file("lib/team-a"))
   .enablePlugins(ScalaJSPlugin)
   .settings(scalaVersion := "3.0.0-M1")
 
-lazy val arx = project.in(file("lib/reactiveDsl"))
-  .enablePlugins(ScalaJSPlugin)
-  .settings(scalaVersion := "3.0.0-M1")
-
-//lazy val lince = project.in(file("lib/hprog"))
-//  .enablePlugins(ScalaJSPlugin)
-//  .settings(scalaVersion := "3.0.0-M1")
 
 lazy val javascript_settings = Seq(
 //  Compile/run := {},
@@ -103,11 +88,7 @@ lazy val javascript_settings = Seq(
   ,
   Compile / unmanagedSourceDirectories ++= Seq(
     baseDirectory.value / "../lib/preo/src/main/scala",
-    baseDirectory.value / "../lib/hprog/src/main/scala",
     baseDirectory.value / "../lib/ifta/src/main/scala",
-    baseDirectory.value / "../lib/virtuoso/src/main/scala",
-//    baseDirectory.value / "../lib/reactiveDsl/src/main/scala"//,
-//    baseDirectory.value / "../lib/choreo/src/main/scala"
   )
 )
 
@@ -120,20 +101,8 @@ lazy val commonJS = (project in file("commonJS"))
     name := "common_js",
     javascript_settings//,
     //Compile / run := (choreo / Compile / run).evaluated
-  ).aggregate(choreo).dependsOn(choreo)
-  .aggregate(teamA).dependsOn(teamA)
-  .aggregate(arx).dependsOn(arx)
-//  .aggregate(lince).dependsOn(lince)
+  ).aggregate(teamA).dependsOn(teamA)
 
-lazy val localJS = (project  in file("localJS"))
-  .dependsOn(commonJS)
-  .enablePlugins(ScalaJSPlugin)
-  .disablePlugins(PlayScala)
-  .settings(
-    common_settings,
-    name := "local_js",
-    javascript_settings
-  )
 
 lazy val remoteJS= (project in file("remoteJS"))
   .dependsOn(commonJS)
@@ -152,11 +121,3 @@ lazy val remoteJS= (project in file("remoteJS"))
     )
   )
 
-
-// todo: add here a task for, when compiling the server, copying the content into the app/...
-//
-//lazy val reotools = (project in file("."))
-//  .aggregate(server)
-//  .settings(
-//    Compile/mainClass := server/Compile/mainClass
-//  )

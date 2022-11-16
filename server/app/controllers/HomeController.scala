@@ -24,54 +24,9 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Found("/assets/index.html")
   }
 
-  def reo = Action {
-    Found("/assets/reo.html")
-  }
-
-  def lince = Action {
-    Found("/assets/lince.html")
-  }
-
-  def hubs = Action {
-    Found("/assets/hubs.html")
-  }
-
-  def feta = Action {
-    Found("/assets/feta.html")
-  }
-
-//  def about = Action {
-//    Ok(views.html.about())
-//  }
-//
-//  def remote = Action{
-//    Ok(views.html.remote())
-//  }
-
-  def onlineReo = Action{
-    Ok(views.html.onlineReo())
-  }
-
-  def onlineReo2 = Action{
-    Ok(views.html.onlineReo2())
-  }
-
-  def onlineLince = Action{
-    Ok(views.html.onlineLince())
-  }
-
-  def onlineTreo = Action{
-    Ok(views.html.onlineTreo())
-  }
-
-  def onlineVirtuoso = Action{
-    Ok(views.html.onlineVirtuoso())
-  }
-
   def onlineFeta = Action{
     Ok(views.html.onlineFeta())
   }
-
 
   def model(id: Long) = Action{
     val file = new File(s"/tmp/model_$id.mcrl2")
