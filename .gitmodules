@@ -1,21 +1,9 @@
 [submodule "preo"]
 	path = lib/preo
 	url = https://github.com/ReoLanguage/Preo.git
-[submodule "hprog"]
-  path = lib/hprog
-  url = https://github.com/arcalab/lince.git
 [submodule "ifta"]
 	path = lib/ifta
 	url = https://github.com/haslab/ifta.git
-[submodule "lib/virtuoso"]
-	path = lib/virtuoso
-	url = https://github.com/arcalab/hubAutomata.git
-[submodule "lib/reactiveDsl"]
-	path = lib/reactiveDsl
-	url = https://github.com/arcalab/reactiveDsl.git
-[submodule "lib/choreo"]
-	path = lib/choreo
-	url = https://github.com/arcalab/choreo.git
 [submodule "lib/team-a"]
 	path = lib/team-a
 	url = https://github.com/arcalab/team-a

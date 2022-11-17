@@ -1,13 +1,14 @@
-Reo Live
+Analysis of (Featured Extended) Team Automata - FETA
 ========================
 
-This project aims at compiling a set of Java/Scala based Reo related tools, using a web frontend to interact with them.
-A snapshot of Reo Live can be found in https://reolanguage.github.io/ReoLive/snapshot. 
+This project uses ScalaJS to generate JavaScript that runs in a browser, and a JVM compiler to generate a server. This is a branch of ReoLive that includes mainly the analysis of Team Automata and its dependencies.
 
-It uses ScalaJS to generate JavaScript, and imports independent Reo related tools using git submodules feature.
+A snapshot of these analysis from the main branch can be found in http://arcatools.org/feta. 
+
+For more information check the main repository with the analysis of Team Automata in https://github.com/arcalab/team-a.
 
 
-How to compile local javascript
+How to compile both the javascript (client) and the JVM (server)
 ==============
 * Pull the git submodules:
 
@@ -21,14 +22,11 @@ How to compile local javascript
 How to run the framework
 =====
 
-* For the static version, open the `index.html` file, already linking to the generated JavaScript code:
-
-> open localJS/src/main/resources/index.html
-
-* For the server-based version, start the server using sbt and open localhost:9000
+* Start the server using sbt
 
 > sbt server/run
-> open http://localhost:9000
 
+* Open localhost:9000 in a browser, e.g. in Chrome
+> open http://localhost:9000
 
 
