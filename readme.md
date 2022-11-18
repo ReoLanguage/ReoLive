@@ -10,12 +10,10 @@ For more information check the main repository with the analysis of Team Automat
 
 How to compile both the javascript (client) and the JVM (server)
 ==============
+
 * Pull the git submodules:
-
 > git submodule update --init
-
 * Run the compilation script:
-
 > ./compile.sh
 
 
@@ -23,9 +21,7 @@ How to run the framework
 =====
 
 * Start the server using sbt
-
 > sbt server/run
-
 * Open localhost:9000 in a browser, e.g. in Chrome
 > open http://localhost:9000
 
