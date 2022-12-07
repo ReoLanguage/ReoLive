@@ -12,7 +12,7 @@ import widgets.{RemoteBox, RemoteMcrl2GenBox}
 class SafetyReqBox(code: Box[String],
 //                   var mCRL2Box: RemoteMcrl2GenBox,
                    errorBox: OutputArea)
-  extends Box[(String,List[(String,String)])]("Safety Requirements Characterisation in mCRL2", List(code)) {
+  extends Box[(String,List[(String,String)])]("Communication Properties' Characterisation in mCRL2", List(code)) {
 
 
   protected var box: Block = _
