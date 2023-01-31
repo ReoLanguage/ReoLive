@@ -1,7 +1,7 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
-import hprog.ast.Syntax
+import hprog.ast.Syntax.Syntax
 import hprog.backend.TrajToJS
 import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.Deviator
@@ -64,12 +64,13 @@ class LocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String], b
   }
 
   // alternative version that does NOT call Sage, and uses the numerical version instead
-  private def upd() = {
+  private def upd() = try {
     //errorBox.message("Using numerical version...")
     lastSyntax = Some(hprog.DSL.parse(program.get))
     lastSolver = Some(new SimpleSolver())
     redraw(None, hideCont = true)
   }
+  catch Box.checkExceptions(errorBox, "Parsing and solving (fast/numerical)")
 
 
   def resample(hideCont:Boolean): Unit = {

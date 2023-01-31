@@ -1,7 +1,7 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
-import hprog.ast.Syntax
+import hprog.ast.Syntax.Syntax
 import hprog.backend.TrajToJS
 import hprog.frontend.Deviator
 import hprog.frontend.CommonTypes.Warnings

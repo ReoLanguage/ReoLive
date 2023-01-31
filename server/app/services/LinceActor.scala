@@ -5,7 +5,8 @@ import java.util.Properties
 
 import akka.actor._
 import hprog.ast.SymbolicExpr.SyExprAll
-import hprog.ast.{SVal, Syntax}
+import hprog.ast.SVal
+import hprog.ast.Syntax.Syntax
 import hprog.backend.Show
 import hprog.common.{ParserException, TimeOutOfBoundsException, TimeoutException}
 import hprog.frontend.CommonTypes.Valuation
