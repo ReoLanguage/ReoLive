@@ -6,6 +6,7 @@ import java.util.Properties
 import akka.actor._
 import hprog.ast.SymbolicExpr.SyExprAll
 import hprog.ast.{SVal, Syntax}
+import Syntax._
 import hprog.backend.Show
 import hprog.common.{ParserException, TimeOutOfBoundsException, TimeoutException}
 import hprog.frontend.CommonTypes.Valuation
@@ -116,8 +117,8 @@ class LinceActor(out: ActorRef) extends Actor{
         s"Error: ${t.getMessage}"
       case e:Throwable =>
         if (solver != null) {solver.closeWithoutWait()}
-//        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
-        "Error "+e.toString +" # "+ e.getMessage
+        "Error "+e.toString +" # "+ e.getMessage +" # "+ e.getStackTrace.mkString("\n")
+       // "Error "+e.toString +" # "+ e.getMessage
     }
   }
 

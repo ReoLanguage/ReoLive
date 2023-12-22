@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # stop if something fails
-set -e
+#set -e
 
 # reference directory is where the script runs - the root of the project
-cd ${BASH_SOURCE%/*}
+#cd ${BASH_SOURCE%/*}
 
 # clean files that will be overridden by symbolic links
 echo "Creating symbolic links to the site content"
