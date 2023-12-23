@@ -112,12 +112,12 @@ while v>0 do{
           p'=v,v'=aT until_0.001 (v<=0);} // slow the car until it stops
           
 }""" ->
-("This  program checks every 0.1 seconds if there are the possibility of occurring a collision between the car and the object at 50 meters.\n"+
+descr("Automatic braking system","This  program checks every 0.1 seconds if there are the possibility of occurring a collision between the car and the object at 50 meters.\n"+
 "If not exist the possibility of occurring a collision the car travel with aA acceleration, if yes, the car maintains the movement during ‘reaction_time’ seconds (time needed for the system to start braking) and then brakes the car with an acceleration of aT until it stops.\n\n"+
 
 "If not exist this system of automatic braking, the ‘reaction_time’ must be 0.3 seconds (the average time needed for a healthy human to react varies between 0.15 and 0.45 seconds) and the collision occurs (try yourself !).")
 ////
- ,"Autonomous driving with fixed reference" ->
+ ,"Autonomous driving (AD) with fixed reference" ->
       "50 // maximum time in the plot" ->
       """//----- Autonomous driving ----- Fixed reference
 
@@ -126,7 +126,7 @@ p:=0; v:=17.5;
 // Braking and accelerating acceleration of the vehicle
 aT:=-9.8; aA:=6;
 
-// Initial position, velocity and accelaration of the reference 
+// Initial position, velocity and acceleration of the reference 
 pl:=50; vl:=0; al:=0;
 
 // Reaction time
@@ -141,21 +141,21 @@ while (v>0) do{
   // Initially the system detects if there is a possibility of a collision occurring
   if ((p + v*sampling_time + aA/2*sampling_time^2 < pl+vl*sampling_time+al/2*sampling_time^2 ) && (((v+aA*sampling_time-vl-al*sampling_time)^2 - 4*(p+v*sampling_time+aA/2*(sampling_time^2)-(pl +vl*sampling_time+al/2*(sampling_time^2)))*(aT/2-al/2)) <0))
   then {  
-          // If not, the car maintains its movement because of the reaction time of the automatic acelaration system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+          // If not, the car maintains its movement because of the reaction time of the automatic acelaration system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time;
-          //Then, the car accelarates with accelaration ‘aA’ and velocity ‘v’, and the reference with accelaration ‘al’ and velocity ‘vl’
+          //Then, the car accelerates with acceleration ‘aA’ and velocity ‘v’, and the reference with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aA,pl'=vl,vl'=al for sampling_time; 
         }
   else {  
-         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time; 
 
-        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aT,pl'=vl,vl'=al until_0.001 (v<=0); 
           
 }
 }""" ->
-("Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that, depending on its values, will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+descr("AD with fixed reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that, depending on its values, will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a fixed obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -168,7 +168,7 @@ while (v>0) do{
 "If we run this example we can verify that the position of the vehicle does not intersect with the reference, but if we change the value of the reaction time to 0.1 (reaction time of a healthy human) the positions will intersect, showing the efficiency of autonomous systems compared to manuals in these circumstances.")
 ////
 
-      ,"Autonomous driving with constant velocity reference" ->
+      ,"AD with constant velocity reference" ->
       "20 // maximum time in the plot" ->
       """//----- Autonomous driving ----- Constant velocity reference
 
@@ -177,7 +177,7 @@ p:=0; v:=17.5;
 // Braking and accelerating acceleration of the vehicle
 aT:=-9.8; aA:=6;
 
-// Initial position, velocity and accelaration of the reference 
+// Initial position, velocity and acceleration of the reference 
 pl:=50; vl:=10; al:=0;
 
 // Reaction time
@@ -192,22 +192,22 @@ while true do{
   // Initially the system detects if there is a possibility of a collision occurring
   if ((p + v*sampling_time + aA/2*sampling_time^2 < pl+vl*sampling_time+al/2*sampling_time^2 ) && (((v+aA*sampling_time-vl-al*sampling_time)^2 - 4*(p+v*sampling_time+aA/2*(sampling_time^2)-(pl +vl*sampling_time+al/2*(sampling_time^2)))*(aT/2-al/2)) <0))
   then {  
-          // If not, the car maintains its movement because of the reaction time of the automatic acelaration system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+          // If not, the car maintains its movement because of the reaction time of the automatic acelaration system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time;
           
-          //Then, the car accelarates with accelaration ‘aA’ and velocity ‘v’, and the reference with accelaration ‘al’ and velocity ‘vl’
+          //Then, the car accelerates with acceleration ‘aA’ and velocity ‘v’, and the reference with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aA,pl'=vl,vl'=al for sampling_time; 
         }
   else {  
-         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time; 
           
-        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aT,pl'=vl,vl'=al for sampling_time; 
           
 }
 }""" ->
-("Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+descr("AD with constant velocity reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a stationary obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -221,16 +221,16 @@ while true do{
 ////
 
       
-,"Autonomous vehicle with constant aceleration reference" ->
+,"AD with constant acceleration reference" ->
       "20 // maximum time in the plot" ->
-      """//----- Autonomous driving ----- Constante aceleration reference
+      """//----- Autonomous driving ----- Constant acceleration reference
 
 // Initial position and velocity of the vehicle
 p:=0; v:=17.5; 
 // Braking and accelerating acceleration of the vehicle
 aT:=-9.8; aA:=6;
 
-// Initial position, velocity and accelaration of the reference 
+// Initial position, velocity and acceleration of the reference 
 pl:=50; vl:=10; al:=2;
 
 // Reaction time
@@ -245,23 +245,23 @@ while true do{
   // Initially the system detects if there is a possibility of a collision occurring
   if ((p + v*sampling_time + aA/2*sampling_time^2 < pl+vl*sampling_time+al/2*sampling_time^2 ) && (((v+aA*sampling_time-vl-al*sampling_time)^2 - 4*(p+v*sampling_time+aA/2*(sampling_time^2)-(pl +vl*sampling_time+al/2*(sampling_time^2)))*(aT/2-al/2)) <0))
   then {  
-          // If not, the car maintains its movement because of the reaction time of the automatic acelaration system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+          // If not, the car maintains its movement because of the reaction time of the automatic acceleration system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time;
           
-          //Then, the car accelarates with accelaration ‘aA’ and velocity ‘v’, and the reference with accelaration ‘al’ and velocity ‘vl’
+          //Then, the car accelerates with acceleration ‘aA’ and velocity ‘v’, and the reference with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aA,pl'=vl,vl'=al for sampling_time; 
         }
   else {  
-         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time; 
           
-        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aT,pl'=vl,vl'=al for sampling_time; 
           
 }
 }
 """ ->
-("Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+descr("AD with constant acceleration reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a stationary obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -276,16 +276,16 @@ while true do{
 
       
 
-,"Autonomous vehicle with constant aceleration reference and uncertainties" ->
+,"AD with constant acceleration reference and uncertainties" ->
       "10 // maximum time in the plot" ->
-      """//----- Autonomous driving ----- Constante aceleration reference and uncertainties
+      """//----- Autonomous driving ----- Constant acceleration reference and uncertainties
 
 // Initial position and velocity of the vehicle
 p:=0; v:=17.5; 
 // Braking and accelerating acceleration of the vehicle
 aT:=-9.8; aA:=6;
 
-// Initial position, velocity and accelaration of the reference 
+// Initial position, velocity and acceleration of the reference 
 pl:=50; vl:=10; al:=2;
 
 // Reaction time
@@ -302,24 +302,109 @@ while true do{
   // Initially the system detects if there is a possibility of a collision occurring
   if ((p + v*sampling_time + aA/2*sampling_time^2 < (pl+error)+(vl+error)*sampling_time+(al+error)/2*sampling_time^2 ) && (((v+aA*sampling_time-(vl+error)-(al+error)*sampling_time)^2 - 4*(p+v*sampling_time+aA/2*(sampling_time^2)-((pl+error) +(vl+error)*sampling_time+(al+error)/2*(sampling_time^2)))*(aT/2-(al+error)/2)) <0))
   then {  
-          // If not, the car maintains its movement because of the reaction time of the automatic acelaration system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+          // If not, the car maintains its movement because of the reaction time of the automatic acelaration system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time;
           
-          //Then, the car accelarates with accelaration ‘aA’ and velocity ‘v’, and the reference with accelaration ‘al’ and velocity ‘vl’
+          //Then, the car accelerates with acceleration ‘aA’ and velocity ‘v’, and the reference with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aA,pl'=vl,vl'=al for sampling_time; 
         }
   else {  
-         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+         // If yes, the car maintains its movement because of the reaction time of the automatic braking system and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=0,pl'=vl,vl'=al for reaction_time; 
           
-        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelarates with accelaration ‘al’ and velocity ‘vl’
+        // Then, the car bracks with acelaration ‘aT’ and velocity ‘v’, and the reference accelerates with acceleration ‘al’ and velocity ‘vl’
           p'=v,v'=aT,pl'=vl,vl'=al for sampling_time; 
           
 }
 }
 
 """ ->
-("This program is the same as the hybrid program of the example 'Autonomous vehicle with constant acceleration reference', but in the verification conditions, the acceleration, velocity and position of the reference have a positive deviation of 1 unit, resulting in the vehicle position intersecting the reference position. This situation portrays the impact of sensor inaccuracy, i.e., in real life, the sensors responsible for detecting the position, velocity and acceleration of the reference present deviations from the real value, which can completely condemn the designed systems. Due to this reality, it is necessary to adapt the systems to support some imprecision by the sensors involved and use sensors with high precision so that the system behaves as desired and use sensors with high precision.")
+descr("AD with constant acceleration reference and uncertainties","This program is the same as the hybrid program of the example 'Autonomous vehicle with constant acceleration reference', but in the verification conditions, the acceleration, velocity and position of the reference have a positive deviation of 1 unit, resulting in the vehicle position intersecting the reference position. This situation portrays the impact of sensor inaccuracy, i.e., in real life, the sensors responsible for detecting the position, velocity and acceleration of the reference present deviations from the real value, which can completely condemn the designed systems. Due to this reality, it is necessary to adapt the systems to support some imprecision by the sensors involved and use sensors with high precision so that the system behaves as desired and use sensors with high precision.")
+
+
+    ,"Missile vs. Target" ->
+     "50 // maximum plot time" ->
+     """// Initial position and velocity of the missile
+x:=300; vx:=20;
+y:=300; vy:=0;
+// Initial position and velocity of the target
+xl:=500; vxl:=15;
+yl:=500; vyl:=0;
+
+// Angular velocity of the missile
+aw:=(1/20)*2*pi();
+// Angular velocity of the target
+awl:=(1/40)*2*pi();
+
+// Counter
+cont:=0;
+// Decision time
+sampling_time:=0.1;
+// Minimum collision distance
+dist_min_col:=1; 
+// variable that stores the alpha angle
+alpha:=0;
+//Variable that stores the vectorial product to decide which way to turn
+vect_P:=0;
+// Variables that stores the angular velocity decision to the missile and the target
+w:=0;
+wl:=0;
+//Variables that stores the relative positions and velocities
+dx:=0;
+dy:=0;
+vrelx:=0;
+vrely:=0;
+
+// Run the following programme whilst the distance between the missile and the target is greater than 
+//the collision distance
+while (sqrt((x-xl)^2+(y-yl)^2)>dist_min_col) do {
+    //Conditional structures to establish the target path
+    if (cont<=100)
+    then wl:=0;
+    else {
+          if (cont<=200)
+          then wl:=-awl;
+          else {
+               if (cont<=300)
+               then wl:=awl;
+               else wl:=0;
+               }
+         }
+    // The counter is incremented
+    cont:=cont+1;
+    //Update distances and relative velocities
+    dx:=xl-x;
+    dy:=yl-y;
+    vrelx:=vxl-vx;
+    vrely:=vyl-vy;
+    // Determine the value of the angle alpha
+    alpha:=arccos((vrelx*dx + vrely*dy)/(sqrt(vrelx^2 + vrely^2)*sqrt(dx^2 + dy^2))); 
+    // Conditional structures to determine whether the missile needs to move forward or make a curve
+    if (alpha>=179.5*pi()/180 && alpha<=180.5*pi()/180)
+    then {
+         // If the theta is  between 179.5 and 180.5 degrees, the missile follows a straight line at a constant velocity 
+         w:=0;
+         }
+    else {
+         // Determine the value of the vetorial product between the relative velocity vector and the relative position vector
+         vect_P:=vrelx*dy-vrely*dx;
+         // If the theta is not between 179.5 and 180.5 degrees, the missile needs to curve to the left or right
+         // To decide which way to turn, simply check the sign of the vectorial product. 
+         if (vect_P>=0)
+         then {
+              // If the vectorial product is positive or zero,  it curves to the right
+               w:=aw;
+               }
+          else {
+               // If the vectorial product is negative,  it curves to the left
+               w:=-aw;
+               }
+         }
+    // Differential equations
+    x'=vx,y'=vy,vx'=w*vy,vy'=-w*vx,
+    xl'=vxl,yl'=vyl,vxl'=wl*vyl,vyl'=-wl*vxl for sampling_time;
+}
+""" -> descr("Missile vs. Target","Missile trajectory that follows a given target.")
 ////
     ,"Projetc motion without air effect" ->
       "20 // maximum time in the plot" ->
@@ -333,7 +418,7 @@ vy:=v0*sin(theta); // initial velocity of y coordinate
 g:=-9.8; // acceleration of gravity
 
 x'=vx,y'=vy,vy'=g until_0.01 (y<0);""" ->
-("In this example, a ball is launched at the position (0,0) with an initial velocity of (v0*cos(theta),v0*sin(theta)) and an angle of theta.\n"+ 
+descr("Projetc motion without air effect","In this example, a ball is launched at the position (0,0) with an initial velocity of (v0*cos(theta),v0*sin(theta)) and an angle of theta.\n"+ 
 
 "Using the equations of motion of the kinematics through differential equations and the initial conditions mentioned in the previous paragraph, it was possible to simulate the variation of the x-coordinate and the y-coordinate over time.")
 ////
@@ -374,7 +459,7 @@ vc:=0; //Initial velocity
 xsc'=vsc,vsc'=-xsc*w0_sc2-vsc*lambda_sc,
 xSc'=vSc,vSc'=-xSc*w0_Sc2-vSc*lambda_Sc,
 xc'=vc,vc'=-xc*w0_c2-vc*lambda_c for 20;""" ->
-("Damped hamornic oscillator represented in three regimes: subcritical, supercritical and critical.\n"+
+descr("Damped Harmonic Oscillator","Damped hamornic oscillator represented in three regimes: subcritical, supercritical and critical.\n"+
 "In the subcritical regime k=2.32 N/m, m=1kg, b=0.6 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=0.6\n"+
 "In the supercritical regime k=2.32 N/m, m=1kg, b=3.5 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=3.5\n"+
 "At the critical regime k=2.32 N/m, m=1kg, b=(sqrt(58)/5)*2 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=(sqrt(58)/5)*2 ")
@@ -422,7 +507,7 @@ vc_rsa'=dvc_rsa, dvc_rsa'=-(dvc_rsa*r_rsa*(l)^(-1))-vc_rsa*(l*c)^(-1)+vs*(l*c)^(
 vc_rSa'=dvc_rSa, dvc_rSa'=-(dvc_rSa*r_rSa*(l)^(-1))-vc_rSa*(l*c)^(-1)+vs*(l*c)^(-1)
 for 0.3;
 }""" ->
-("This example shows the variation of voltage at the capacitor in 3 regimes in a series RLC circuit.\n"+
+descr("Series RLC circuit","This example shows the variation of voltage at the capacitor in 3 regimes in a series RLC circuit.\n"+
 
 
 "To determine the differential equation governing the voltage variation in the capacitor, it was necessary to use Kirchoff's law and Ohm's law. We know from Kirchoff's law that vs=vr+vl+vc, where 'vs' is the source voltage, 'vr' is the resistance voltage, 'vl' is the bobbin voltage and 'vc' is the capacitor voltage. Already by Ohm's law, we know that vr=R*ir (where 'R' is the value of the resistance and 'ir' is the current passing through it), that ic=C*dvc/dt (where 'C' is the capacitance of the capacitor and 'dvc/dt' is the time derivative of the capacitor voltage), vl=L*dil/dt (where L is the inductance of the bobbin and dil/dt is the derivative of the current passing through it) and ic=il=ir=i since it is a series circuit. Having these equations we obtained : vs=R*i+Ldi/dt+vc <=> vs=RC(dvc/dt )+LC(d²vc/dt²)+vc <=> d²vc/dt²=-(R/L)dvc/dt - vc/(LC)+vs/(LC) which is the differential equation we wanted to obtain.\n"+
@@ -488,7 +573,7 @@ h1_p'=-pow(a1*r1,-1)*h1_p+pow(a1*r1,-1)*h2_p+pow(a1,-1)*qe1,
 h2_p'=pow(a2*r1,-1)*h1_p-pow(a2*r1,-1)*h2_p+pow(a2,-1)*qe2-pow(a2*r2,-1)*h2_p,
 h1_v'=-pow(a1*r1,-1)*h1_v+pow(a1,-1)*qe1,
 h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" ->
-("This program has the objective of simulating the variation of the water level in tank 1 and 2, in two different configurations.\n"+
+descr("Water tanks","This program has the objective of simulating the variation of the water level in tank 1 and 2, in two different configurations.\n"+
 
 "In the vertical configuration, tank 1 is above tank 2, and in it there is a tap introducing water with a flow rate 'qe1' and another tap pouring water with a resistance to the flow rate equal to R1 (higher resistance, less water comes out). Tank 2 on its turn also has a tap introducing water with a flow rate 'qe2' and another one pouring water with a resistance to the flow rate equal to R2, however, the water that was poured from tank 1 is introduced in tank 2.\n"+
 
@@ -529,7 +614,7 @@ h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" ->
           |x' =  x for 40;
           |if x == 1 then x:= 2;
           |          else x:= 3;""".stripMargin ->
-      ( "Using approximated values, the value of x at 80 is slightly different " +
+      descr("Traffic lights", "Using approximated values, the value of x at 80 is slightly different " +
         "from 1, yielding a final value of 3 instead of 2. Using our symbolic evaluation, " +
         "Lince obtains the correct value of 2. Note that our experimental warning system, which " +
         "checks perturbations, detects that an approximation error can occur here at 80.")
@@ -540,7 +625,7 @@ h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" ->
           |// Use the online version to use the precise solution.
           |p:=1;v:=1;
           |p'=v, v'=-p for 8;""".stripMargin ->
-      ("When involving mutually dependent variables the naive numerical analysis does not work. " +
+      descr("Trigonometric computation","When involving mutually dependent variables the naive numerical analysis does not work. " +
         "Using symbolic computations we plot precisely the functions with sin/cos.")
       ////
     ////
@@ -548,8 +633,8 @@ h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" ->
       "150 // maximum time in the plot" ->
       """x:= -1; v:= 0; a:= 1;
         |while true do {
-        |	if x <= 0 then a:= 1; else a:=-1;
-        |    	x' = v, v' = a  for 0.5;
+        | if x <= 0 then a:= 1; else a:=-1;
+        |     x' = v, v' = a  for 0.5;
         |}""".stripMargin ->
       descr("Moving particle", "A naive approach for moving a particle to a position x.")
 
@@ -558,17 +643,17 @@ h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" ->
       "150 // maximum time in the plot" ->
       """y := 10000; v := -1000; a:= 0; g:= 10;
         |while (y >= 1000) do {
-        |	if v <= -100 then a := (100 - g);
+        | if v <= -100 then a := (100 - g);
         |              else a:= -g;
         |    y' = v, v' = a for 1;
         |}
         |while (y >= 25) do {
-        |	if v <= -20 then a := (20 - g);
+        | if v <= -20 then a := (20 - g);
         |             else a:= -g;
         |    y' = v, v' = a  for 1;
         |}
         |while (y >= 1) do {
-        |	if v <= -1 then a := (15 - g);
+        | if v <= -1 then a := (15 - g);
         |            else a:= -g;
         |    y' = v, v' = a  for 0.05;
         |}""".stripMargin ->
@@ -596,7 +681,7 @@ h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" ->
           |  v'=-9.8, p'=v until_0.01 p<0 && v<0;
           |  v:=-0.5*v; c:=c+1;
           |}""".stripMargin ->
-        descr("Bouncing Ball","Event-Driven (ED) example, using steps of 0.001. " +
+        descr("Bouncing Ball","Event-Driven (ED) example, using steps of 0.01. " +
     //"Not yet fully supported." +
     "A ball position and velocity as it bounces in the floor. " +
     "It includes an experimental feature: using a condition (p<0 /\\ v<0) " +
