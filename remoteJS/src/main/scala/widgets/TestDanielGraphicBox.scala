@@ -3,7 +3,7 @@ package widgets
 import common.widgets.{Box, OutputArea}
 import hprog.ast.Syntax
 import Syntax._
-import hprog.backend.TrajToJS
+import hprog.backend.TrajToJSV2
 import hprog.frontend.Deviator
 import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.solver.{SimpleSolver, Solver, StaticSageSolver}
@@ -129,7 +129,8 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
         }
 
 //        val traj = traj1.addWarnings(_ => warnings) // TODO: replace the warnings       
-        val js = TrajToJS(traj,"testGraphicBox",range,hideCont)
+        val variables_List: List[String] = List("_x", "_y")
+        val js = TrajToJSV2(traj,"testGraphicBox",range,hideCont, variables_List)
         println("#######################################################")        
         scalajs.js.eval(js)
         errorBox.clear()
