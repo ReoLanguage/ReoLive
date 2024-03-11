@@ -5,6 +5,7 @@ import common.widgets.Lince.{LinceBox, LinceExamplesBox}
 import common.widgets._
 import org.scalajs.dom.html
 import widgets.LocalGraphicBox
+import widgets.TestLocalGraphicBox
 import widgets.TestDanielGraphicBox
 //import org.singlespaced.d3js.d3
 import widgets.{RemoteEvalBox, RemoteGraphicBox}
@@ -22,6 +23,7 @@ object RemoteLince {
     var graphic: RemoteGraphicBox = _
     var localGraphic: LocalGraphicBox = _
     var testGraphicBox: TestDanielGraphicBox = _
+    var testlocalGraphic: TestLocalGraphicBox = _
     var eval: RemoteEvalBox = _
     var errors: OutputArea = _
     var descr: OutputArea = _
@@ -72,6 +74,7 @@ object RemoteLince {
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
       localGraphic= new LocalGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
       testGraphicBox= new TestDanielGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
+      testlocalGraphic= new TestLocalGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
       eval   = new RemoteEvalBox(inputBox, errors, bounds, "")
 
       inputBox.init(leftColumn, visible = true)
@@ -84,6 +87,7 @@ object RemoteLince {
       graphic.init(rightColumn, visible = true)
       localGraphic.init(rightColumn, visible = false)
       testGraphicBox.init(rightColumn, visible = false)
+      testlocalGraphic.init(rightColumn, visible = false)
       eval.init(rightColumn,visible = false)
 
 
