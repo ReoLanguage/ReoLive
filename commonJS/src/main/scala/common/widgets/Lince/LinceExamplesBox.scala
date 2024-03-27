@@ -71,19 +71,25 @@ else {
 ("Numerical integral based on the compound trapezoidal rule.")
 
     ,"Cruise control"->
-//        """x:= -1; v:= 0; a:= 1;
+//        """// Cruise control
+//          |x:=0; y:=0; v:=2;
+//          |while true do {
+//            |if v<=10
+//            |then x'=v, y'=v,v'=5  for 1;
+//  else x'=v,y'=v, v'=-2 for 1;
+//}x:= -1; v:= 0; a:= 1;
 //          |repeat 2 {
 //          |  if x <= 0 then a:= 1 else a:=-1;
 //          |  x' = v, v' = a  & 0.5
 //          |}
 //          |""".stripMargin ->
-      "15 // maximum time in the plot" ->
+      """Axis Variables:["x","y"] maxTime:15 maxIterations:1000""" ->
        """// Cruise control
-          |p:=0; v:=2;
+          |x:=0; y:=0; v:=2;
           |while true do {
-          |  if v<=10
-          |  then p'=v,v'=5  for 1;
-          |  else p'=v,v'=-2 for 1;
+          |if v<=10
+          |then x'=v, y'=v,v'=5  for 1;
+          |else x'=v,y'=v, v'=-2 for 1;
           |}""".stripMargin ->
         descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
       ////

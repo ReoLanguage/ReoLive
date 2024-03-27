@@ -1,5 +1,8 @@
 package widgets
 
+import hprog.lang.ParserConfig
+import hprog.ast.SyntaxConfig
+import hprog.ast.SyntaxConfig._
 import common.widgets.{Box, OutputArea}
 import hprog.ast.Syntax
 import Syntax._
@@ -44,10 +47,10 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
     errorBox.message("Redrawing")
     (lastSyntax,lastSolver) match {
       case (Some(syntax),Some(solver)) =>
-        val bs = getBounds(bounds.get)
+        val (axis, maxTime, maxIterations) = processParsedConfig(bounds.get)
+        val bs = (maxTime,maxIterations) 
         val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)
-        val variables_List: List[String] = List("_x", "_y")
-        val js = TrajToJSV2(traj,"testlocalGraphic",range,hideCont, variables_List)
+        val js = TrajToJSV2(traj,"testlocalGraphic",range,hideCont, axis)
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
@@ -68,8 +71,9 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
   // alternative version that does NOT call Sage, and uses the numerical version instead
   private def upd()  = try {
     //errorBox.message("Using numerical version...")
-    lastSyntax = Some(hprog.DSL.parse(program.get))
-    val bs = getBounds(bounds.get)
+    lastSyntax = Some(hprog.DSL.parse(program.get))    
+    val (axis, maxTime, maxIterations) = processParsedConfig(bounds.get)
+    val bs = (maxTime,maxIterations) 
     lastSolver = Some(new SimpleSolver(bs._1))
     redraw(None, hideCont = true)
   }
@@ -100,13 +104,23 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
       0.0
   }
 
-  private def getBounds(str:String): (Double,Int) = {
-    val trimmed = "[^/]*".r.findFirstIn(str).getOrElse("")
-    "[0-9]+(\\.[0-9]+)?".r.findAllIn(trimmed).toList match {
-      case List(s) => (s.toDouble, 1000)
-      case List(t, l) => (t.toDouble, l.toDouble.toInt)
-      case _ => (100, 1000)
+   def processParsedConfig(s: String): (List[String], Double, Int) = {
+    ParserConfig.parse(s) match {
+      case ParserConfig.Success(result, _) =>
+        val bounds = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
+        bounds
+      case _ =>
+        println("Failed to parse the configuration.")
+        (List(), 20.0, 100)
     }
+  }
+
+  def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[String], Double, Int) = {
+    val axis = config.axis.v.map(_.v.replaceAll("\"", ""))
+    val maxTime = config.maxTime.v
+    val maxIterations = config.maxIterations.v.toInt
+
+    (axis, maxTime, maxIterations)
   }
 
 }
