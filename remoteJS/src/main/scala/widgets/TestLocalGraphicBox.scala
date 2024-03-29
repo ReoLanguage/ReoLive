@@ -16,10 +16,8 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
   var box : Block = _
   private var lastSolver:Option[Solver] = None
   private var lastSyntax:Option[Syntax] = None
-//  private var lastWarnings:Option[Warnings] = None
 
   override def get: Unit = {}
-
 
   override def init(div: Block, visible: Boolean): Unit = {
     box = super.panelBox(div,visible,
@@ -27,7 +25,6 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
         Right("refresh")-> (()=>redraw(None,hideCont = true),"Reset zoom and redraw (shift-enter)"),
         Left("resample")  -> (() => resample(hideCont = true), "Resample: draw again the image, using the current zooming window"),
         Left("all jumps") -> (() => resample(hideCont = false),"Resample and include all boundary nodes")
-//        Left("&dArr;")-> (() => saveSvg(),"Download image as SVG")
       ))
     box.append("div")
        .attr("id", "testlocalGraphic")
@@ -40,8 +37,6 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
       println("hiding")
     })
   }
-
-
 
   private def redraw(range: Option[(Double,Double)],hideCont:Boolean): Unit = try {
     errorBox.message("Redrawing")
@@ -122,9 +117,10 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
   * @return       A tuple containing the axis, max time, and max iterations values.
   */
   def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[String], Double, Int) = {
-    val axis = config.getAxis.v.map(_.v.replaceAll("\"", ""))
+    val axis = config.getAxis.v.flatMap(_.v.replaceAll("\"", "").map("_" + _))
     val maxTime = config.getMaxTime.v
     val maxIterations = config.getMaxIterations.v
+    println(axis)
     (axis, maxTime, maxIterations)   
   }
 }

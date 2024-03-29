@@ -145,31 +145,10 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
   * @return       A tuple containing the axis, max time, and max iterations values.
   */
   def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[String], Double, Int) = {
-    val axis = config.getAxis.v.map(_.v.replaceAll("\"", ""))
+    val axis = config.getAxis.v.flatMap(_.v.replaceAll("\"", "").map("_" + _))
     val maxTime = config.getMaxTime.v
     val maxIterations = config.getMaxIterations.v   
 
-    (axis, maxTime, maxIterations)
-   
+    (axis, maxTime, maxIterations)   
   }
-
- 
-  /*def processParsedConfig(s: String): (List[String], Double, Int) = {
-    ParserConfig.parse(s) match {
-      case ParserConfig.Success(result, _) =>
-        val bounds = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
-        bounds
-      case _ =>
-        println("Failed to parse the configuration.")
-        (List(), 20.0, 100)
-    }
-  }
-
-  def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[String], Double, Int) = {
-    val axis = config.axis.v.map(_.v.replaceAll("\"", ""))
-    val maxTime = config.maxTime.v
-    val maxIterations = config.maxIterations.v.toInt
-
-    (axis, maxTime, maxIterations)
-  }*/
 }

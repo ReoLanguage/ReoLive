@@ -83,7 +83,7 @@ else {
 //          |  x' = v, v' = a  & 0.5
 //          |}
 //          |""".stripMargin ->
-      """Axis Variables:["x","y"] maxTime:15 maxIterations:1000""" ->
+      """Axis:["x","y"], maxTime:15, maxIterations:1000""" ->
        """// Cruise control
           |x:=0; y:=0; v:=2;
           |while true do {
