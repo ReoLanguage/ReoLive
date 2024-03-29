@@ -120,8 +120,41 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
       errorBox.error(e.getMessage)
       0.0
   }
- 
+
+   /**
+  * Processes the parsed configuration string to extract axis, max time, and max iterations values.
+  *
+  * @param s The configuration string.
+  * @return  A tuple containing the axis, max time, and max iterations values.
+  */
   def processParsedConfig(s: String): (List[String], Double, Int) = {
+    ParserConfig.parse(s) match {
+      case ParserConfig.Success(result, _) =>
+        val (axis, maxTime, maxIterations) = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
+        (axis, maxTime, maxIterations)
+      case _ =>
+        println("Failed to parse the configuration.")
+        (List(), 20.0, 100)
+    }
+  }
+  
+  /**
+  * Extracts axis, max time, and max iterations values from the provided configuration.
+  *
+  * @param config The parsed configuration.
+  * @return       A tuple containing the axis, max time, and max iterations values.
+  */
+  def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[String], Double, Int) = {
+    val axis = config.getAxis.v.map(_.v.replaceAll("\"", ""))
+    val maxTime = config.getMaxTime.v
+    val maxIterations = config.getMaxIterations.v   
+
+    (axis, maxTime, maxIterations)
+   
+  }
+
+ 
+  /*def processParsedConfig(s: String): (List[String], Double, Int) = {
     ParserConfig.parse(s) match {
       case ParserConfig.Success(result, _) =>
         val bounds = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
@@ -138,5 +171,5 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
     val maxIterations = config.maxIterations.v.toInt
 
     (axis, maxTime, maxIterations)
-  }
+  }*/
 }

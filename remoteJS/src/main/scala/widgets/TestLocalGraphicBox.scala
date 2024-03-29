@@ -60,17 +60,13 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
 
   override def update(): Unit = {
     if (!isVisible) {
-//      errorBox.message("traj. invisible")
       return
     }
-//    else
-//      errorBox.message("traj. visible - working")
     upd()
   }
 
   // alternative version that does NOT call Sage, and uses the numerical version instead
   private def upd()  = try {
-    //errorBox.message("Using numerical version...")
     lastSyntax = Some(hprog.DSL.parse(program.get))    
     val (axis, maxTime, maxIterations) = processParsedConfig(bounds.get)
     val bs = (maxTime,maxIterations) 
@@ -91,8 +87,6 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
       case Array() => redraw(None,hideCont)
       case _ => errorBox.error(s"Error: Unexpected range: $range.")
     }
-//    errorBox.message("Redrawing. Waiting for SageMath...")
-//    RemoteBox.remoteCall("linceWS",s"§redraw $range, ${dependency.get}",draw)
   }
 
   private def getEps: Double = try {
@@ -104,25 +98,35 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
       0.0
   }
 
-   def processParsedConfig(s: String): (List[String], Double, Int) = {
+  /**
+  * Processes the parsed configuration string to extract axis, max time, and max iterations values.
+  *
+  * @param s The configuration string.
+  * @return  A tuple containing the axis, max time, and max iterations values.
+  */
+  def processParsedConfig(s: String): (List[String], Double, Int) = {
     ParserConfig.parse(s) match {
       case ParserConfig.Success(result, _) =>
-        val bounds = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
-        bounds
+        val (axis, maxTime, maxIterations) = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
+        (axis, maxTime, maxIterations)
       case _ =>
         println("Failed to parse the configuration.")
         (List(), 20.0, 100)
     }
   }
 
+  /**
+  * Extracts axis, max time, and max iterations values from the provided configuration.
+  *
+  * @param config The parsed configuration.
+  * @return       A tuple containing the axis, max time, and max iterations values.
+  */
   def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[String], Double, Int) = {
-    val axis = config.axis.v.map(_.v.replaceAll("\"", ""))
-    val maxTime = config.maxTime.v
-    val maxIterations = config.maxIterations.v.toInt
-
-    (axis, maxTime, maxIterations)
+    val axis = config.getAxis.v.map(_.v.replaceAll("\"", ""))
+    val maxTime = config.getMaxTime.v
+    val maxIterations = config.getMaxIterations.v
+    (axis, maxTime, maxIterations)   
   }
-
 }
 
 
