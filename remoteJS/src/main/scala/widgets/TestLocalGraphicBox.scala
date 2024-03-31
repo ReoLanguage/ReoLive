@@ -120,8 +120,8 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
     val axis = config.getAxis.v.flatMap(_.v.replaceAll("\"", "").map("_" + _))
     val maxTime = config.getMaxTime.v
     val maxIterations = config.getMaxIterations.v
-    println(axis)
-    (axis, maxTime, maxIterations)   
+
+    (axis, maxTime, maxIterations)
   }
 }
 
