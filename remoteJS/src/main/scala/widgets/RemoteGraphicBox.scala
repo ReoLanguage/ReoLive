@@ -1,7 +1,9 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
-import hprog.ast.Syntax.Syntax
+
+import hprog.ast.Syntax
+import Syntax._
 import hprog.backend.TrajToJS
 import hprog.frontend.Deviator
 import hprog.frontend.CommonTypes.Warnings
@@ -150,7 +152,8 @@ class RemoteGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], b
   private def callSageNumerical() = {
     errorBox.message("Using numerical version...")
     lastSyntax = Some(hprog.DSL.parse(program.get))
-    lastSolver = Some(new SimpleSolver())
+    val bs = getBounds(bounds.get)
+    lastSolver = Some(new SimpleSolver(bs._1))
     redraw(None, hideCont = true)
   }
 

@@ -2,7 +2,8 @@ package common.widgets.Lince
 
 import common.widgets.{Box, OutputArea}
 import hprog.DSL
-import hprog.ast.Syntax.Syntax
+import hprog.ast.Syntax
+import Syntax._
 import hprog.backend.Show
 
 
