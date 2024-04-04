@@ -9,7 +9,6 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     "Basic composition" -> "150 // maximum time in the plot" ->
       """v:=0; v'=1 for 2; v'=3 for 2;""" ->
       "Very simple example composing two basic atomic elements."
-
     ,"Numerical derivative" ->
       "50 // maximum time in the plot" ->
       """// Initial values
@@ -734,5 +733,5 @@ descr("Water tanks","This program has the objective of simulating the variation 
         "is reset to zero. If other fireflies are nearby then they try to synchronise " +
         "their flashes in a decentralised way." +
         "This version synchronizes 3 fireflies")
-
+  ).map(x=>List(x._1._1._1,x._1._1._2,x._1._2,x._2))
 }

@@ -1,14 +1,8 @@
 package widgets
 
 import common.widgets.{Box, OutputArea}
-<<<<<<< HEAD
-import hprog.ast.Syntax.Syntax
-||||||| d555344
-import hprog.ast.Syntax
-=======
 import hprog.ast.Syntax
 import Syntax._
->>>>>>> lince-1.2
 import hprog.backend.TrajToJS
 import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.Deviator
@@ -71,13 +65,7 @@ class LocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String], b
   }
 
   // alternative version that does NOT call Sage, and uses the numerical version instead
-<<<<<<< HEAD
   private def upd() = try {
-||||||| d555344
-  private def upd() = {
-=======
-  private def upd()  = try {
->>>>>>> lince-1.2
     //errorBox.message("Using numerical version...")
     lastSyntax = Some(hprog.DSL.parse(program.get))
     val bs = getBounds(bounds.get)
