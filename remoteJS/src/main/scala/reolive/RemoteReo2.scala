@@ -78,7 +78,7 @@ object RemoteReo2 extends{
       override def setValue(msg: String): Unit = {clear(); if(msg.nonEmpty) super.setValue(msg)}
     }
     inputBox =
-      new PreoBox(first_reload(), export, conn, errors)
+      new PreoBox(first_reload(), export(), conn, errors)
     typeInstanceInfo =
       new RemoteInstanceBox(second_reload(),inputBox, errors)
     svg =

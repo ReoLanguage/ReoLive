@@ -92,7 +92,7 @@ class VerifytaOutputArea(errorBox:OutputArea) {
           .style("justify-content", "space-between")
 
         uppaalform.append("span")
-          .text(f._2 + ". " + Show(f._1))
+          .text(s"${f._2}. ${Show(f._1)}")
 
         if (errOrRes.isDefined && ufSatisfied.isRight) {
           uppaalform.append("span")

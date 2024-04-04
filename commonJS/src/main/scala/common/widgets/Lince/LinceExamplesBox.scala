@@ -117,7 +117,7 @@ descr("Automatic braking system","This  program checks every 0.1 seconds if ther
 
 "If not exist this system of automatic braking, the ‘reaction_time’ must be 0.3 seconds (the average time needed for a healthy human to react varies between 0.15 and 0.45 seconds) and the collision occurs (try yourself !).")
 ////
- ,"Autonomous driving (AD) with fixed reference" ->
+ ,"AD: fixed" ->
       "50 // maximum time in the plot" ->
       """//----- Autonomous driving ----- Fixed reference
 
@@ -155,7 +155,7 @@ while (v>0) do{
           
 }
 }""" ->
-descr("AD with fixed reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that, depending on its values, will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+descr("Autonomous driving with fixed reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that, depending on its values, will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a fixed obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -168,7 +168,7 @@ descr("AD with fixed reference","Nowadays there are several vehicles that can dr
 "If we run this example we can verify that the position of the vehicle does not intersect with the reference, but if we change the value of the reaction time to 0.1 (reaction time of a healthy human) the positions will intersect, showing the efficiency of autonomous systems compared to manuals in these circumstances.")
 ////
 
-      ,"AD with constant velocity reference" ->
+      ,"AD: constant velocity" ->
       "20 // maximum time in the plot" ->
       """//----- Autonomous driving ----- Constant velocity reference
 
@@ -207,7 +207,7 @@ while true do{
           
 }
 }""" ->
-descr("AD with constant velocity reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+descr("Autonomous driving with constant velocity reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a stationary obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -221,7 +221,7 @@ descr("AD with constant velocity reference","Nowadays there are several vehicles
 ////
 
       
-,"AD with constant acceleration reference" ->
+,"AD: constant acceleration" ->
       "20 // maximum time in the plot" ->
       """//----- Autonomous driving ----- Constant acceleration reference
 
@@ -261,7 +261,7 @@ while true do{
 }
 }
 """ ->
-descr("AD with constant acceleration reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+descr("Autonomous driving with constant acceleration reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a stationary obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -276,7 +276,7 @@ descr("AD with constant acceleration reference","Nowadays there are several vehi
 
       
 
-,"AD with constant acceleration reference and uncertainties" ->
+,"AD: with uncertainties" ->
       "10 // maximum time in the plot" ->
       """//----- Autonomous driving ----- Constant acceleration reference and uncertainties
 
@@ -319,7 +319,7 @@ while true do{
 }
 
 """ ->
-descr("AD with constant acceleration reference and uncertainties","This program is the same as the hybrid program of the example 'Autonomous vehicle with constant acceleration reference', but in the verification conditions, the acceleration, velocity and position of the reference have a positive deviation of 1 unit, resulting in the vehicle position intersecting the reference position. This situation portrays the impact of sensor inaccuracy, i.e., in real life, the sensors responsible for detecting the position, velocity and acceleration of the reference present deviations from the real value, which can completely condemn the designed systems. Due to this reality, it is necessary to adapt the systems to support some imprecision by the sensors involved and use sensors with high precision so that the system behaves as desired and use sensors with high precision.")
+descr("Autonomous driving with constant acceleration reference and uncertainties","This program is the same as the hybrid program of the example 'Autonomous vehicle with constant acceleration reference', but in the verification conditions, the acceleration, velocity and position of the reference have a positive deviation of 1 unit, resulting in the vehicle position intersecting the reference position. This situation portrays the impact of sensor inaccuracy, i.e., in real life, the sensors responsible for detecting the position, velocity and acceleration of the reference present deviations from the real value, which can completely condemn the designed systems. Due to this reality, it is necessary to adapt the systems to support some imprecision by the sensors involved and use sensors with high precision so that the system behaves as desired and use sensors with high precision.")
 
 
     ,"Missile vs. Target" ->
