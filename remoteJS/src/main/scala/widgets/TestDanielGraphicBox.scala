@@ -61,7 +61,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
     (lastSyntax,lastSolver) match {
       case (Some(syntax),Some(solver)) =>
 
-        val (axis, maxTime, maxIterations) = processParsedConfig(bounds.get)
+        val (axis, maxTime, maxIterations, graphType) = processParsedConfig(bounds.get)
         val bs = (maxTime,maxIterations)
         val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)
         solver match {
@@ -69,7 +69,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
           case _ => {}
         }
       
-        val js = TrajToJSV2(traj,"testGraphicBox",range,hideCont, axis)        
+        val js = TrajToJSV2(traj,"testGraphicBox",range,hideCont, axis, graphType)        
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
@@ -88,7 +88,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
   private def callSageNumerical() = {
     errorBox.message("Using numerical version...")
     lastSyntax = Some(hprog.DSL.parse(program.get))
-    val (axis, maxTime, maxIterations) = processParsedConfig(bounds.get)
+    val (axis, maxTime, maxIterations, graphType) = processParsedConfig(bounds.get)
     val bs = (maxTime,maxIterations) 
     lastSolver = Some(new SimpleSolver(bs._1))
     redraw(None, hideCont = true)
@@ -125,16 +125,16 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
   * Processes the parsed configuration string to extract axis, max time, and max iterations values.
   *
   * @param s The configuration string.
-  * @return  A tuple containing the axis, max time, and max iterations values.
+  * @return  A tuple containing the axis, max time, max iterations and graphType values.
   */
-  def processParsedConfig(s: String): (List[String], Double, Int) = {
+  def processParsedConfig(s: String): (List[(String, String, Option[String])], Double, Int, String) = {
     ParserConfig.parse(s) match {
       case ParserConfig.Success(result, _) =>
-        val (axis, maxTime, maxIterations) = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
-        (axis, maxTime, maxIterations)
+        val (axis, maxTime, maxIterations, graphType) = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
+        (axis, maxTime, maxIterations, graphType)
       case _ =>
         println("Failed to parse the configuration.")
-        (List(), 20.0, 100)
+        (List(), 20.0, 100, "Scatter")
     }
   }
   
@@ -142,13 +142,37 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
   * Extracts axis, max time, and max iterations values from the provided configuration.
   *
   * @param config The parsed configuration.
-  * @return       A tuple containing the axis, max time, and max iterations values.
+  * @return       A tuple containing the axis, max time, max iterations and graphType values.
   */
-  def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[String], Double, Int) = {
-    val axis = config.getAxis.v.flatMap(_.v.replaceAll("\"", "").map("_" + _))
+  def extractValues(config: hprog.ast.SyntaxConfig.SyntaxConfig): (List[(String, String, Option[String])], Double, Int, String) = {
+    val graphType = config.getGraphType.v
+
+    val axis = graphType match {
+      case "scatter" =>
+        config.getAxis.v.flatMap {
+          case SyntaxConfig.SingleVar(v) =>
+            List(("t", "_" + v.replaceAll("\"", ""), None))
+          case SyntaxConfig.PairVar(v1, v2) =>
+            List(("_" + v1.replaceAll("\"", ""), "_" + v2.replaceAll("\"", ""), None))
+          case SyntaxConfig.TripleVar(v1, v2, v3) =>            
+            throw new Exception("Wrong axis definition")
+        }
+      case "scatter3d" =>
+        config.getAxis.v.flatMap {
+          case SyntaxConfig.SingleVar(v) =>           
+            throw new Exception("Wrong axis definition")
+          case SyntaxConfig.PairVar(v1, v2) =>
+            List(("t", "_" + v1.replaceAll("\"", ""), Some("_" + v2.replaceAll("\"", ""))))
+          case SyntaxConfig.TripleVar(v1, v2, v3) =>
+            List(("_" + v1.replaceAll("\"", ""), "_" + v2.replaceAll("\"", ""), Some("_" + v3.replaceAll("\"", ""))))
+        }
+      case _ =>
+        throw new Exception("Wrong graph type definition. Choose between scatter and scatter3d")
+    }
+
     val maxTime = config.getMaxTime.v
     val maxIterations = config.getMaxIterations.v
-
-    (axis, maxTime, maxIterations)
-  }
+    
+    (axis, maxTime, maxIterations, graphType)
+  }      
 }
