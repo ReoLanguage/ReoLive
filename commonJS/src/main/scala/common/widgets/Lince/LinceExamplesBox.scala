@@ -6,7 +6,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
   extends ButtonsBox(reload, List(bounds,inputBox,descr)){
 
   override protected val buttons: Seq[List[String]] = Seq(
-    "Basic composition" ->  "150 // maximum time in the plot" ->
+    "Basic composition" ->  "maxTime:150" ->
       """v:=0; v'=1 for 2; v'=3 for 2;""" ->
       "Very simple example composing two basic atomic elements."
     ,"Numerical derivative" ->
@@ -44,7 +44,7 @@ else {
 ////
 
  ,"Numerical integral" ->
-      "50 // maximum time in the plot" ->
+      "maxTime:50" ->
       """//Initial values
 y:=0;
 dy:=0;
@@ -93,7 +93,7 @@ while (true) do{
 descr("Adaptive Cruise Control","Maintain the distance to the car in front")
 ////
       ,"Automatic braking system" ->
-      "8 // maximum time in the plot" ->
+      "maxTime:8" ->
       """// Automatic braking system
 p:=0; v:=17.5; reaction_time:=0.001; pl:=50; vl:=0; aT:=-9.8; aA:=6;sampling_time:=0.1;
 while v>0 do{
@@ -112,7 +112,7 @@ descr("Automatic braking system","This  program checks every 0.1 seconds if ther
 "If not exist this system of automatic braking, the ‘reaction_time’ must be 0.3 seconds (the average time needed for a healthy human to react varies between 0.15 and 0.45 seconds) and the collision occurs (try yourself !).")
 ////
  ,"Autonomous driving (AD) with fixed reference" ->
-      "50 // maximum time in the plot" ->
+      "maxTime:50" ->
       """//----- Autonomous driving ----- Fixed reference
 
 // Initial position and velocity of the vehicle
@@ -163,7 +163,7 @@ descr("AD with fixed reference","Nowadays there are several vehicles that can dr
 ////
 
       ,"AD with constant velocity reference" ->
-      "20 // maximum time in the plot" ->
+      "maxTime:20" ->
       """//----- Autonomous driving ----- Constant velocity reference
 
 // Initial position and velocity of the vehicle
@@ -216,7 +216,7 @@ descr("AD with constant velocity reference","Nowadays there are several vehicles
 
       
 ,"AD with constant acceleration reference" ->
-      "20 // maximum time in the plot" ->
+      "maxTime:20" ->
       """//----- Autonomous driving ----- Constant acceleration reference
 
 // Initial position and velocity of the vehicle
@@ -271,7 +271,7 @@ descr("AD with constant acceleration reference","Nowadays there are several vehi
       
 
 ,"AD with constant acceleration reference and uncertainties" ->
-      "10 // maximum time in the plot" ->
+      "maxTime:10" ->
       """//----- Autonomous driving ----- Constant acceleration reference and uncertainties
 
 // Initial position and velocity of the vehicle
@@ -317,7 +317,7 @@ descr("AD with constant acceleration reference and uncertainties","This program 
 
 
     ,"Missile vs. Target" ->
-     "50 // maximum plot time" ->
+     "maxTime:50" ->
      """// Initial position and velocity of the missile
 x:=300; vx:=20;
 y:=300; vy:=0;
@@ -401,7 +401,7 @@ while (sqrt((x-xl)^2+(y-yl)^2)>dist_min_col) do {
 """ -> descr("Missile vs. Target","Missile trajectory that follows a given target.")
 ////
     ,"Projetc motion without air effect" ->
-      "20 // maximum time in the plot" ->
+      "maxTime:20" ->
       """// Projetc motion without air effect
 theta:=pi()/2; // angle
 v0:=50; //magnitude of initial velocity
@@ -417,7 +417,7 @@ descr("Projetc motion without air effect","In this example, a ball is launched a
 "Using the equations of motion of the kinematics through differential equations and the initial conditions mentioned in the previous paragraph, it was possible to simulate the variation of the x-coordinate and the y-coordinate over time.")
 ////
       ,"Damped Harmonic Oscillator" ->
-      "30 // maximum time in the plot" ->
+      "maxTime:30" ->
       """//Damped harmonic oscillator in subcritical regime (lambda/2<w0)-->xsc
 //Damped harmonic oscillator in supercritical regime (lambda/2>w0)-->xSc
 //Damped harmonic oscillator in critical regime (lambda/2=w0)-->xc
@@ -459,7 +459,7 @@ descr("Damped Harmonic Oscillator","Damped hamornic oscillator represented in th
 "At the critical regime k=2.32 N/m, m=1kg, b=(sqrt(58)/5)*2 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=(sqrt(58)/5)*2 ")
       ////
       ,"Series RLC circuit" ->
-      "30 // maximum time in the plot" ->
+      "maxTime:30" ->
       """r_rac:=2;
 r_rsa:=0.5;
 r_rSa:=4;
@@ -514,7 +514,7 @@ descr("Series RLC circuit","This example shows the variation of voltage at the c
 "NOTE: We recommend that you disable all variables in the plot except 'vc_rac', 'vc_rsa' and 'vc_rSa'.")
 ////
       ,"Water tanks" ->
-      "150 // maximum time in the plot" ->
+      "maxTime:150" ->
       """a1:=1; //Area of tank 1
 a2:=1; // Area of tank 2
 r1:=1; //Resistance applied to the water flow at the water exit tap of tank 1.
@@ -590,7 +590,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
       
    
       ,"Traffic lights"->
-        "150 // maximum time in the plot" ->
+        "maxTime:150" ->
         """// Alternate between two constant values.
           |l:=0;
           |repeat 4 {
@@ -600,7 +600,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
         descr("Traffic lights","Alternating between two constant values.")
       ////
       ,"Avoiding approx. error"->
-        "150 // maximum time in the plot" ->
+        "maxTime:150" ->
         """// A naive evaluation would give an approximation
           |// error of the if-condition.
           |x := 1;
@@ -614,7 +614,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
         "checks perturbations, detects that an approximation error can occur here at 80.")
       ////
       ,"Trigonometric computation"->
-      "150 // maximum time in the plot" ->
+      "maxTime:150" ->
       """// Solution not naively computed (precise solution involves sin/cos)
           |// Use the online version to use the precise solution.
           |p:=1;v:=1;
@@ -624,7 +624,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
       ////
     ////
     ,"Naive particle positioning" ->
-      "150 // maximum time in the plot" ->
+      "maxTime:150" ->
       """x:= -1; v:= 0; a:= 1;
         |while true do {
         | if x <= 0 then a:= 1; else a:=-1;
@@ -634,7 +634,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
 
     ////
     ,"Landing system" ->
-      "150 // maximum time in the plot" ->
+      "maxTime:150" ->
       """y := 10000; v := -1000; a:= 0; g:= 10;
         |while (y >= 1000) do {
         | if v <= -100 then a := (100 - g);
@@ -668,7 +668,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
 //      "Experimental event-driven example (using approximations)."
     /////
     ,"Bouncing ball (ED)"->
-    "150 // maximum time in the plot" ->
+    "maxTime:150" ->
     """// Bouncing ball example
           |v:=5; p:=10; c:=0;
           |while (c<4) do {
@@ -690,7 +690,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
 
     /////
     ,"Fireflies 2x (ED)"->
-        "150 // maximum time in the plot" ->
+        "maxTime:150" ->
         """f1 := 1; f2 := 4;
         |repeat 8 {
         |  f1'=1, f2'=1 until_0.01
@@ -710,7 +710,7 @@ descr("Water tanks","This program has the objective of simulating the variation 
     ////
 
     ,"Fireflies 3x (ED)"->
-      "150 // maximum time in the plot" ->
+      "maxTime:150" ->
       """f1 := 1; f2 := 4; f3 := 7;
         |repeat 8 {
         |  f1'=1, f2'=1, f3'=1
@@ -740,7 +740,91 @@ descr("Water tanks","This program has the objective of simulating the variation 
           |}""".stripMargin ->
         descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
       ////
+    
+    ,"Missile vs. Target - Exemple 1" ->
+     "maxTime:50, Axis:[(x,y),(xl,yl)]" ->
+     """// Initial position and velocity of the missile
+        x:=300; vx:=20;
+        y:=300; vy:=0;
+        // Initial position and velocity of the target
+        xl:=500; vxl:=15;
+        yl:=500; vyl:=0;
 
+        // Angular velocity of the missile
+        aw:=(1/20)*2*pi();
+        // Angular velocity of the target
+        awl:=(1/40)*2*pi();
+
+        // Counter
+        cont:=0;
+        // Decision time
+        sampling_time:=0.1;
+        // Minimum collision distance
+        dist_min_col:=1; 
+        // variable that stores the alpha angle
+        alpha:=0;
+        //Variable that stores the vectorial product to decide which way to turn
+        vect_P:=0;
+        // Variables that stores the angular velocity decision to the missile and the target
+        w:=0;
+        wl:=0;
+        //Variables that stores the relative positions and velocities
+        dx:=0;
+        dy:=0;
+        vrelx:=0;
+        vrely:=0;
+
+        // Run the following programme whilst the distance between the missile and the target is greater than 
+        //the collision distance
+        while (sqrt((x-xl)^2+(y-yl)^2)>dist_min_col) do {
+            //Conditional structures to establish the target path
+            if (cont<=100)
+            then wl:=0;
+            else {
+                  if (cont<=200)
+                  then wl:=-awl;
+                  else {
+                      if (cont<=300)
+                      then wl:=awl;
+                      else wl:=0;
+                      }
+                }
+            // The counter is incremented
+            cont:=cont+1;
+            //Update distances and relative velocities
+            dx:=xl-x;
+            dy:=yl-y;
+            vrelx:=vxl-vx;
+            vrely:=vyl-vy;
+            // Determine the value of the angle alpha
+            alpha:=arccos((vrelx*dx + vrely*dy)/(sqrt(vrelx^2 + vrely^2)*sqrt(dx^2 + dy^2))); 
+            // Conditional structures to determine whether the missile needs to move forward or make a curve
+            if (alpha>=179.5*pi()/180 && alpha<=180.5*pi()/180)
+            then {
+                // If the theta is  between 179.5 and 180.5 degrees, the missile follows a straight line at a constant velocity 
+                w:=0;
+                }
+            else {
+                // Determine the value of the vetorial product between the relative velocity vector and the relative position vector
+                vect_P:=vrelx*dy-vrely*dx;
+                // If the theta is not between 179.5 and 180.5 degrees, the missile needs to curve to the left or right
+                // To decide which way to turn, simply check the sign of the vectorial product. 
+                if (vect_P>=0)
+                then {
+                      // If the vectorial product is positive or zero,  it curves to the right
+                      w:=aw;
+                      }
+                  else {
+                      // If the vectorial product is negative,  it curves to the left
+                      w:=-aw;
+                      }
+                }
+            // Differential equations
+            x'=vx,y'=vy,vx'=w*vy,vy'=-w*vx,
+            xl'=vxl,yl'=vyl,vxl'=wl*vyl,vyl'=-wl*vxl for sampling_time;
+        }
+        """ -> descr("Missile vs. Target - Exemple 1","Missile trajectory that follows a given target.")
+      ////
   ).map(x=>List(x._1._1._1,x._1._1._2,x._1._2,x._2))
 
 }
