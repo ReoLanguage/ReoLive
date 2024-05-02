@@ -45,8 +45,10 @@ class LocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String], b
     (lastSyntax,lastSolver) match {
       case (Some(syntax),Some(solver)) =>
         val bs = getBounds(bounds.get)
-        val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)
+        val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)        
         val js = TrajToJS(traj,"localGraphic",range,hideCont)
+        println("local ----------------------------------")
+        println(js)
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")

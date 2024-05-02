@@ -71,19 +71,7 @@ else {
 ("Numerical integral based on the compound trapezoidal rule.")
 
     ,"Cruise control"->
-//        """// Cruise control
-//          |x:=0; y:=0; v:=2;
-//          |while true do {
-//            |if v<=10
-//            |then x'=v, y'=v,v'=5  for 1;
-//  else x'=v,y'=v, v'=-2 for 1;
-//}x:= -1; v:= 0; a:= 1;
-//          |repeat 2 {
-//          |  if x <= 0 then a:= 1 else a:=-1;
-//          |  x' = v, v' = a  & 0.5
-//          |}
-//          |""".stripMargin ->
-      """Axis:["x","y"], maxTime:15, maxIterations:1000""" ->
+      """Axis:[x,y,v]""" ->
        """// Cruise control
           |x:=0; y:=0; v:=2;
           |while true do {
@@ -739,6 +727,19 @@ descr("Water tanks","This program has the objective of simulating the variation 
         "is reset to zero. If other fireflies are nearby then they try to synchronise " +
         "their flashes in a decentralised way." +
         "This version synchronizes 3 fireflies")
+    ////
+
+    ,"Cruise control Example 1"->
+      """Axis:[(x,y)]""" ->
+       """// Cruise control
+          |x:=0; y:=0; v:=2;
+          |while true do {
+          |if v<=10
+          |then x'=v, y'=v,v'=5  for 1;
+          |else x'=v,y'=v, v'=-2 for 1;
+          |}""".stripMargin ->
+        descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
+      ////
 
   ).map(x=>List(x._1._1._1,x._1._1._2,x._1._2,x._2))
 

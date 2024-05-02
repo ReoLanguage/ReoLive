@@ -135,7 +135,10 @@ object RemoteLince {
       bounds.update()
       graphic.update()
       localGraphic.update()
-      eval.update()
+      testGraphicBox.update()
+      testlocalGraphic.update()
+      eval.update()     
+
     }
 
     private def prepareGraphics(): Unit = {

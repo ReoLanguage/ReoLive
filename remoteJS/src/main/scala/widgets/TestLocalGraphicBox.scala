@@ -45,7 +45,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String
         val (axis, maxTime, maxIterations, graphType) = processParsedConfig(bounds.get)
         val bs = (maxTime,maxIterations)         
         val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)
-        val js = TrajToJSV2(traj,"testlocalGraphic",range,hideCont, axis, graphType)
+        val js = TrajToJSV2(traj,"testlocalGraphic",range,hideCont, axis, graphType)        
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")

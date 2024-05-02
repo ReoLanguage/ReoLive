@@ -61,9 +61,9 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String
     (lastSyntax,lastSolver) match {
       case (Some(syntax),Some(solver)) =>
 
-        val (axis, maxTime, maxIterations, graphType) = processParsedConfig(bounds.get)
+        val (axis, maxTime, maxIterations, graphType) = processParsedConfig(bounds.get)        
         val bs = (maxTime,maxIterations)
-        val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)
+        val traj = new hprog.frontend.Traj(syntax,solver,Deviator.dummy,bs)       
         solver match {
           case ssolver: StaticSageSolver => traj.addWarnings(ssolver.getWarnings)
           case _ => {}
