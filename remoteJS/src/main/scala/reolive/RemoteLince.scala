@@ -5,6 +5,8 @@ import common.widgets.Lince.{LinceBox, LinceExamplesBox}
 import common.widgets._
 import org.scalajs.dom.html
 import widgets.LocalGraphicBox
+import widgets.TestLocalGraphicBox
+import widgets.TestDanielGraphicBox
 //import org.singlespaced.d3js.d3
 import widgets.{RemoteEvalBox, RemoteGraphicBox}
 
@@ -20,9 +22,15 @@ object RemoteLince {
     var examples: LinceExamplesBox = _
     var graphic: RemoteGraphicBox = _
     var localGraphic: LocalGraphicBox = _
+    var testGraphicBox: TestDanielGraphicBox = _
+    var testlocalGraphic: TestLocalGraphicBox = _
     var eval: RemoteEvalBox = _
     var errors: OutputArea = _
     var descr: OutputArea = _
+    var axis: InputBox = _
+    var maxTime: InputBox = _
+    var maxIterations: InputBox = _
+    var graphType: InputBox = _
     var perturbation: InputBox = _
     var bounds: InputBox = _
 
@@ -60,8 +68,20 @@ object RemoteLince {
       errors = new OutputArea //(id="Lince")
       inputBox = new LinceBox(reload(), "",errors)
       //information = new LinceInfoBox(inputBox, errors)
+      axis = new InputBox(softReload(),"","axis",1,
+        title = "Axis",
+        refreshLabel = "Configures the axes of the graph. Examples: [x,y,v] -> It will generate 3 graphs in which the 'y' axis will correspond to the variables x,y,v, and 'x' axis will be assumed as time. [(y,v)] -> It will generate 1 graphs in which the 'y' axis will correspond to the variable v and 'x' axis will correspond to the variable y.")
+      maxTime = new InputBox(softReload(),"15","maxTime",1,
+        title = "Max Time",
+        refreshLabel = "Input a double to define the max Time.")
+      maxIterations = new InputBox(softReload(),"1000","maxIterations",1,
+        title = "Max Iterations",
+        refreshLabel = "Input an int to define the max iterations.")
+      graphType = new InputBox(softReload(),"scatter","graphType",1,
+        title = "Graph Type",
+        refreshLabel = "Define the type of graph. Possible values: scatter or scatter3d")
       perturbation = new InputBox(softReload(),"0","perturbation",1,
-        title = "Perturbations up-to  (experimental)",
+        title = "Perturbations up-to ",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
       bounds = new InputBox(softReload(),"150 // maximum time in the plot","bounds",1,
         title = "Plot length",
@@ -69,17 +89,25 @@ object RemoteLince {
       examples = new LinceExamplesBox(softReload(),inputBox,descr,bounds)
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
       localGraphic= new LocalGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
+      testGraphicBox= new TestDanielGraphicBox(()=>prepareGraphics(),inputBox, axis, maxTime, maxIterations, graphType, perturbation, errors)
+      testlocalGraphic= new TestLocalGraphicBox(()=>prepareGraphics(),inputBox, axis, maxTime, maxIterations, graphType, perturbation, errors)
       eval   = new RemoteEvalBox(inputBox, errors, bounds, "")
 
       inputBox.init(leftColumn, visible = true)
       errors.init(leftColumn)
       examples.init(leftColumn, visible = true)
       descr.init(leftColumn)
+      axis.init(leftColumn,visible = false)
+      maxTime.init(leftColumn,visible = false)
+      maxIterations.init(leftColumn,visible = false)
+      graphType.init(leftColumn,visible = false)
       perturbation.init(leftColumn,visible = false)
       bounds.init(leftColumn,visible = false)
       //information.init(rightColumn,true)
       graphic.init(rightColumn, visible = true)
       localGraphic.init(rightColumn, visible = false)
+      testGraphicBox.init(rightColumn, visible = false)
+      testlocalGraphic.init(rightColumn, visible = false)
       eval.init(rightColumn,visible = false)
 
 
@@ -123,11 +151,18 @@ object RemoteLince {
       errors.clear()
       inputBox.update()
       //information.update()
+      axis.update()
+      maxTime.update()
+      maxIterations.update()
+      graphType.update()
       perturbation.update()
       bounds.update()
       graphic.update()
       localGraphic.update()
-      eval.update()
+      testGraphicBox.update()
+      testlocalGraphic.update()
+      eval.update()     
+
     }
 
     private def prepareGraphics(): Unit = {
