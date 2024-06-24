@@ -80,13 +80,13 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
         if (z_Title.isEmpty){
 
           val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
-          traceNames = markersNames ++ traceNames
+          //traceNames = markersNames ++ traceNames
 
-          js += "\n" + markers
+          ///js += "\n" + markers
           js += s"\nvar data = ${traceNames.mkString("[",",","]")};"   
           js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});" 
-          js += movingPart    
+          //js += movingPart    
         } else{
           val (markers, markersNames, movingPart) = createMovingObjects3D(graph_names, "testlocalGraphic", graphType)
           traceNames = markersNames ++ traceNames
@@ -97,7 +97,6 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});"
           js += movingPart 
         }   
-        println(js) 
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
