@@ -63,8 +63,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
             simulationName = ""
           } else {
             simulationName = " - Sim " + simCount.toString
-          }
-            
+          }          
           simCount += 1
           val traj = new hprog.frontend.Traj(element, solver, Deviator.dummy, bs)
           val (jsCode, graphNames, warningsNames, xTitle, yTitle, zTitle, count) = TrajToJSV2(traj, "testlocalGraphic", range, hideCont, axis, graphType, simulationName, counter)
@@ -78,24 +77,17 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
         }               
 
         if (z_Title.isEmpty){
-
           val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
           //traceNames = markersNames ++ traceNames
-
           //js += "\n" + markers
           js += s"\nvar data = ${traceNames.mkString("[",",","]")};"   
           js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});" 
           //js += movingPart    
         } else{
-          val (markers, markersNames, movingPart) = createMovingObjects3D(graph_names, "testlocalGraphic", graphType)
-          traceNames = markersNames ++ traceNames
-
-          js += "\n" + markers
           js += s"var data = ${traceNames.mkString("[",",","]")};"  
           js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});"
-          js += movingPart 
         }   
         println(js)
         scalajs.js.eval(js)
@@ -286,47 +278,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
     movingPart += s"""\n }\n}\nanimatePoint();"""
 
     (markers, markersNames, movingPart)
-  }
-
-   private def createMovingObjects3D(graphNames: List[String], divName:String, graphType: String): (String, List[String], String) = {
-    var markers: String = ""
-    var movingPart: String = ""
-    var markersNames: List[String] = List()
-    val markersJS = graphNames.map { 
-      case (graphName) => {
-        markersNames = markersNames ++ List(s"""marker_${graphName}""")
-        markers += s"""
-                |var marker_${graphName} = {
-                |  x: [${graphName}.x[0]],
-                |  y: [${graphName}.y[0]],
-                |  z: [${graphName}.z[0]],
-                |  mode: 'markers',
-                |  marker: { color: 'rgb(136, 136, 136)', size: 5 },
-                |  showlegend: false,
-                |  type: '$graphType'
-                |};""".stripMargin
-      }
-    }
-
-    movingPart += "\nvar count = 0; \nsetInterval(function() {"
-
-    val movingPartJS = graphNames.zipWithIndex.map { 
-      case (graphName, idx) => 
-      movingPart += s"""
-              |var marker_${graphName}_x = ${graphName}.x[count % ${graphName}.x.length];
-              |var marker_${graphName}_y = ${graphName}.y[count % ${graphName}.y.length];
-              |var marker_${graphName}_z = ${graphName}.z[count % ${graphName}.z.length];
-              |Plotly.restyle('${divName}', {
-              |      x: [[marker_${graphName}_x]],
-              |      y: [[marker_${graphName}_y]],
-              |      z: [[marker_${graphName}_z]]
-              |   }, [${idx}]);""".stripMargin      
-    }
-    movingPart += s"""\ncount++;}, 100);"""
-
-    (markers,markersNames, movingPart)
-  }
-        
+  } 
 }
 
 

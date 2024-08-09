@@ -27,7 +27,7 @@ object RemoteLince {
     var eval: RemoteEvalBox = _
     var errors: OutputArea = _
     var descr: OutputArea = _
-    var axis: InputBox = _
+    var axis: InputBox = _    
     var maxTime: InputBox = _
     var maxIterations: InputBox = _
     var graphType: InputBox = _
@@ -151,7 +151,7 @@ object RemoteLince {
       errors.clear()
       inputBox.update()
       //information.update()
-      axis.update()
+      axis.update()     
       maxTime.update()
       maxIterations.update()
       graphType.update()

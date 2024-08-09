@@ -69,7 +69,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
     var y_Title: String = ""
     var z_Title: String = ""
     var counter: Int = 0
-    var simCount: Int = 0  
+    var simCount: Int = 0    
 
     (lastSyntax,lastSolver) match {
       case (syntax,Some(solver)) =>
@@ -81,14 +81,13 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
             simulationName = ""
           } else {
             simulationName = " - Sim " + simCount.toString
-          }
-            
+          }          
           simCount += 1
-          val traj = new hprog.frontend.Traj(element, solver, Deviator.dummy, bs)   
+          val traj = new hprog.frontend.Traj(element, solver, Deviator.dummy, bs)
           solver match {
             case ssolver: StaticSageSolver => traj.addWarnings(ssolver.getWarnings)
             case _ => {}
-          }       
+          }  
           val (jsCode, graphNames, warningsNames, xTitle, yTitle, zTitle, count) = TrajToJSV2(traj, "testGraphicBox", range, hideCont, axis, graphType, simulationName, counter)
           js += jsCode
           traceNames = traceNames ++ graphNames ++ warningsNames
@@ -97,18 +96,17 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
           y_Title = yTitle
           z_Title = zTitle
           counter += 1
-        }          
+        }               
 
         if (z_Title.isEmpty){
-          val (markers, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic")
-          js += "\n" + markers
+          val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
+          //traceNames = markersNames ++ traceNames
+
+          //js += "\n" + markers
           js += s"\nvar data = ${traceNames.mkString("[",",","]")};"   
           js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
-          js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});" 
-          js += movingPart 
-          js += s"var data = ${traceNames.mkString("[",",","]")};"   
-          js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
-          js += s"\nPlotly.newPlot('testGraphicBox', data, layout, {showSendToCloud: true});"     
+          js += s"\nPlotly.newPlot('testGraphicBox', data, layout, {showSendToCloud: true});" 
+          //js += movingPart    
         } else{
           js += s"var data = ${traceNames.mkString("[",",","]")};"  
           js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
@@ -255,35 +253,62 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
     
     (axis, maxTime, maxIterations, graphType, perturbationUpTo)
   }
-  private def createMovingObjects2D(graphNames: List[String], divName:String): (String, String) = {
+     
+
+  private def createMovingObjects2D(graphNames: List[String], divName: String, graphType: String): (String, List[String], String) = {
     var markers: String = ""
     var movingPart: String = ""
+    var markersNames: List[String] = List()
+    
     val markersJS = graphNames.map { 
-      case (graphName) => 
+      case graphName => {
+        markersNames = markersNames ++ List(s"""marker_${graphName}""")
         markers += s"""
-                |var marker_${graphName} = {
-                |  x: [${graphName}.x[0]],
-                |  y: [${graphName}.y[0]],
-                |  mode: 'markers',
-                |  marker: { color: 'red', size: 10 },
-                |  name: 'marker_${graphName}'
-                |};""".stripMargin
+                  |var marker_${graphName} = {
+                  |  x: [${graphName}.x[0]],
+                  |  y: [${graphName}.y[0]],
+                  |  mode: 'markers',
+                  |  marker: { color: 'rgb(136, 136, 136)', size: 10 },
+                  |  showlegend: false,
+                  |  type: '$graphType'
+                  |};""".stripMargin
+      }
     }
-    movingPart += "\nvar count = 0; \nsetInterval(function() {\n"
+
+    val addIterators = graphNames.zipWithIndex.map { 
+      case (graphName, idx) => 
+        movingPart += s"""\nlet i${graphName} = 0;"""
+    }
+
+    movingPart += s"""\nfunction animatePoint() {"""
 
     val movingPartJS = graphNames.zipWithIndex.map { 
       case (graphName, idx) => 
-      movingPart += s"""
-              |var marker_${graphName}_x = ${graphName}.x[count % ${graphName}.x.length];
-              |var marker_${graphName}_y = ${graphName}.y[count % ${graphName}.y.length];
-              |Plotly.restyle('${divName}', {
-              |      x: [[marker_${graphName}_x]],
-              |      y: [[marker_${graphName}_y]]
-              |   }, [${idx}]);""".stripMargin      
+        movingPart += s"""
+                    |if (i${graphName} < ${graphName}.length) {
+                    | marker_${graphName}.x = [${graphName}.x[i${graphName}]];
+                    | marker_${graphName}.y = [${graphName}.y[i${graphName}]];
+                    | Plotly.animate('plot', {
+                    |     data: [{ x: marker_${graphName}.x, y: marker_${graphName}.y }],
+                    |     traces: [$idx],
+                    |     layout: {}
+                    |   }, {
+                    |     transition: {
+                    |       duration: 0
+                    |     },
+                    |     frame: {
+                    |       duration: 50,
+                    |       redraw: false
+                    |     }
+                    |   });
+                    | i${graphName}++;
+                    |}""".stripMargin      
     }
-    movingPart += s"""\ncount++;}, 50);"""
+    movingPart += s"""\n }\n}\nanimatePoint();"""
 
-    (markers, movingPart)
-  }
-
+    (markers, markersNames, movingPart)
+  } 
 }
+
+
+
