@@ -99,19 +99,20 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
         }               
 
         if (z_Title.isEmpty){
-          val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
-          //traceNames = markersNames ++ traceNames
+          val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testGraphicBox", graphType)
+          traceNames = markersNames ++ traceNames
 
-          //js += "\n" + markers
+          js += "\n" + markers
           js += s"\nvar data = ${traceNames.mkString("[",",","]")};"   
           js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
           js += s"\nPlotly.newPlot('testGraphicBox', data, layout, {showSendToCloud: true});" 
-          //js += movingPart    
+          js += movingPart    
         } else{
           js += s"var data = ${traceNames.mkString("[",",","]")};"  
           js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
           js += s"\nPlotly.newPlot('testGraphicBox', data, layout, {showSendToCloud: true});"
-        }   
+        }  
+        println(js) 
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
@@ -252,62 +253,40 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
     val perturbationUpTo = config.getPerturbationUpTo.v
     
     (axis, maxTime, maxIterations, graphType, perturbationUpTo)
-  }
-     
+  }     
 
-  private def createMovingObjects2D(graphNames: List[String], divName: String, graphType: String): (String, List[String], String) = {
+   private def createMovingObjects2D(graphNames: List[String], divName:String, graphType: String): (String, List[String], String) = {
     var markers: String = ""
     var movingPart: String = ""
     var markersNames: List[String] = List()
-    
     val markersJS = graphNames.map { 
-      case graphName => {
+      case (graphName) => {
         markersNames = markersNames ++ List(s"""marker_${graphName}""")
         markers += s"""
-                  |var marker_${graphName} = {
-                  |  x: [${graphName}.x[0]],
-                  |  y: [${graphName}.y[0]],
-                  |  mode: 'markers',
-                  |  marker: { color: 'rgb(136, 136, 136)', size: 10 },
-                  |  showlegend: false,
-                  |  type: '$graphType'
-                  |};""".stripMargin
+                |var marker_${graphName} = {
+                |  x: [${graphName}.x[0]],
+                |  y: [${graphName}.y[0]],
+                |  mode: 'markers',
+                |  marker: { color: 'rgb(136, 136, 136)', size: 10 },
+                |  showlegend: false,
+                |  type: '$graphType'
+                |};""".stripMargin
       }
     }
-
-    val addIterators = graphNames.zipWithIndex.map { 
-      case (graphName, idx) => 
-        movingPart += s"""\nlet i${graphName} = 0;"""
-    }
-
-    movingPart += s"""\nfunction animatePoint() {"""
-
+    movingPart += "\nvar count = 0; \nsetInterval(function() {"
     val movingPartJS = graphNames.zipWithIndex.map { 
       case (graphName, idx) => 
-        movingPart += s"""
-                    |if (i${graphName} < ${graphName}.length) {
-                    | marker_${graphName}.x = [${graphName}.x[i${graphName}]];
-                    | marker_${graphName}.y = [${graphName}.y[i${graphName}]];
-                    | Plotly.animate('plot', {
-                    |     data: [{ x: marker_${graphName}.x, y: marker_${graphName}.y }],
-                    |     traces: [$idx],
-                    |     layout: {}
-                    |   }, {
-                    |     transition: {
-                    |       duration: 0
-                    |     },
-                    |     frame: {
-                    |       duration: 50,
-                    |       redraw: false
-                    |     }
-                    |   });
-                    | i${graphName}++;
-                    |}""".stripMargin      
+      movingPart += s"""
+              |var marker_${graphName}_x = ${graphName}.x[count % ${graphName}.x.length];
+              |var marker_${graphName}_y = ${graphName}.y[count % ${graphName}.y.length];
+              |Plotly.restyle('${divName}', {
+              |      x: [[marker_${graphName}_x]],
+              |      y: [[marker_${graphName}_y]]
+              |   }, [${idx}]);""".stripMargin      
     }
-    movingPart += s"""\n }\n}\nanimatePoint();"""
-
-    (markers, markersNames, movingPart)
-  } 
+    movingPart += s"""\ncount++;}, 100);"""
+    (markers,markersNames, movingPart)
+  }  
 }
 
 
