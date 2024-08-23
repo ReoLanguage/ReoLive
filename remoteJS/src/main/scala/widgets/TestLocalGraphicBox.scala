@@ -12,7 +12,7 @@ import hprog.frontend.Deviator
 import hprog.frontend.solver.{SimpleSolver, Solver, StaticSageSolver}
 
 class TestLocalGraphicBox(reload:()=>Unit, program: Box[String], eps: Box[String], bounds: Box[String], errorBox: OutputArea)
-    extends Box[Unit]("Test Daniel (fast/numerical)", List(program)) {
+    extends Box[Unit]("Custom Trajectories (approximated)", List(program)) {
   var box : Block = _
   private var lastSolver:Option[Solver] = None
   private var lastSyntax:Option[Syntax] = None

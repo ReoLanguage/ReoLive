@@ -68,7 +68,7 @@ object RemoteLince {
         title = "Perturbations up-to  (experimental)",
         refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
       bounds = new InputBox(softReload(),"150 // maximum time in the plot","bounds",1,
-        title = "Plot length",
+        title = "Plot Configuration",
         refreshLabel = "\"t\" or \"t l\": Maximum time \"t\" when drawing the plot, and maximum \"l\" number of while loop unfolds (default 1000).")
       examples = new LinceExamplesBox(softReload(),inputBox,descr,bounds)
       graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)

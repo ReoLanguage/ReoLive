@@ -12,7 +12,7 @@ import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.solver.{SimpleSolver, Solver, StaticSageSolver}
 
 class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], eps: Box[String], bounds: Box[String], errorBox: OutputArea)
-    extends Box[Unit]("Trajectories Test Daniel (symbolic)", List(program)) {
+    extends Box[Unit]("Custom Trajectories (symbolic)", List(program)) {
   var box : Block = _
   private var lastSolver:Option[Solver] = None
   private var lastSyntax:Option[Syntax] = None

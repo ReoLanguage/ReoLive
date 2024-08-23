@@ -71,7 +71,7 @@ else {
 ("Numerical integral based on the compound trapezoidal rule.")
 
     ,"Cruise control"->
-      """Axis:[x,y,v]""" ->
+      """Axis:[x,y,v], maxTime:10""" ->
        """// Cruise control
           |x:=0; y:=0; v:=2;
           |while true do {
@@ -110,6 +110,58 @@ descr("Automatic braking system","This  program checks every 0.1 seconds if ther
 "If not exist the possibility of occurring a collision the car travel with aA acceleration, if yes, the car maintains the movement during ‘reaction_time’ seconds (time needed for the system to start braking) and then brakes the car with an acceleration of aT until it stops.\n\n"+
 
 "If not exist this system of automatic braking, the ‘reaction_time’ must be 0.3 seconds (the average time needed for a healthy human to react varies between 0.15 and 0.45 seconds) and the collision occurs (try yourself !).")
+  ,"AEBOM"
+      -> "maxTime:40, Axis:[(x,y),(xl,yl)]"
+      -> """x:=0; y:=0;vx:=0; vy:=10;xl:=0; yl:=120;
+           |detection_d:=100;
+           |safety_d:=5;
+           |a:=4;
+           |theta:=0;
+           |w:=(1/20)*2*pi();
+           |
+           |//Obstacle -> 1m by 1m
+           |
+           |while (y + vy*0.1-yl > detection_d) do {
+           |y'=vy,vy'= 0 for 0.1;
+           |}
+           |
+           |stoping_time:=vy/a;
+           |distance_traveled:=vy * stoping_time + 0.5 * (-a) * stoping_time^2;
+           |
+           |while (yl - y > safety_d + distance_traveled) do {
+           |y'=vy,vy'= 0 for 0.1;
+           |}
+           |
+           |y'=vy,vy'=-a for stoping_time;
+           |vy:=0;
+           |
+           |w:=-w;
+           |theta'=w for (pi()*0.5)/(-w);
+           |
+           |x'=vx,vx'=-a for sqrt(1/a);
+           |x'=vx,vx'=a for sqrt(1/a);
+           |vx:=0;
+           |
+           |w:=-w;
+           |theta'=w for (pi()*0.5)/w;
+           |
+           |while (y<yl) do {
+           |y'=vy,vy'=a for 0.1;
+           |}
+           |
+           |stoping_time:=vy/a;
+           |y'=vy,vy'=-a for stoping_time;
+           |vy:=0;
+           |
+           |theta'=w for (pi()*0.5)/w;
+           |
+           |x'=vx,vx'=a for sqrt(1/a);
+           |x'=vx,vx'=-a for sqrt(1/a);
+           |vx:=0;
+           |
+           |w:=-w;
+           |theta'=w for (pi()*0.5)/(-w);""".stripMargin
+    -> descr("Automatic Emergency Braking with an\nOvertaking Manoeuvre (AEBOM)","The Automatic Emergency Braking system is an autonomous driving device that after reading its distance to an obstacle and its current velocity, decides whether to decelerate until stopping. Here we present a more advanced version of the AEB that after stopping also manoeuvres around the obstacle - clearly a process involving two or even three spatial dimensions.")
 ////
  ,"Autonomous driving (AD) with fixed reference" ->
       "maxTime:50" ->
@@ -400,6 +452,123 @@ while (sqrt((x-xl)^2+(y-yl)^2)>dist_min_col) do {
 }
 """ -> descr("Missile vs. Target","Missile trajectory that follows a given target.")
 ////
+    ,"Pursuit Games"
+      -> "maxTime:10, Axis:[(x,y,z),(xl,yl,zl)]"
+      -> """// Initial position and velocity of the pursuer
+           |x := 300; vx := -20;
+           |y := 300; vy := -10;
+           |z := 600; vz := 10;
+           |
+           |// Initial position and velocity of the evader
+           |xl := 600; vxl := 10;
+           |yl := 600; vyl := 10;
+           |zl := 500; vzl := 0;
+           |
+           |// Angular velocity of the pursuer
+           |aw_x := (1/20) * 2 * pi();
+           |aw_y := (1/20) * 2 * pi();
+           |aw_z := (1/20) * 2 * pi();
+           |
+           |// Angular velocity of the evader
+           |awl_x := (1/40) * 2 * pi();
+           |awl_y := (1/40) * 2 * pi();
+           |awl_z := (1/40) * 2 * pi();
+           |
+           |// Counter
+           |cont := 0;
+           |
+           |// Decision time
+           |sampling_time := 0.1;
+           |
+           |// Minimum collision distance
+           |dist_min_col := 1;
+           |
+           |// Vectorial product of each axis
+           |vect_P_x := 0;
+           |vect_P_y := 0;
+           |vect_P_z := 0;
+           |
+           |// Variables that stores the angular velocity decision
+           |w_x := 0;
+           |w_y := 0;
+           |w_z := 0;
+           |wl_x := 0;
+           |wl_y := 0;
+           |wl_z := 0;
+           |
+           |//Variables that stores the relative positions and velocities
+           |dx := 0;
+           |dy := 0;
+           |dz := 0;
+           |vrelx := 0;
+           |vrely := 0;
+           |vrelz := 0;
+           |
+           |// Run the following programme whilst the distance between the pursuer and the evader is greater than
+           |//the collision distance
+           |while (sqrt((x-xl)^2 + (y-yl)^2 + (z-zl)^2) > dist_min_col) do {
+           |
+           |    //Conditional structures to establish the evader path
+           |    if (cont <= 100) then {
+           |        wl_x := 0;
+           |        wl_y := 0;
+           |        wl_z := 0;
+           |    } else {
+           |        if (cont <= 200) then {
+           |            wl_x :=  awl_x;
+           |            wl_y := 0;
+           |            wl_z := -awl_z;
+           |        } else {
+           |            if (cont <= 300) then {
+           |                wl_x := 0;
+           |            		wl_y := -awl_y;
+           |            		wl_z := -awl_z;
+           |            } else {
+           |                wl_x := 0;
+           |        				wl_y := 0;
+           |        				wl_z := 0;
+           |            }
+           |        }
+           |    }
+           |
+           |    // The counter is incremented
+           |    cont := cont + 1;
+           |
+           |    //Update distances and relative velocities
+           |    dx := xl - x;
+           |    dy := yl - y;
+           |    dz := zl - z;
+           |    vrelx := vxl - vx;
+           |    vrely := vyl - vy;
+           |    vrelz := vzl - vz;
+           |
+           |    // Determine the value of the vetorial product between the relative velocity vector and the relative position vector for each axis
+           |    vect_P_x := vrely * dz - vrelz * dy;
+           |    vect_P_y :=  vrelz * dx - vrelx * dz;
+           |    vect_P_z := vrelx * dy - vrely * dx;
+           |
+           |    // Curve along the Z axis
+           |    if (vect_P_z >= 0)
+           |    then {w_z := -aw_z;}
+           |    else {w_z := aw_z;}
+           |
+           |    // Curve along the X axis
+           |    if (vect_P_x >= 0)
+           |    then {w_x := -aw_x;}
+           |    else {w_x := aw_x;}
+           |
+           |    // Curve along the Y axis
+           |    if (vect_P_y >= 0)
+           |    then {w_y := -aw_y;}
+           |    else {w_y := aw_y;}
+           |
+           |    // Differential equations
+           |    x' = vx,y' = vy,z' = vz,vx' = w_y * vz - w_z * vy,vy' = w_z * vx - w_x * vz,vz' = w_x * vy - w_y * vx,
+           |    xl' = vxl,yl' = vyl,zl' = vzl,vxl' = wl_y * vzl - wl_z * vyl,vyl' = wl_z * vxl - wl_x * vzl,vzl' = wl_x * vyl - wl_y * vxl for sampling_time;
+           |}
+           |""".stripMargin
+      -> descr("Pursuit Games", "Pursuit games are a captivating class of problems involving multiple agents, where at least one them (the pursuer) aims to capture or reach another (the evader). We explore a specific 3D pursuit game, where we perceive the pursuer as a drone that attempts to capture another one in the three-dimensional space.")
+////
     ,"Projetc motion without air effect" ->
       "maxTime:20" ->
       """// Projetc motion without air effect
@@ -416,7 +585,7 @@ descr("Projetc motion without air effect","In this example, a ball is launched a
 
 "Using the equations of motion of the kinematics through differential equations and the initial conditions mentioned in the previous paragraph, it was possible to simulate the variation of the x-coordinate and the y-coordinate over time.")
 ////
-      ,"Damped Harmonic Oscillator" ->
+    ,"Damped Harmonic Oscillator" ->
       "maxTime:30" ->
       """//Damped harmonic oscillator in subcritical regime (lambda/2<w0)-->xsc
 //Damped harmonic oscillator in supercritical regime (lambda/2>w0)-->xSc
@@ -457,8 +626,29 @@ descr("Damped Harmonic Oscillator","Damped hamornic oscillator represented in th
 "In the subcritical regime k=2.32 N/m, m=1kg, b=0.6 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=0.6\n"+
 "In the supercritical regime k=2.32 N/m, m=1kg, b=3.5 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=3.5\n"+
 "At the critical regime k=2.32 N/m, m=1kg, b=(sqrt(58)/5)*2 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=(sqrt(58)/5)*2 ")
-      ////
-      ,"Series RLC circuit" ->
+    ////
+    , "RLC circuits (simpler)"
+      -> "maxTIme:0.6"
+      ->
+      """under:=0; dU:=0; vU:=0; rU:=0.5;
+        |over:=0;  dO:=0; vO:=0; rO:=4;
+        |c:=0.047; l:=0.047;
+        |
+        |while true do {
+        |  if (under<10) then vU:=18;
+        |                else vU:=0;
+        |  if (over<10)  then vO:=18;
+        |                else vO:=0;
+        |  under'=dU, over'=dO,
+        |  dU'=-(dU*rU/l)
+        |      -under/(l*c)+vU/(l*c),
+        |  dO'=-(dO*rO/l)
+        |      -over/(l*c)+vO/(l*c)
+        |  for 0.01;
+        |}""".stripMargin
+      -> descr("RLC circuits and harmonic oscillation", "This simulation models an electric system composed of a resistor, a capacitor, an inductor, and a power source connected in series. The power source strategically switches on and off, as a way to stabilise voltage across the capacitor at a target value (say, 10V ). Such systems are known to yield interesting results that are practically relevant for energy storage voltage control systems, which help to mitigate voltage imbalances that could otherwise damage electronic equipment.  We simulate two variations of an RLCS circuit: one in which the capacitor voltage is in  an underdamped regime  -- with a resistance <code>rU</code> of 0.5Ω, a capacitance <code>c</code> of 0.047 F,  and an inductance <code>l</code> of 0.047H -- and one in which the capacitor voltage is in an overdamped regime -- with a resistance <code>rO</code> of 4Ω and the same values as before for the capacitance and inductance.  The general idea of our program is that the associated controller will read the voltage across the capacitor (variable <code>under</code> for the underdamped case, <code>over</code> for the overdamped one) every 0.01 seconds, and set the voltage at the source either to 0 (off) or 18V (on) depending on the value read.")
+    ////
+      ,"RLC circuits" ->
       "maxTime:30" ->
       """r_rac:=2;
 r_rsa:=0.5;
