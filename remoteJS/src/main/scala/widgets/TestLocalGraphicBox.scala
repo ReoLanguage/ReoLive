@@ -76,7 +76,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           counter += 1
         }               
 
-        if (z_Title.isEmpty){
+        if (false){//(z_Title.isEmpty){
           val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
           traceNames = markersNames ++ traceNames
           js += markers
