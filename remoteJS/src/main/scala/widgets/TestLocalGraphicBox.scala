@@ -12,7 +12,7 @@ import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.Deviator
 import hprog.frontend.solver.{SimpleSolver, Solver, StaticSageSolver}
 
-class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String], maxT: Box[String], maxI: Box[String], gType: Box[String], eps: Box[String], errorBox: OutputArea)
+class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String], maxT: Box[String], maxI: Box[String], gType: Box[String], eps: Box[String], errorBox: OutputArea, testBounds: Box[String])
     extends Box[Unit]("Custom Trajectories (approximated)", List(program)) {
   var box : Block = _
   private var lastSolver:Option[Solver] = None
@@ -106,6 +106,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
 
   // alternative version that does NOT call Sage, and uses the numerical version instead
   private def upd(): Unit = try {
+    println(testBounds.get)
     bounds = buildBounds(ax.get, maxT.get, maxI.get, gType.get, eps.get)
     val (axis, maxTime, maxIterations, graphType, perturbationUpTo) = processParsedConfig(bounds)
     lastSyntax = processParsedSyntax(program.get)  
