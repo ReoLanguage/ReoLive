@@ -13,7 +13,7 @@ import hprog.frontend.Deviator
 import hprog.frontend.solver.{SimpleSolver, Solver, StaticSageSolver}
 
 class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String], maxT: Box[String], maxI: Box[String], gType: Box[String], eps: Box[String], errorBox: OutputArea)
-    extends Box[Unit]("Test Daniel (fast/numerical)", List(program)) {
+    extends Box[Unit]("Custom Trajectories (approximated)", List(program)) {
   var box : Block = _
   private var lastSolver:Option[Solver] = None
   private var lastSyntax: List[Syntax] = List()
@@ -95,7 +95,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
       case _ => errorBox.error("Nothing to redraw.")
     }
   }
-  catch Box.checkExceptions(errorBox,"Test Daniel (fast/numerical)")
+  catch Box.checkExceptions(errorBox,"Custom Trajectories (approximated)")
 
   override def update(): Unit = {
     if (!isVisible) {

@@ -13,7 +13,7 @@ import hprog.frontend.CommonTypes.Warnings
 import hprog.frontend.solver.{SimpleSolver, Solver, StaticSageSolver}
 
 class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String], maxT: Box[String], maxI: Box[String], gType: Box[String], eps: Box[String], errorBox: OutputArea)
-    extends Box[Unit]("Trajectories Test Daniel (symbolic)", List(program)) {
+    extends Box[Unit]("Custom Trajectories (symbolic)", List(program)) {
   var box : Block = _
   private var lastSolver:Option[Solver] = None
   private var lastSyntax: List[Syntax] = List()
@@ -54,7 +54,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
 
       redraw(None,hideCont = true)
     }
-    catch Box.checkExceptions(errorBox, "Trajectories Test Daniel (symbolic)")
+    catch Box.checkExceptions(errorBox, "Custom Trajectories (symbolic)")
 
   }
 
@@ -118,7 +118,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
       case _ => errorBox.error("Nothing to redraw.")
     }
   }
-  catch Box.checkExceptions(errorBox,"Test Daniel (fast/numerical)")
+  catch Box.checkExceptions(errorBox,"Custom Trajectories (symbolic)")
 
   override def update(): Unit = {
     if (!isVisible) {
