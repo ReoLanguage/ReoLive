@@ -56,9 +56,9 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
     (lastSyntax,lastSolver) match {
       case (syntax,Some(solver)) =>
         val (axis, maxTime, maxIterations, graphType, perturbationUpTo) = processParsedConfig(bounds)
-        val bs = (maxTime,maxIterations)     
+        val bs = (maxTime,maxIterations) 
 
-        syntax.foreach { element =>
+        syntax.foreach { element =>        
           if (syntax.length == 1) {
             simulationName = ""
           } else {
@@ -76,14 +76,14 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           counter += 1
         }               
 
-        if (false){//(z_Title.isEmpty){
-          val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
-          traceNames = markersNames ++ traceNames
-          js += markers
+        if (z_Title.isEmpty){
+          //val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
+          //traceNames = markersNames ++ traceNames
+          //js += markers
           js += s"\nvar data = ${traceNames.mkString("[",",","]")};"   
           js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});" 
-          js += movingPart    
+          //js += movingPart    
         } else{
           js += s"var data = ${traceNames.mkString("[",",","]")};"  
           js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
