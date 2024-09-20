@@ -86,11 +86,11 @@ object RemoteLince {
       bounds = new InputBox(softReload(),"150 // maximum time in the plot","bounds",1,
         title = "Plot length",
         refreshLabel = "\"t\" or \"t l\": Maximum time \"t\" when drawing the plot, and maximum \"l\" number of while loop unfolds (default 1000).")
-      examples = new LinceExamplesBox(softReload(),inputBox,descr,bounds)
-      graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
-      localGraphic= new LocalGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
+      examples = new LinceExamplesBox(softReload(),inputBox,descr, axis, maxTime, maxIterations, graphType, perturbation)
+      //graphic= new RemoteGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
+      //localGraphic= new LocalGraphicBox(()=>prepareGraphics(),inputBox, perturbation, bounds, errors)
       testGraphicBox= new TestDanielGraphicBox(()=>prepareGraphics(),inputBox, axis, maxTime, maxIterations, graphType, perturbation, errors)
-      testlocalGraphic= new TestLocalGraphicBox(()=>prepareGraphics(),inputBox, axis, maxTime, maxIterations, graphType, perturbation, errors, bounds)
+      testlocalGraphic= new TestLocalGraphicBox(()=>prepareGraphics(),inputBox, axis, maxTime, maxIterations, graphType, perturbation, errors)
       eval   = new RemoteEvalBox(inputBox, errors, bounds, "")
 
       inputBox.init(leftColumn, visible = true)
@@ -102,7 +102,7 @@ object RemoteLince {
       maxIterations.init(leftColumn,visible = false)
       graphType.init(leftColumn,visible = false)
       perturbation.init(leftColumn,visible = false)
-      bounds.init(leftColumn,visible = false)
+      //bounds.init(leftColumn,visible = false)
       //information.init(rightColumn,true)
       //graphic.init(rightColumn, visible = true)
       //localGraphic.init(rightColumn, visible = false)
@@ -156,7 +156,7 @@ object RemoteLince {
       maxIterations.update()
       graphType.update()
       perturbation.update()
-      bounds.update()
+      //bounds.update()
       //graphic.update()
       //localGraphic.update()
       testGraphicBox.update()

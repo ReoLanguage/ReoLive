@@ -2,16 +2,26 @@ package common.widgets.Lince
 
 import common.widgets.{ButtonsBox, Setable}
 
-class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable[String], bounds: Setable[String])
-  extends ButtonsBox(reload, List(bounds,inputBox,descr)){
+class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setable[String],  ax: Setable[String], maxT: Setable[String], maxI: Setable[String], gType: Setable[String], eps: Setable[String])
+  extends ButtonsBox(reload, List(ax,maxT,maxI,gType,eps,inputBox,descr)){
 
   override protected val buttons: Seq[List[String]] = Seq(
-    "Basic composition" ->  "maxTime:150" ->
-      """v:=0; v'=1 for 2; v'=3 for 2;""" ->
-      "Very simple example composing two basic atomic elements."
-    ,"Numerical derivative" ->
-      "50 // maximum time in the plot" ->
-      """// Initial values
+    "Basic composition" 
+    ->  "" 
+    -> "50" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    -> """v:=0; v'=1 for 2; v'=3 for 2;""" 
+    -> "Very simple example composing two basic atomic elements."
+    ////
+    ,"Numerical derivative" 
+    -> "" 
+    -> "50" 
+    -> "1000" 
+    -> "scatter"
+    -> "0" 
+    -> """// Initial values
 y:=0;
 dy:=0;
 dyi:=0;
@@ -39,13 +49,17 @@ else {
   y'=dy, dy'=2 for h; 
   aux:=aux+1;}
   }
-}""" ->
-("Numerical derivative at 3 points.")
+}""" 
+-> ("Numerical derivative at 3 points.")
 ////
 
- ,"Numerical integral" ->
-      "maxTime:50" ->
-      """//Initial values
+ ,"Numerical integral" 
+ -> ""
+ -> "50" 
+ -> "1000" 
+ -> "scatter"
+ -> "0" 
+ -> """//Initial values
 y:=0;
 dy:=0;
 inty:=0;
@@ -67,34 +81,46 @@ else {
   aux:=aux+1;
   }
 }
-""" ->
-("Numerical integral based on the compound trapezoidal rule.")
-
-    ,"Cruise control"->
-      """Axis:[x,y,v], maxTime:10""" ->
-       """// Cruise control
-          |x:=0; y:=0; v:=2;
+""" 
+-> ("Numerical integral based on the compound trapezoidal rule.")
+////
+    ,"Cruise control"
+    -> "[x,v]" 
+    -> "50" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    -> """// Cruise control
+          |x:=0; v:=2;
           |while true do {
           |if v<=10
-          |then x'=v, y'=v,v'=5  for 1;
-          |else x'=v,y'=v, v'=-2 for 1;
-          |}""".stripMargin ->
-        descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
+          |then x'=v,v'=5  for 1;
+          |else x'=v, v'=-2 for 1;
+          |}""".stripMargin 
+    -> descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
       ////
-      ,"Adaptive cruise control" ->
-      "60 // maximum time in the plot" ->
-      """// Adaptive cruise control
+      ,"Adaptive cruise control" 
+      -> ""
+      -> "60" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """// Adaptive cruise control
 p:=0; v:=0; aA:=5; aT:=-2; pl:=50; vl:=10;aL:=0; sampling_time:=1;
 while (true) do{
   if ((p + v*sampling_time + aA/2*sampling_time^2 < pl + vl*sampling_time+aL/2*sampling_time^2) && (((v-vl + (aA-aL)*sampling_time)^2 - 4*(p-pl + (v-vl)*sampling_time + (aA-aL)/2*sampling_time^2)*(aT-aL)/2 ) <0))
   then p'=v,v'=aA,pl'=vl,vl'=aL for sampling_time;
   else p'=v,v'=aT,pl'=vl,vl'=aL for sampling_time;
-}""" ->
-descr("Adaptive Cruise Control","Maintain the distance to the car in front")
+}"""
+-> descr("Adaptive Cruise Control","Maintain the distance to the car in front")
 ////
-      ,"Automatic braking system" ->
-      "maxTime:8" ->
-      """// Automatic braking system
+      ,"Automatic braking system" 
+      -> "" 
+      -> "8" 
+      -> "1000"
+      -> "scatter" 
+      -> "0" 
+      -> """// Automatic braking system
 p:=0; v:=17.5; reaction_time:=0.001; pl:=50; vl:=0; aT:=-9.8; aA:=6;sampling_time:=0.1;
 while v>0 do{
   // Initially the system detects if there is a possibility of a collision occurring
@@ -105,13 +131,17 @@ while v>0 do{
           p'=v,v'=0 for reaction_time; // time needed for the system to start braking
           p'=v,v'=aT until_0.001 (v<=0);} // slow the car until it stops
           
-}""" ->
-descr("Automatic braking system","This  program checks every 0.1 seconds if there are the possibility of occurring a collision between the car and the object at 50 meters.\n"+
+}""" 
+-> descr("Automatic braking system","This  program checks every 0.1 seconds if there are the possibility of occurring a collision between the car and the object at 50 meters.\n"+
 "If not exist the possibility of occurring a collision the car travel with aA acceleration, if yes, the car maintains the movement during ‘reaction_time’ seconds (time needed for the system to start braking) and then brakes the car with an acceleration of aT until it stops.\n\n"+
 
 "If not exist this system of automatic braking, the ‘reaction_time’ must be 0.3 seconds (the average time needed for a healthy human to react varies between 0.15 and 0.45 seconds) and the collision occurs (try yourself !).")
   ,"AEBOM"
-      -> "maxTime:40, Axis:[(x,y),(xl,yl)]"
+      -> "[(x,y),(xl,yl)]" 
+      -> "40" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0"      
       -> """x:=0; y:=0;vx:=0; vy:=10;xl:=0; yl:=120;
            |detection_d:=100;
            |safety_d:=5;
@@ -163,9 +193,13 @@ descr("Automatic braking system","This  program checks every 0.1 seconds if ther
            |theta'=w for (pi()*0.5)/(-w);""".stripMargin
     -> descr("Automatic Emergency Braking with an\nOvertaking Manoeuvre (AEBOM)","The Automatic Emergency Braking system is an autonomous driving device that after reading its distance to an obstacle and its current velocity, decides whether to decelerate until stopping. Here we present a more advanced version of the AEB that after stopping also manoeuvres around the obstacle - clearly a process involving two or even three spatial dimensions.")
 ////
- ,"Autonomous driving (AD) with fixed reference" ->
-      "maxTime:50" ->
-      """//----- Autonomous driving ----- Fixed reference
+ ,"Autonomous driving (AD) with fixed reference" 
+ -> "" 
+ -> "50" 
+ -> "1000" 
+ -> "scatter" 
+ -> "0" 
+ -> """//----- Autonomous driving ----- Fixed reference
 
 // Initial position and velocity of the vehicle
 p:=0; v:=17.5; 
@@ -200,8 +234,8 @@ while (v>0) do{
           p'=v,v'=aT,pl'=vl,vl'=al until_0.001 (v<=0); 
           
 }
-}""" ->
-descr("AD with fixed reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that, depending on its values, will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+}""" 
+-> descr("AD with fixed reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that, depending on its values, will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a fixed obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -214,9 +248,13 @@ descr("AD with fixed reference","Nowadays there are several vehicles that can dr
 "If we run this example we can verify that the position of the vehicle does not intersect with the reference, but if we change the value of the reaction time to 0.1 (reaction time of a healthy human) the positions will intersect, showing the efficiency of autonomous systems compared to manuals in these circumstances.")
 ////
 
-      ,"AD with constant velocity reference" ->
-      "maxTime:20" ->
-      """//----- Autonomous driving ----- Constant velocity reference
+      ,"AD with constant velocity reference" 
+      -> "" 
+      -> "20" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      ->  """//----- Autonomous driving ----- Constant velocity reference
 
 // Initial position and velocity of the vehicle
 p:=0; v:=17.5; 
@@ -252,8 +290,8 @@ while true do{
           p'=v,v'=aT,pl'=vl,vl'=al for sampling_time; 
           
 }
-}""" ->
-descr("AD with constant velocity reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+}"""
+-> descr("AD with constant velocity reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a stationary obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -267,9 +305,13 @@ descr("AD with constant velocity reference","Nowadays there are several vehicles
 ////
 
       
-,"AD with constant acceleration reference" ->
-      "maxTime:20" ->
-      """//----- Autonomous driving ----- Constant acceleration reference
+,"AD with constant acceleration reference" 
+-> "" 
+-> "20" 
+-> "1000" 
+-> "scatter" 
+-> "0" 
+-> """//----- Autonomous driving ----- Constant acceleration reference
 
 // Initial position and velocity of the vehicle
 p:=0; v:=17.5; 
@@ -306,8 +348,8 @@ while true do{
           
 }
 }
-""" ->
-descr("AD with constant acceleration reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
+""" 
+-> descr("AD with constant acceleration reference","Nowadays there are several vehicles that can drive autonomously. This type of system retains a set of information that depending on its values will regulate the actuators required for the vehicle to move at the correct position/speed.\n"+
 
 "Based on autonomous driving, the goal of these hybrid programs is to model the position of the vehicle so that it is as close as possible to the reference position (but without exceeding it). In turn, the reference may indicate several cases, such as a stationary obstacle, a moving vehicle or simply the position that the vehicle needs to obtain over time for autonomous driving to be successfully performed.\n"+
 
@@ -322,9 +364,13 @@ descr("AD with constant acceleration reference","Nowadays there are several vehi
 
       
 
-,"AD with constant acceleration reference and uncertainties" ->
-      "maxTime:10" ->
-      """//----- Autonomous driving ----- Constant acceleration reference and uncertainties
+,"AD with constant acceleration reference and uncertainties" 
+-> "" 
+-> "10" 
+-> "1000" 
+-> "scatter" 
+-> "0" 
+-> """//----- Autonomous driving ----- Constant acceleration reference and uncertainties
 
 // Initial position and velocity of the vehicle
 p:=0; v:=17.5; 
@@ -364,13 +410,17 @@ while true do{
 }
 }
 
-""" ->
-descr("AD with constant acceleration reference and uncertainties","This program is the same as the hybrid program of the example 'Autonomous vehicle with constant acceleration reference', but in the verification conditions, the acceleration, velocity and position of the reference have a positive deviation of 1 unit, resulting in the vehicle position intersecting the reference position. This situation portrays the impact of sensor inaccuracy, i.e., in real life, the sensors responsible for detecting the position, velocity and acceleration of the reference present deviations from the real value, which can completely condemn the designed systems. Due to this reality, it is necessary to adapt the systems to support some imprecision by the sensors involved and use sensors with high precision so that the system behaves as desired and use sensors with high precision.")
+""" 
+-> descr("AD with constant acceleration reference and uncertainties","This program is the same as the hybrid program of the example 'Autonomous vehicle with constant acceleration reference', but in the verification conditions, the acceleration, velocity and position of the reference have a positive deviation of 1 unit, resulting in the vehicle position intersecting the reference position. This situation portrays the impact of sensor inaccuracy, i.e., in real life, the sensors responsible for detecting the position, velocity and acceleration of the reference present deviations from the real value, which can completely condemn the designed systems. Due to this reality, it is necessary to adapt the systems to support some imprecision by the sensors involved and use sensors with high precision so that the system behaves as desired and use sensors with high precision.")
 
 
-    ,"Missile vs. Target" ->
-     "maxTime:50" ->
-     """// Initial position and velocity of the missile
+    ,"Missile vs. Target" 
+    -> "" 
+    -> "50"
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    -> """// Initial position and velocity of the missile
 x:=300; vx:=20;
 y:=300; vy:=0;
 // Initial position and velocity of the target
@@ -450,10 +500,15 @@ while (sqrt((x-xl)^2+(y-yl)^2)>dist_min_col) do {
     x'=vx,y'=vy,vx'=w*vy,vy'=-w*vx,
     xl'=vxl,yl'=vyl,vxl'=wl*vyl,vyl'=-wl*vxl for sampling_time;
 }
-""" -> descr("Missile vs. Target","Missile trajectory that follows a given target.")
+""" 
+-> descr("Missile vs. Target","Missile trajectory that follows a given target.")
 ////
     ,"Pursuit Games"
-      -> "maxTime:10, Axis:[(x,y,z),(xl,yl,zl)]"
+      -> "[(x,y,z),(xl,yl,zl)]" 
+      -> "30" 
+      -> "1000" 
+      -> "scatter3d" 
+      -> "0" 
       -> """// Initial position and velocity of the pursuer
            |x := 300; vx := -20;
            |y := 300; vy := -10;
@@ -569,9 +624,13 @@ while (sqrt((x-xl)^2+(y-yl)^2)>dist_min_col) do {
            |""".stripMargin
       -> descr("Pursuit Games", "Pursuit games are a captivating class of problems involving multiple agents, where at least one them (the pursuer) aims to capture or reach another (the evader). We explore a specific 3D pursuit game, where we perceive the pursuer as a drone that attempts to capture another one in the three-dimensional space.")
 ////
-    ,"Projetc motion without air effect" ->
-      "maxTime:20" ->
-      """// Projetc motion without air effect
+    ,"Projetc motion without air effect"
+      -> "" 
+      -> "20" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """// Projetc motion without air effect
 theta:=pi()/2; // angle
 v0:=50; //magnitude of initial velocity
 x:=0; // initial value of x coordinate
@@ -580,14 +639,18 @@ y:=0; //initial value of y coordinate
 vy:=v0*sin(theta); // initial velocity of y coordinate
 g:=-9.8; // acceleration of gravity
 
-x'=vx,y'=vy,vy'=g until_0.01 (y<0);""" ->
-descr("Projetc motion without air effect","In this example, a ball is launched at the position (0,0) with an initial velocity of (v0*cos(theta),v0*sin(theta)) and an angle of theta.\n"+ 
+x'=vx,y'=vy,vy'=g until_0.01 (y<0);""" 
+-> descr("Projetc motion without air effect","In this example, a ball is launched at the position (0,0) with an initial velocity of (v0*cos(theta),v0*sin(theta)) and an angle of theta.\n"+ 
 
 "Using the equations of motion of the kinematics through differential equations and the initial conditions mentioned in the previous paragraph, it was possible to simulate the variation of the x-coordinate and the y-coordinate over time.")
 ////
-    ,"Damped Harmonic Oscillator" ->
-      "maxTime:30" ->
-      """//Damped harmonic oscillator in subcritical regime (lambda/2<w0)-->xsc
+  , "Damped Harmonic Oscillator" 
+    -> "" 
+    -> "30" 
+    -> "1000"
+    -> "scatter" 
+    -> "0" 
+    ->  """//Damped harmonic oscillator in subcritical regime (lambda/2<w0)-->xsc
 //Damped harmonic oscillator in supercritical regime (lambda/2>w0)-->xSc
 //Damped harmonic oscillator in critical regime (lambda/2=w0)-->xc
 
@@ -621,16 +684,19 @@ vc:=0; //Initial velocity
 // Diferential equations
 xsc'=vsc,vsc'=-xsc*w0_sc2-vsc*lambda_sc,
 xSc'=vSc,vSc'=-xSc*w0_Sc2-vSc*lambda_Sc,
-xc'=vc,vc'=-xc*w0_c2-vc*lambda_c for 20;""" ->
-descr("Damped Harmonic Oscillator","Damped hamornic oscillator represented in three regimes: subcritical, supercritical and critical.\n"+
+xc'=vc,vc'=-xc*w0_c2-vc*lambda_c for 20;""" 
+-> descr("Damped Harmonic Oscillator","Damped hamornic oscillator represented in three regimes: subcritical, supercritical and critical.\n"+
 "In the subcritical regime k=2.32 N/m, m=1kg, b=0.6 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=0.6\n"+
 "In the supercritical regime k=2.32 N/m, m=1kg, b=3.5 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=3.5\n"+
 "At the critical regime k=2.32 N/m, m=1kg, b=(sqrt(58)/5)*2 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=(sqrt(58)/5)*2 ")
     ////
     , "RLC circuits (simpler)"
-      -> "maxTIme:0.6"
-      ->
-      """under:=0; dU:=0; vU:=0; rU:=0.5;
+      -> "" 
+      -> "0.6" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """under:=0; dU:=0; vU:=0; rU:=0.5;
         |over:=0;  dO:=0; vO:=0; rO:=4;
         |c:=0.047; l:=0.047;
         |
@@ -648,9 +714,13 @@ descr("Damped Harmonic Oscillator","Damped hamornic oscillator represented in th
         |}""".stripMargin
       -> descr("RLC circuits and harmonic oscillation", "This simulation models an electric system composed of a resistor, a capacitor, an inductor, and a power source connected in series. The power source strategically switches on and off, as a way to stabilise voltage across the capacitor at a target value (say, 10V ). Such systems are known to yield interesting results that are practically relevant for energy storage voltage control systems, which help to mitigate voltage imbalances that could otherwise damage electronic equipment.  We simulate two variations of an RLCS circuit: one in which the capacitor voltage is in  an underdamped regime  -- with a resistance <code>rU</code> of 0.5Ω, a capacitance <code>c</code> of 0.047 F,  and an inductance <code>l</code> of 0.047H -- and one in which the capacitor voltage is in an overdamped regime -- with a resistance <code>rO</code> of 4Ω and the same values as before for the capacitance and inductance.  The general idea of our program is that the associated controller will read the voltage across the capacitor (variable <code>under</code> for the underdamped case, <code>over</code> for the overdamped one) every 0.01 seconds, and set the voltage at the source either to 0 (off) or 18V (on) depending on the value read.")
     ////
-      ,"RLC circuits" ->
-      "maxTime:30" ->
-      """r_rac:=2;
+      ,"RLC circuits" 
+      -> "" 
+      -> "30" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """r_rac:=2;
 r_rsa:=0.5;
 r_rSa:=4;
 
@@ -690,8 +760,8 @@ vc_rac'=dvc_rac, dvc_rac'=-(dvc_rac*r_rac*(l)^(-1))-vc_rac*(l*c)^(-1)+vs*(l*c)^(
 vc_rsa'=dvc_rsa, dvc_rsa'=-(dvc_rsa*r_rsa*(l)^(-1))-vc_rsa*(l*c)^(-1)+vs*(l*c)^(-1),
 vc_rSa'=dvc_rSa, dvc_rSa'=-(dvc_rSa*r_rSa*(l)^(-1))-vc_rSa*(l*c)^(-1)+vs*(l*c)^(-1)
 for 0.3;
-}""" ->
-descr("Series RLC circuit","This example shows the variation of voltage at the capacitor in 3 regimes in a series RLC circuit.\n"+
+}""" 
+-> descr("Series RLC circuit","This example shows the variation of voltage at the capacitor in 3 regimes in a series RLC circuit.\n"+
 
 
 "To determine the differential equation governing the voltage variation in the capacitor, it was necessary to use Kirchoff's law and Ohm's law. We know from Kirchoff's law that vs=vr+vl+vc, where 'vs' is the source voltage, 'vr' is the resistance voltage, 'vl' is the bobbin voltage and 'vc' is the capacitor voltage. Already by Ohm's law, we know that vr=R*ir (where 'R' is the value of the resistance and 'ir' is the current passing through it), that ic=C*dvc/dt (where 'C' is the capacitance of the capacitor and 'dvc/dt' is the time derivative of the capacitor voltage), vl=L*dil/dt (where L is the inductance of the bobbin and dil/dt is the derivative of the current passing through it) and ic=il=ir=i since it is a series circuit. Having these equations we obtained : vs=R*i+Ldi/dt+vc <=> vs=RC(dvc/dt )+LC(d²vc/dt²)+vc <=> d²vc/dt²=-(R/L)dvc/dt - vc/(LC)+vs/(LC) which is the differential equation we wanted to obtain.\n"+
@@ -703,9 +773,13 @@ descr("Series RLC circuit","This example shows the variation of voltage at the c
 
 "NOTE: We recommend that you disable all variables in the plot except 'vc_rac', 'vc_rsa' and 'vc_rSa'.")
 ////
-      ,"Water tanks" ->
-      "maxTime:150" ->
-      """a1:=1; //Area of tank 1
+      ,"Water tanks" 
+      -> "" 
+      -> "150" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """a1:=1; //Area of tank 1
 a2:=1; // Area of tank 2
 r1:=1; //Resistance applied to the water flow at the water exit tap of tank 1.
 r2:=10; //Resistance applied to the water flow at the water exit tap of tank 2.
@@ -756,8 +830,8 @@ qe2:=0;
 h1_p'=-pow(a1*r1,-1)*h1_p+pow(a1*r1,-1)*h2_p+pow(a1,-1)*qe1,
 h2_p'=pow(a2*r1,-1)*h1_p-pow(a2*r1,-1)*h2_p+pow(a2,-1)*qe2-pow(a2*r2,-1)*h2_p,
 h1_v'=-pow(a1*r1,-1)*h1_v+pow(a1,-1)*qe1,
-h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" ->
-descr("Water tanks","This program has the objective of simulating the variation of the water level in tank 1 and 2, in two different configurations.\n"+
+h2_v'=pow(a2*r1,-1)*h1_v-pow(r2*a2,-1)*h2_v + pow(a2,-1)*qe2 for 40;""" 
+-> descr("Water tanks","This program has the objective of simulating the variation of the water level in tank 1 and 2, in two different configurations.\n"+
 
 "In the vertical configuration, tank 1 is above tank 2, and in it there is a tap introducing water with a flow rate 'qe1' and another tap pouring water with a resistance to the flow rate equal to R1 (higher resistance, less water comes out). Tank 2 on its turn also has a tap introducing water with a flow rate 'qe2' and another one pouring water with a resistance to the flow rate equal to R2, however, the water that was poured from tank 1 is introduced in tank 2.\n"+
 
@@ -779,53 +853,73 @@ descr("Water tanks","This program has the objective of simulating the variation 
 "Running the program, we can see how the height of the water evolves in both configurations. In the vertical configuration, since tank 1 pours its water into tank 2 and tank 2 loses less water than tank 1, tank 2 tends to store more water, regardless of the tap being turned on. The aligned configuration always tends to a steady state where the levels tend to be close, since they share a water outlet that allows the passage of a high water flow, facilitating the exchange of water between the tanks and causing water levels close, this proximity is also favored due to the fact that the tap that pours water to the outside of tank 2 does not allow the passage of a high flow, reducing losses to the outside")
       
    
-      ,"Traffic lights"->
-        "maxTime:150" ->
-        """// Alternate between two constant values.
+      ,"Traffic lights"
+      -> "" 
+      -> "150" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """// Alternate between two constant values.
           |l:=0;
           |repeat 4 {
           |   l:=0; wait 10 ;
-          |   l:=1; wait 10 ;
-          |}""".stripMargin ->
-        descr("Traffic lights","Alternating between two constant values.")
-      ////
-      ,"Avoiding approx. error"->
-        "maxTime:150" ->
-        """// A naive evaluation would give an approximation
+          |   l:=1; wait 10 ;         
+        |}""".stripMargin 
+      -> descr("Traffic lights","Alternating between two constant values.")
+////
+      ,"Avoiding approx. error"
+      -> "" 
+      -> "150" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """// A naive evaluation would give an approximation
           |// error of the if-condition.
           |x := 1;
           |x' = -x for 40;
           |x' =  x for 40;
           |if x == 1 then x:= 2;
-          |          else x:= 3;""".stripMargin ->
-      descr("Traffic lights", "Using approximated values, the value of x at 80 is slightly different " +
+          |          else x:= 3;""".stripMargin 
+      -> descr("Traffic lights", "Using approximated values, the value of x at 80 is slightly different " +
         "from 1, yielding a final value of 3 instead of 2. Using our symbolic evaluation, " +
         "Lince obtains the correct value of 2. Note that our experimental warning system, which " +
         "checks perturbations, detects that an approximation error can occur here at 80.")
       ////
-      ,"Trigonometric computation"->
-      "maxTime:150" ->
-      """// Solution not naively computed (precise solution involves sin/cos)
+      ,"Trigonometric computation"
+      -> "" 
+      -> "150" 
+      -> "1000" 
+      -> "scatter" 
+      -> "0" 
+      -> """// Solution not naively computed (precise solution involves sin/cos)
           |// Use the online version to use the precise solution.
           |p:=1;v:=1;
-          |p'=v, v'=-p for 8;""".stripMargin ->
-      descr("Trigonometric computation","When involving mutually dependent variables the naive numerical analysis does not work. " +
+          |p'=v, v'=-p for 8;""".stripMargin 
+      -> descr("Trigonometric computation","When involving mutually dependent variables the naive numerical analysis does not work. " +
         "Using symbolic computations we plot precisely the functions with sin/cos.")
       ////
     ////
-    ,"Naive particle positioning" ->
-      "maxTime:150" ->
-      """x:= -1; v:= 0; a:= 1;
+    ,"Naive particle positioning" 
+    -> "" 
+    -> "150" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    ->      """x:= -1; v:= 0; a:= 1;
         |while true do {
         | if x <= 0 then a:= 1; else a:=-1;
         |     x' = v, v' = a  for 0.5;
-        |}""".stripMargin ->
-      descr("Moving particle", "A naive approach for moving a particle to a position x.")
+        |}""".stripMargin 
+    -> descr("Moving particle", "A naive approach for moving a particle to a position x.")
 
     ////
-    ,"Landing system" ->
-      "maxTime:150" ->
-      """y := 10000; v := -1000; a:= 0; g:= 10;
+    ,"Landing system" 
+    -> "" 
+    -> "150" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    -> """y := 10000; v := -1000; a:= 0; g:= 10;
         |while (y >= 1000) do {
         | if v <= -100 then a := (100 - g);
         |              else a:= -g;
@@ -840,8 +934,8 @@ descr("Water tanks","This program has the objective of simulating the variation 
         | if v <= -1 then a := (15 - g);
         |            else a:= -g;
         |    y' = v, v' = a  for 0.05;
-        |}""".stripMargin ->
-      descr("A Landing System", //"Experimental Event-Driven case-study. Not yet supported." +
+        |}""".stripMargin 
+    ->  descr("A Landing System", //"Experimental Event-Driven case-study. Not yet supported." +
         "Simulating a controller with 3 modes of approximation to land softly.")
 
     ///
@@ -857,15 +951,19 @@ descr("Water tanks","This program has the objective of simulating the variation 
 //        |v'=-1 until_0.000000001,0.1 v<3""".stripMargin ->
 //      "Experimental event-driven example (using approximations)."
     /////
-    ,"Bouncing ball (ED)"->
-    "maxTime:150" ->
-    """// Bouncing ball example
+    ,"Bouncing ball (ED)"
+    ->"" 
+    -> "150" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0"
+    -> """// Bouncing ball example
           |v:=5; p:=10; c:=0;
           |while (c<4) do {
           |  v'=-9.8, p'=v until_0.01 p<0 && v<0;
           |  v:=-0.5*v; c:=c+1;
-          |}""".stripMargin ->
-        descr("Bouncing Ball","Event-Driven (ED) example, using steps of 0.01. " +
+          |}""".stripMargin 
+    -> descr("Bouncing Ball","Event-Driven (ED) example, using steps of 0.01. " +
     //"Not yet fully supported." +
     "A ball position and velocity as it bounces in the floor. " +
     "It includes an experimental feature: using a condition (p<0 /\\ v<0) " +
@@ -879,9 +977,13 @@ descr("Water tanks","This program has the objective of simulating the variation 
     //         |  v:=-0.5*v
 
     /////
-    ,"Fireflies 2x (ED)"->
-        "maxTime:150" ->
-        """f1 := 1; f2 := 4;
+    ,"Fireflies 2x (ED)"
+    -> "" 
+    -> "150" 
+    -> "1000"
+    -> "scatter" 
+    -> "0" 
+    -> """f1 := 1; f2 := 4;
         |repeat 8 {
         |  f1'=1, f2'=1 until_0.01
         |       f1>10 || f2>10;
@@ -890,8 +992,8 @@ descr("Water tanks","This program has the objective of simulating the variation 
         |    else if f2>=10 && f1<10
         |         then { f2:=0;f1 :=f1 +2; }
         |         else { f1:=0; f2 :=0; }
-        |}""".stripMargin ->
-      descr("Fireflies 2x","Event-Driven (ED) example. " +
+        |}""".stripMargin 
+    ->  descr("Fireflies 2x","Event-Driven (ED) example. " +
         "Every firefly has an internal clock that helps it to know when to flash: " +
         "when the clock reaches a threshold the firefly flashes and the clock’s value " +
         "is reset to zero. If other fireflies are nearby then they try to synchronise " +
@@ -899,9 +1001,13 @@ descr("Water tanks","This program has the objective of simulating the variation 
         "This version synchronises 2 fireflies.")
     ////
 
-    ,"Fireflies 3x (ED)"->
-      "maxTime:150" ->
-      """f1 := 1; f2 := 4; f3 := 7;
+    ,"Fireflies 3x (ED)"
+    -> "" 
+    -> "150" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    ->  """f1 := 1; f2 := 4; f3 := 7;
         |repeat 8 {
         |  f1'=1, f2'=1, f3'=1
         |  until_0.01 f1>10 || f2>10 || f3>10;
@@ -910,8 +1016,8 @@ descr("Water tanks","This program has the objective of simulating the variation 
         |    else if f2>=10 && f1<10 && f3 < 10
         |         then { f2:=0;f1 :=f1 +2; f3:=f3+ 2; }
         |         else { f3:=0; f1 := f1 +2; f2:= f2 +2; }
-        |}""".stripMargin ->
-      descr("Fireflies 3x","Event-Driven (ED) Example. " +
+        |}""".stripMargin 
+    ->      descr("Fireflies 3x","Event-Driven (ED) Example. " +
         "Every firefly has an internal clock that helps it to know when to flash: " +
         "when the clock reaches a threshold the firefly flashes and the clock’s value " +
         "is reset to zero. If other fireflies are nearby then they try to synchronise " +
@@ -919,21 +1025,29 @@ descr("Water tanks","This program has the objective of simulating the variation 
         "This version synchronizes 3 fireflies")
     ////
 
-    ,"Cruise control Example 1"->
-      """Axis:[(x,y)]""" ->
-       """// Cruise control
+    ,"Cruise control Example 1"
+    -> "[(x,y)]" 
+    -> "30" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    -> """// Cruise control
           |x:=0; y:=0; v:=2;
           |while true do {
           |if v<=10
           |then x'=v, y'=v,v'=5  for 1;
           |else x'=v,y'=v, v'=-2 for 1;
-          |}""".stripMargin ->
-        descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
+          |}""".stripMargin 
+    -> descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
       ////
     
-    ,"Missile vs. Target - Example 1" ->
-     "maxTime:50, Axis:[(x,y),(xl,yl)]" ->
-     """// Initial position and velocity of the missile
+    ,"Missile vs. Target - Example 1" 
+    -> "[(x,y),(xl,yl)]" 
+    -> "50" 
+    -> "1000" 
+    -> "scatter" 
+    -> "0" 
+    -> """// Initial position and velocity of the missile
         x:=300; vx:=20;
         y:=300; vy:=0;
         // Initial position and velocity of the target
@@ -1013,8 +1127,19 @@ descr("Water tanks","This program has the objective of simulating the variation 
             x'=vx,y'=vy,vx'=w*vy,vy'=-w*vx,
             xl'=vxl,yl'=vyl,vxl'=wl*vyl,vyl'=-wl*vxl for sampling_time;
         }
-        """ -> descr("Missile vs. Target - Example 1","Missile trajectory that follows a given target.")
+        """ 
+        -> descr("Missile vs. Target - Example 1","Missile trajectory that follows a given target.")
       ////
-  ).map(x=>List(x._1._1._1,x._1._1._2,x._1._2,x._2))
+  ).map(x => List(  
+  x._1._1._1._1._1._1._1,
+  x._1._1._1._1._1._1._2,
+  x._1._1._1._1._1._2,
+  x._1._1._1._1._2,
+  x._1._1._1._2,
+  x._1._1._2,
+  x._1._2,
+  x._2
+  ))
 
+  println(buttons)
 }
