@@ -53,7 +53,7 @@ object LinceLW extends{
     descr = new OutputArea
     errors = new OutputArea //(id="Lince")
     inputBox = new LinceBox(reload(),"",errors)
-    examples = new LinceExamplesBox(softReload(),inputBox,descr,descr)
+    //examples = new LinceExamplesBox(softReload(),inputBox,descr,descr)
     deviation = new InputBox(reloadGraphics(),"0","deviation",1,
       title = "Maximum perturbation",
       refreshLabel = "Add warnings when conditions would differ when deviating the variables by some perturbation > 0. Set to 0 to ignore these warnings.")
@@ -61,15 +61,15 @@ object LinceLW extends{
 
     inputBox.init(leftColumn,true)
     errors.init(leftColumn)
-    examples.init(leftColumn,true)
+    //examples.init(leftColumn,true)
     descr.init(leftColumn)
     //deviation.init(leftColumn,false)
     graphics.init(rightColumn,visible = true)
 
     // load default button
-    if (!examples.loadButton("Cruise control")) {
+    /*if (!examples.loadButton("Cruise control")) {
       reload()
-    }
+    }*/
 
   }
 
