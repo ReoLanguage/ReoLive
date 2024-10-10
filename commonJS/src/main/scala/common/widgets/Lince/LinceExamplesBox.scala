@@ -1109,5 +1109,5 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     x._2
   ))
 
-  println(buttons)
+//  println(buttons)
 }

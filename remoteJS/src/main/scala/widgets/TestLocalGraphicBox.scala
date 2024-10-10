@@ -31,11 +31,11 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
        .attr("id", "testlocalGraphic")
 
     toggleVisibility(visible = ()=>{
-      println("reloading...")
+//      println("reloading...")
       reload()
       upd()
     }, invisible = ()=>{
-      println("hiding")
+//      println("hiding")
     })
   }
 
@@ -88,7 +88,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});"
         }   
-        println(js)
+//        println(js)
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
@@ -164,7 +164,8 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
     Parser.parse(s) match {
       case Parser.Success(result, _) =>
         val syntaxList = GetSyntax.allSyntax
-        syntaxList    
+        syntaxList
+      case _ => sys.error(s"Failed to parse $s")
     }
   }  
 
