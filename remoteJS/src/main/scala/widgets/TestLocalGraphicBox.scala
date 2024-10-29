@@ -57,12 +57,12 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
         val (axis, maxTime, maxIterations, graphType, perturbationUpTo) = processParsedConfig(bounds)
         val bs = (maxTime,maxIterations) 
 
-        syntax.foreach { element =>        
+        syntax.foreach { element =>
           if (syntax.length == 1) {
             simulationName = ""
           } else {
             simulationName = " - Sim " + simCount.toString
-          }          
+          }
           simCount += 1
           val traj = new hprog.frontend.Traj(element, solver, Deviator.dummy, bs)
           val (jsCode, graphNames, warningsNames, xTitle, yTitle, zTitle, count) = TrajToJSV2(traj, "testlocalGraphic", range, hideCont, axis, graphType, simulationName, counter)
@@ -73,7 +73,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           y_Title = yTitle
           z_Title = zTitle
           counter += 1
-        }               
+        }
 
         if (z_Title.isEmpty){
           //val (markers, markersNames, movingPart) = createMovingObjects2D(graph_names, "testlocalGraphic", graphType)
@@ -107,7 +107,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
   private def upd(): Unit = try {
     bounds = buildBounds(ax.get, maxT.get, maxI.get, gType.get, eps.get)
     val (axis, maxTime, maxIterations, graphType, perturbationUpTo) = processParsedConfig(bounds)
-    lastSyntax = processParsedSyntax(program.get)  
+    lastSyntax = processParsedSyntax(program.get)
     val bs = (maxTime,maxIterations) 
     lastSolver = Some(new SimpleSolver(bs._1))
     redraw(None, hideCont = true)

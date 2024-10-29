@@ -9,7 +9,7 @@ import hprog.ast.{SVal, Syntax}
 import Syntax._
 import hprog.backend.Show
 import hprog.common.{ParserException, TimeOutOfBoundsException, TimeoutException}
-import hprog.frontend.CommonTypes.Valuation
+import hprog.frontend.CommonTypes.ValuationSyExpr
 import hprog.frontend.Traj.Logger
 import hprog.frontend.solver.LiveSageSolver
 import hprog.frontend.{Distance, Eval, Traj}
@@ -150,7 +150,7 @@ class LinceActor(out: ActorRef) extends Actor{
 //    val dur = traj.getDur
 
     val t    = Eval(sexpr,0,Map())
-    val texp = Eval.update(sexpr, SVal(0), Map():Valuation)
+    val texp = Eval.update(sexpr, SVal(0), Map():ValuationSyExpr)
 //    val d    = dur.map(Eval(_))
 
     if (t < 0.0) { // || (d.nonEmpty && d.get < t)) { // comparisons still not in the Solver

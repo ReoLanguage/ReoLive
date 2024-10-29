@@ -106,8 +106,8 @@ object RemoteLince {
       //information.init(rightColumn,true)
       //graphic.init(rightColumn, visible = true)
       //localGraphic.init(rightColumn, visible = false)
+      testlocalGraphic.init(rightColumn, visible = true)
       testGraphicBox.init(rightColumn, visible = false)
-      testlocalGraphic.init(rightColumn, visible = false)
       eval.init(rightColumn,visible = false)
 
 

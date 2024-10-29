@@ -787,7 +787,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         "At the critical regime k=2.32 N/m, m=1kg, b=(sqrt(58)/5)*2 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=(sqrt(58)/5)*2 ")
 //////////////
     , "RLC circuits (simpler)"
-      -> "" 
+      -> "[under,over]"
       -> "0.6" 
       -> "1000" 
       -> "scatter" 
@@ -810,8 +810,29 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |}""".stripMargin
     -> descr("RLC circuits and harmonic oscillation", "This simulation models an electric system composed of a resistor, a capacitor, an inductor, and a power source connected in series. The power source strategically switches on and off, as a way to stabilise voltage across the capacitor at a target value (say, 10V ). Such systems are known to yield interesting results that are practically relevant for energy storage voltage control systems, which help to mitigate voltage imbalances that could otherwise damage electronic equipment.  We simulate two variations of an RLCS circuit: one in which the capacitor voltage is in  an underdamped regime  -- with a resistance <code>rU</code> of 0.5Ω, a capacitance <code>c</code> of 0.047 F,  and an inductance <code>l</code> of 0.047H -- and one in which the capacitor voltage is in an overdamped regime -- with a resistance <code>rO</code> of 4Ω and the same values as before for the capacitance and inductance.  The general idea of our program is that the associated controller will read the voltage across the capacitor (variable <code>under</code> for the underdamped case, <code>over</code> for the overdamped one) every 0.01 seconds, and set the voltage at the source either to 0 (off) or 18V (on) depending on the value read.")
 //////////////
-    ,"RLC circuits" 
-    -> "" 
+    , "RLC circuits (variations)"
+      -> "[volt]"
+      -> "0.6"
+      -> "1000"
+      -> "scatter"
+      -> "0"
+      ->
+      """volt:=0; d:=0; v:=0;
+        |c:=0.047; l:=0.047;
+        |res:=[0.3,0.8,4,8];
+        |
+        |while true do {
+        |  if (volt<10) then v:=18;
+        |               else v:=0;
+        |  volt'=d,
+        |  d'=-(d*res/l)
+        |      -volt/(l*c)+v/(l*c)
+        |  for 0.01;
+        |}""".stripMargin
+      -> descr("RLC circuits and harmonic oscillation", "This simulation models an electric system composed of a resistor, a capacitor, an inductor, and a power source connected in series. The power source strategically switches on and off, as a way to stabilise voltage across the capacitor at a target value (say, 10V ). Such systems are known to yield interesting results that are practically relevant for energy storage voltage control systems, which help to mitigate voltage imbalances that could otherwise damage electronic equipment.  We simulate four variations of an RLCS circuit with a resistance <code>res</code> ranging from 0.3Ω to 8Ω. All these variations use a capacitance <code>c</code> of 0.047F and an inductance <code>l</code> of 0.047H.\nIntuitively, the controller in our program reads the voltage at the capacitor (variable <code>volt</code> every 0.01 seconds, and set the voltage at the source to either 0 (off) or 18V (on), depending on the voltage.")
+      //////////////
+    , "RLC circuits"
+    -> ""
     -> "30" 
     -> "1000" 
     -> "scatter" 
@@ -1097,7 +1118,85 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         "is reset to zero. If other fireflies are nearby then they try to synchronise " +
         "their flashes in a decentralised way." +
         "This version synchronizes 3 fireflies")
-/////////////
+    //////////////
+    , "Single tank (poll)"
+    -> ""
+    -> "150"
+    -> "1000"
+    -> "scatter"
+    -> "0"
+    -> """// Define initial values of the water tank
+         |level := 5;
+         |drain := -1/2;
+         |
+         |while true do {
+         |	// stop when the leven is outside 3..10
+         |	level'= drain, drain'=0
+         | 	  until_0.1 (level<=3 && drain<0) ||
+         |              (level >=10 && drain>0);
+         |
+         |  // update drain to fill/empty the tank
+         |  if level <= 3 then drain := 1/2;
+         |  						  else drain := -1/2;
+         |}""".stripMargin
+    -> descr("Single water tank","Example of a single tank being filled/emptied, " +
+      "borrowed from <a href=\"https://doi.org/10.4230/LITES.8.2.4\">HABS tutorial</a>. " +
+      "This version checks every 0.1s for the level of the water before actuating.")
+    //////////////
+    , "Single tank (poll-variation)"
+      -> ""
+      -> "150"
+      -> "1000"
+      -> "scatter"
+      -> "0"
+      ->
+      """// Define initial values of the water tank
+        |level := 5;
+        |drain := -1/2;
+        |
+        |while true do {
+        |	// stop when the leven is outside 3..10
+        |	level'= drain, drain'=0
+        | 	  until_0.1 (level<=3 && drain<0) ||
+        |              (level >=10 && drain>0);
+        |
+        |  // update drain to fill/empty the tank
+        |  if level <= 3 then drain := 1/2;
+        |  						  else drain := -1/2;
+        |}""".stripMargin
+      -> descr("Single water tank", "Example of a single tank being filled/emptied, " +
+      "borrowed from <a href=\"https://doi.org/10.4230/LITES.8.2.4\">HABS tutorial</a>. " +
+      "This version checks every 0.1s for the level of the water before actuating.")
+    //////////////
+    , "Single tank (optimal)"
+      -> ""
+      -> "150"
+      -> "1000"
+      -> "scatter"
+      -> "0"
+      ->
+      """// Define initial values of the water tank
+        |level := 5;
+        |drain := -1/2;
+        |duration := 0;
+        |
+        |while true do {
+        |	if drain<0
+        |  then duration := (3-level)/drain;
+        |  else duration := (10-level)/drain;
+        |
+        |	// stop when the leven is outside 3..10
+        |	level'= drain, drain'=0
+        | 	  for duration;
+        |
+        |  // update drain to fill/empty the tank
+        |  if drain <0 then drain := 1/2;
+        |  					  else drain := -1/2;
+        |}""".stripMargin
+      -> descr("Single water tank", "Example of a single tank being filled/emptied, " +
+      "borrowed from <a href=\"https://doi.org/10.4230/LITES.8.2.4\">HABS tutorial</a>." +
+      "This version estimates the precise duration when it should stop.")
+    /////////////
   ).map(x => List(  
     x._1._1._1._1._1._1._1,
     x._1._1._1._1._1._1._2,
