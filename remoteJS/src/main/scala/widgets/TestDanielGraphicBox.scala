@@ -32,11 +32,11 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
        .attr("id", "testGraphicBox")
 
     toggleVisibility(visible = ()=>{
-      println("reloading...")
+//      println("reloading...")
       reload()
       callSage()
     }, invisible = ()=>{
-      println("hiding")
+//      println("hiding")
     })
   }
 
@@ -112,7 +112,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
           js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
           js += s"\nPlotly.newPlot('testGraphicBox', data, layout, {showSendToCloud: true});"
         }  
-        println(js) 
+//        println(js)
         scalajs.js.eval(js)
         errorBox.clear()
       case _ => errorBox.error("Nothing to redraw.")
@@ -194,7 +194,8 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
     Parser.parse(s) match {
       case Parser.Success(result, _) =>
         val syntaxList = GetSyntax.allSyntax
-        syntaxList    
+        syntaxList
+      case _ => sys.error(s"Failed to parse $s")
     }
   }    
 

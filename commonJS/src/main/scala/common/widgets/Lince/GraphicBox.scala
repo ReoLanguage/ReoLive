@@ -3,7 +3,7 @@ package common.widgets.Lince
 import common.widgets.{Box, OutputArea}
 import hprog.backend.{Show, TrajToJS}
 import hprog.common.ParserException
-import hprog.frontend.CommonTypes.Valuation
+import hprog.frontend.CommonTypes.ValuationSyExpr
 import hprog.frontend.{Deviator, Traj}
 import hprog.frontend.solver.{Solver, StaticSageSolver}
 
