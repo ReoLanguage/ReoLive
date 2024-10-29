@@ -1122,7 +1122,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     , "Single tank (poll)"
     -> ""
     -> "150"
-    -> "1000"
+    -> "100"
     -> "scatter"
     -> "0"
     -> """// Define initial values of the water tank
@@ -1146,7 +1146,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     , "Single tank (poll-variation)"
       -> ""
       -> "150"
-      -> "1000"
+      -> "100"
       -> "scatter"
       -> "0"
       ->
@@ -1171,7 +1171,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     , "Single tank (optimal)"
       -> ""
       -> "150"
-      -> "1000"
+      -> "100"
       -> "scatter"
       -> "0"
       ->
