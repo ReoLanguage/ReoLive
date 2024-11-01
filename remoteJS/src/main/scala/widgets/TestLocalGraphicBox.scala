@@ -80,12 +80,12 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           //traceNames = markersNames ++ traceNames
           //js += markers
           js += s"\nvar data = ${traceNames.mkString("[",",","]")};"   
-          js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
+          js += s"""var layout = {hovermode:'x', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});" 
           //js += movingPart    
         } else{
           js += s"var data = ${traceNames.mkString("[",",","]")};"  
-          js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
+          js += s"""\n var layout = {hovermode:'x', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});"
         }   
 //        println(js)
