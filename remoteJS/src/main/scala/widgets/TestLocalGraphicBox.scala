@@ -67,7 +67,7 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           val traj = new hprog.frontend.Traj(element, solver, Deviator.dummy, bs)
           val (jsCode, graphNames, warningsNames, xTitle, yTitle, zTitle, count) = TrajToJSV2(traj, "testlocalGraphic", range, hideCont, axis, graphType, simulationName, counter)
           js += jsCode
-          traceNames = traceNames ++ graphNames ++ warningsNames
+          traceNames = warningsNames ++ traceNames ++ graphNames 
           graph_names = graph_names ++ graphNames
           x_Title = xTitle
           y_Title = yTitle
@@ -80,12 +80,12 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           //traceNames = markersNames ++ traceNames
           //js += markers
           js += s"\nvar data = ${traceNames.mkString("[",",","]")};"   
-          js += s"""var layout = {hovermode:'x', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
+          js += s"""var layout = {hovermode:'closest', xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});" 
           //js += movingPart    
         } else{
           js += s"var data = ${traceNames.mkString("[",",","]")};"  
-          js += s"""\n var layout = {hovermode:'x', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
+          js += s"""\n var layout = {hovermode:'closest', scene: {xaxis: {title: "$x_Title"}, yaxis: {title: "$y_Title"}, zaxis: {title: "$z_Title"}}};"""
           js += s"\nPlotly.newPlot('testlocalGraphic', data, layout, {showSendToCloud: true});"
         }   
 //        println(js)
