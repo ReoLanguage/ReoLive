@@ -90,7 +90,7 @@ class TestDanielGraphicBox(reload:()=>Unit,program: Box[String], ax: Box[String]
           }  
           val (jsCode, graphNames, warningsNames, xTitle, yTitle, zTitle, count) = TrajToJSV2(traj, "testGraphicBox", range, hideCont, axis, graphType, simulationName, counter)
           js += jsCode
-          traceNames = traceNames ++ graphNames ++ warningsNames
+          traceNames = warningsNames ++ traceNames ++ graphNames 
           graph_names = graph_names ++ graphNames
           x_Title = xTitle
           y_Title = yTitle

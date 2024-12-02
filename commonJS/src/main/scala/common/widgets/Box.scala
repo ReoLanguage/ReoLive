@@ -246,10 +246,10 @@ object Box {
 //      case e: choreo.common.DefinitionException =>
 //        errorBox.error(s"DefinitionException$by: " + e.getMessage)
       case e: JavaScriptException => {
-        //      val sw = new StringWriter
-        //      e.printStackTrace(new PrintWriter(sw))
-        //      errorBox.error(/*Show(result)+ */ "JavaScript error : " + e + " - " + e.getClass + "\n" + sw.toString )
-        errorBox.error(/*Show(result)+ */ s"JavaScript error$by: " + e + " - " + e.getClass)
+              val sw = new java.io.StringWriter
+              e.printStackTrace(new java.io.PrintWriter(sw))
+              errorBox.error(/*Show(result)+ */ "JavaScript error : " + e + " - " + e.getClass + "\n" + sw.toString )
+//        errorBox.error(/*Show(result)+ */ s"JavaScript error$by: " + e + " - " + e.getClass)
       }
       //            instanceInfo.append("p").text("-")
       case e: java.lang.AssertionError => errorBox.error(e.getMessage)

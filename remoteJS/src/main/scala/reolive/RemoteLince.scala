@@ -138,7 +138,7 @@ object RemoteLince {
 
       // load default button
 
-      if (!examples.loadButton("Cruise control")) {
+      if (!examples.loadButton("Basic composition")) {
 //      if (!examples.loadButton("Avoiding approx. error")) {
         reload()
       }
