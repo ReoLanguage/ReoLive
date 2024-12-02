@@ -6,16 +6,16 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
   extends ButtonsBox(reload, List(ax,maxT,maxI,gType,eps,inputBox,descr)){
 
   override protected val buttons: Seq[List[String]] = Seq(
-    "Basic composition" 
-    ->  "" 
-    -> "5" 
-    -> "1000" 
-    -> "scatter" 
-    -> "0" 
-    -> "v:=0;\nv'=1 for 2;\nv'=3 for 2;" 
+    "Basic composition"
+    -> ""
+    -> "5"
+    -> "1000"
+    -> "scatter"
+    -> "0"
+    -> "p:=0; v:=0;\np'=v,v'=2  for 1;\np'=v,v'=-2  for 1;"
     -> "Very simple example composing two basic atomic elements."
 //////////////
-    ,"Numerical derivative" 
+    ,"Numerical derivative"
     -> "" 
     -> "4" 
     -> "1000" 
@@ -83,7 +83,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
          |""".stripMargin
     -> ("Numerical integral based on the compound trapezoidal rule.")
 //////////////
-    ,"Cruise control"
+    ,"Cruise control (CC)"
     -> "[x,v]" 
     -> "15" 
     -> "1000" 
@@ -98,7 +98,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
           |}""".stripMargin 
     -> descr("Cruise Control","Maintain a velocity of 10, updating every time unit.")
 //////////////   
-    ,"Cruise control (2D)"
+    ,"CC (2D)"
     -> "[(x,y)]" 
     -> "5" 
     -> "1000" 
@@ -116,27 +116,30 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
          |}""".stripMargin 
     -> descr("Cruise Control (2D)","Maintain a velocity of 10 for the x and y axis, updating every time unit. Run 3 simulations, with different initial positions and velocities for x.")
 //////////////
-    ,"Adaptive cruise control" 
+    ,"Adaptive CC (ACC)"
     -> ""
     -> "15" 
     -> "1000" 
     -> "scatter" 
     -> "0" 
-    -> """// Adaptive cruise control
-         |p:=0; v:=0; aA:=5; aT:=-2;
-         | pl:=50; vl:=10;aL:=0; sampling_time:=1;
-         |while (true) do{
-         |  if ((p + v*sampling_time + aA/2*sampling_time^2 <
-         |       pl + vl*sampling_time+aL/2*sampling_time^2) &&
-         |      (((v-vl + (aA-aL)*sampling_time)^2 - 4*(p-pl +
-         |        (v-vl)*sampling_time +
-         |        (aA-aL)/2*sampling_time^2)*(aT-aL)/2 ) < 0))
-         |  then p'=v,v'=aA,pl'=vl,vl'=aL for sampling_time;
-         |  else p'=v,v'=aT,pl'=vl,vl'=aL for sampling_time;
-         |}""".stripMargin
+    -> """// Adaptive Cruise control
+         |p:=0;    v:=0;   a:=5; b:=-2; // follower
+         |pl:=50; vl:=10; al:=-1;       // leader
+         |period:=1;
+         |
+         |while true do {
+         |  if ((p+v*period+ a/2*period^2 <
+         |       pl+vl*period+al/2*period^2) &&
+         |      (((v-vl+(a-al)*period)^2 -
+         |        4*(p-pl+(v-vl)*period +
+         |        (a-al)/2*period^2)*(b-al)/2) < 0))
+         |  then p'=v,v'=a,pl'=vl,vl'=al for period;
+         |  else p'=v,v'=b,pl'=vl,vl'=al for period;
+         |}
+         |""".stripMargin
     -> descr("Adaptive Cruise Control","Maintain the distance to the car in front")
 //////////////
-    ,"AEB" 
+    ,"ACC: brake"
     -> "" 
     -> "8" 
     -> "1000"
@@ -163,7 +166,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
              "If not exist the possibility of occurring a collision the car travel with aA acceleration, if yes, the car maintains the movement during ‘reaction_time’ seconds (time needed for the system to start braking) and then brakes the car with an acceleration of aT until it stops.\n\n"+
              "If not exist this system of automatic braking, the ‘reaction_time’ must be 0.3 seconds (the average time needed for a healthy human to react varies between 0.15 and 0.45 seconds) and the collision occurs (try yourself !).")
 //////////////
-    ,"AEBOM (2D)"
+    ,"ACC: brake+move (2D)"
     -> "[(x,y),(xl,yl)]" 
     -> "40" 
     -> "1000" 
@@ -220,7 +223,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
          |theta'=w for (pi()*0.5)/(-w);""".stripMargin
     -> descr("Automatic Emergency Braking with an Overtaking Manoeuvre (AEBOM)","The Automatic Emergency Braking system is an autonomous driving device that after reading its distance to an obstacle and its current velocity, decides whether to decelerate until stopping. Here we present a more advanced version of the AEB that after stopping also manoeuvres around the obstacle - clearly a process involving two or even three spatial dimensions.")
 //////////////
-    ,"AD: fixed" 
+    ,"ACC: fixed"
     -> "" 
     -> "5" 
     -> "1000" 
@@ -269,7 +272,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
              "If one or both conditions are false, then it means that the position of the vehicle has intersected the position of the reference at the end of the sampling time, or even if it does not intersect at the end of that time, it will eventually collide in the following instants even if braking with acceleration 'aT' is performed by the vehicle. In the same way as before, the system of differential equations concerning the reaction time of the system is run: p'=v,v'=0,pl'=vl,vl'=al for reaction_time, and then run the system of differential equations that simulates the dynamics of the vehicle if it slows down with acceleration 'aT' and of the reference if it accelerates with acceleration 'al' (which is zero) until the vehicle speed is zero (vehicle stopped): p'=v,v'=aT,pl'=vl,vl'=al until_0. 001 (v<=0);\n"+ 
              "If we run this example we can verify that the position of the vehicle does not intersect with the reference, but if we change the value of the reaction time to 0.1 (reaction time of a healthy human) the positions will intersect, showing the efficiency of autonomous systems compared to manuals in these circumstances.")
 //////////////
-    ,"AD: constant velocity" 
+    ,"ACC: constant velocity"
     -> "" 
     -> "10" 
     -> "1000" 
@@ -319,7 +322,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
              "If one or both conditions are false, then it means that the position of the vehicle has intersected the position of the reference at the end of the sampling time, or even if it does not intersect at the end of that time, it will eventually collide in the following instants even if braking with acceleration 'aT' is performed by the vehicle. In the same way as before, the system of differential equations concerning the reaction time of the system is run: p'=v,v'=0,pl'=vl,vl'=al for reaction_time, and then we run the system of differential equations that simulates the dynamics of the vehicle if it slows down with acceleration 'aT' and of the reference if it accelerates with acceleration 'al' (which is zero) during the sampling time: p'=v,v'=aT,pl'=vl,vl'=al for sampling_time;\n"+ 
              "If we run this example we can verify that the position of the vehicle does not intersect with the position of the reference, but if we change the value of the reaction time to 0.1 (reaction time of a healthy human) the positions will intersect, showing the efficiency of autonomous systems against the manual ones in these circumstances.")
 //////////////
-    ,"AD: constant acceleration" 
+    ,"ACC: constant acceleration"
     -> "" 
     -> "6" 
     -> "1000" 
@@ -369,7 +372,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
          "If one or both conditions are false, then it means that the position of the vehicle has intersected the position of the reference at the end of the sampling time, or even if it does not intersect at the end of that time, it will eventually collide in the following instants even if braking with acceleration 'aT' is performed by the vehicle. As before, we run the system of differential equations relating to the reaction time of the system: p'=v,v'=0,pl'=vl,vl'=al for reaction_time, and then we run the system of differential equations which simulates the dynamics of the vehicle if it slows down with acceleration 'aT' and of the reference if it accelerates with acceleration 'al' during the sampling time: p'=v,v'=aT,pl'=vl,vl'=al for sampling_time;\n"+ 
          "If we run this example we can verify that the position of the vehicle does not intersect with the position of the reference, but if we change the value of the reaction time to 0.1 (reaction time of a healthy human) the positions will intersect, showing the efficiency of autonomous systems against the manual ones in these circumstances.")
 //////////////
-    ,"AD: with uncertainties" 
+    ,"ACC: with uncertainties"
     -> "" 
     -> "10" 
     -> "1000" 
@@ -785,7 +788,28 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         "In the subcritical regime k=2.32 N/m, m=1kg, b=0.6 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=0.6\n"+
         "In the supercritical regime k=2.32 N/m, m=1kg, b=3.5 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=3.5\n"+
         "At the critical regime k=2.32 N/m, m=1kg, b=(sqrt(58)/5)*2 N.s/m, w0=sqrt(k/m)=sqrt(58)/5 and lambda=b/m=(sqrt(58)/5)*2 ")
-//////////////
+    //////////////
+    , "RLC circuit (single)"
+      -> "[res,volt]"
+      -> "0.6"
+      -> "1000"
+      -> "scatter"
+      -> "0"
+      ->
+      """volt:=0; d:=0; v:=0;
+        |c:=0.047; l:=0.047;
+        |res:=0.5;
+        |
+        |while true do {
+        |  if (volt<10) then v:=18;
+        |               else v:=0;
+        |  volt'=d,
+        |  d'=-(d*res/l)
+        |      -volt/(l*c)+v/(l*c)
+        |  for 0.01;
+        |}""".stripMargin
+      -> descr("RLC circuits and harmonic oscillation", "This simulation models an electric system composed of a resistor, a capacitor, an inductor, and a power source connected in series. The power source strategically switches on and off, as a way to stabilise voltage across the capacitor at a target value (say, 10V ). Such systems are known to yield interesting results that are practically relevant for energy storage voltage control systems, which help to mitigate voltage imbalances that could otherwise damage electronic equipment.  We simulate one RLC circuit with the capacitor voltage <code>volt</code>, with resistance <code>res</code> of 0.5Ω, a capacitance <code>c</code> of 0.047 F, and an inductance <code>l</code> of 0.047H.  The general idea of our program is that the controller will read the voltage across the capacitor (variable <code>volt</code>) every 0.01 seconds, and set the voltage at the source either to 0 (off) or 18V (on) depending on the value read.")
+    //////////////
     , "RLC circuits (simpler)"
       -> "[under,over]"
       -> "0.6" 
@@ -1146,7 +1170,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     , "Single tank (poll-variation)"
       -> ""
       -> "150"
-      -> "100"
+      -> "900"
       -> "scatter"
       -> "0"
       ->
@@ -1155,14 +1179,13 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
         |drain := -1/2;
         |
         |while true do {
-        |	// stop when the leven is outside 3..10
-        |	level'= drain, drain'=0
-        | 	  until_0.1 (level<=3 && drain<0) ||
-        |              (level >=10 && drain>0);
+        |  // keep level between 3..10
+        |  if      level<=3  then drain:= 1/2;
+        |  else if level>=10 then drain:=-1/2;
+        |  else    skip;
         |
-        |  // update drain to fill/empty the tank
-        |  if level <= 3 then drain := 1/2;
-        |  						  else drain := -1/2;
+        |	level'= drain, drain'=0
+        | 	  for 0.1;
         |}""".stripMargin
       -> descr("Single water tank", "Example of a single tank being filled/emptied, " +
       "borrowed from <a href=\"https://doi.org/10.4230/LITES.8.2.4\">HABS tutorial</a>. " +
@@ -1196,7 +1219,53 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       -> descr("Single water tank", "Example of a single tank being filled/emptied, " +
       "borrowed from <a href=\"https://doi.org/10.4230/LITES.8.2.4\">HABS tutorial</a>." +
       "This version estimates the precise duration when it should stop.")
+    //////////////
+    , "ACC: v2"
+      -> ""
+      -> "20"
+      -> "900"
+      -> "scatter"
+      -> "0"
+      -> "// Adaptive Cruise Control (ADD)\n// - stable leader\np :=0;  v :=0;  // follower  \npl:=50; vl:=10; // leader\nwhile true do {\n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-8)^2 + 4*(p-pl+v-9) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=0 for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=0 for 1;\n}"
+      -> descr("Adaptive Cruise Control","Maintain the distance to the car in front. Simpler variation from another example in this list.")
+    //////////////
+    , "ACC: rnd leader"
+      -> ""
+      -> "20"
+      -> "900"
+      -> "scatter"
+      -> "0"
+      -> "// Adaptive Cruise Control (ADD)\n// - random leader\np :=0 ; v :=0;         // follower\npl:=50; vl:=10; al:=0; // leader\nwhile true do {\n  // random accelaration by the leader\n  al:=unif(1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-vl+3)^2 + 4*(p-pl+v-vl+3/2) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=al for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=al for 1;\n}"
+      -> descr("Adaptive Cruise Control","Maintain the distance to the car in front. Variation with a random accellaration from the leader at each round.")
+    //////////////
+    , "ACC: rnd leader (prob)"
+      -> "[p,pl,v,vl,al]"
+      -> "30"
+      -> "900"
+      -> "scatter"
+      -> "0"
+      -> "// Adaptive Cruise Control with a problem (ADD)\n// - random leader\nseed:=9;\np :=0+100*seed ; v :=0;         // follower\npl:=50+100*seed; vl:=10; al:=0; // leader\nwhile true do {\n  // random accelaration by the leader\n  al:=unif(1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-vl+3)^2 + 4*(p-pl+v-vl+3/2) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=al for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=al for 1;\n}"
+      -> descr("Adaptive Cruise Control","Maintain the distance to the car in front. Variation with a random accellaration from the leader at each round.")
+    //////////////
+    , "ACC: rnd precision"
+      -> ""
+      -> "20"
+      -> "900"
+      -> "scatter"
+      -> "0"
+      -> "// Adaptive Cruise Control (ADD)\n// - random precision\np :=0;  v :=0; // follower\npl:=50; vl:=0; // leader\nx1:=0;  x2:=0; // precision\n\nwhile true do {\n  // random precision\n  x1:=unif(0,1); x2:=unif(0,1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-6)^2 + 4*(p+2*v-pl-16) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=0 for 1+x1;\n  else p'=v, v'=-2, pl'=vl, vl'=0 for 1+x2;\n}"
+      -> descr("Adaptive Cruise Control","Maintain the distance to the car in front. Variation with a random error in each measurement.")
     /////////////
+    , "Seed experiment"
+      -> ""
+      -> "5"
+      -> "1000"
+      -> "scatter"
+      -> "0"
+      -> "x:=0; seed:=4; // try: seed:=[0..2]\nrepeat 5 {\n  x:=random(); //try: unif(3), unif(0,4), expn(0.5)\n  wait(1);\n}"
+      -> ""
+    //////////////
+
   ).map(x => List(  
     x._1._1._1._1._1._1._1,
     x._1._1._1._1._1._1._2,
