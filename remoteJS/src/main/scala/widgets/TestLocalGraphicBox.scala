@@ -57,22 +57,31 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
         val (axis, maxTime, maxIterations, graphType, perturbationUpTo) = processParsedConfig(bounds)
         val bs = (maxTime,maxIterations) 
 
-        syntax.foreach { element =>
-          if (syntax.length == 1) {
-            simulationName = ""
-          } else {
-            simulationName = " - Sim " + simCount.toString
+        if (graphType.startsWith("histogram")) {
+          val (js2,traceNames2,x_Title2,y_Title2,z_Title2) =
+            TrajToJSV2.makeHistogram(syntax, "testlocalGraphic", bs, hideCont,axis, graphType, simulationName, solver)
+          js=js2; traceNames=traceNames2
+          x_Title=x_Title2; y_Title=y_Title2; z_Title=z_Title2
+        }
+        else {
+          syntax.foreach { element =>
+            if (syntax.length == 1) {
+              simulationName = ""
+            } else {
+              simulationName = " - Sim " + simCount.toString
+            }
+            simCount += 1
+            val traj = new hprog.frontend.Traj(element, solver, Deviator.dummy, bs)
+            val (jsCode, graphNames, warningsNames, xTitle, yTitle, zTitle, count) =
+              TrajToJSV2(traj, "testlocalGraphic", range, hideCont, axis, graphType, simulationName, counter)
+            js += jsCode
+            traceNames = warningsNames ++ traceNames ++ graphNames
+            graph_names = graph_names ++ graphNames
+            x_Title = xTitle
+            y_Title = yTitle
+            z_Title = zTitle
+            counter += 1
           }
-          simCount += 1
-          val traj = new hprog.frontend.Traj(element, solver, Deviator.dummy, bs)
-          val (jsCode, graphNames, warningsNames, xTitle, yTitle, zTitle, count) = TrajToJSV2(traj, "testlocalGraphic", range, hideCont, axis, graphType, simulationName, counter)
-          js += jsCode
-          traceNames = warningsNames ++ traceNames ++ graphNames 
-          graph_names = graph_names ++ graphNames
-          x_Title = xTitle
-          y_Title = yTitle
-          z_Title = zTitle
-          counter += 1
         }
 
         if (z_Title.isEmpty){
@@ -178,10 +187,11 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
   def processParsedConfig(s: String): (List[(String, String, Option[String])], Double, Int, String, Double) = {
     ParserConfig.parse(s) match {
       case ParserConfig.Success(result, _) =>
-        val (axis, maxTime, maxIterations, graphType, perturbationUpTo) = extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
+        val (axis, maxTime, maxIterations, graphType, perturbationUpTo) =
+          extractValues(result.asInstanceOf[hprog.ast.SyntaxConfig.SyntaxConfig])
         (axis, maxTime, maxIterations, graphType, perturbationUpTo)
       case _ =>
-        println("Failed to parse the configuration.")
+        println(s"Failed to parse the configuration. -- ${s}")
         (List(), 20.0, 100, "Scatter", 0.0)
     }
   }
@@ -215,6 +225,8 @@ class TestLocalGraphicBox(reload:()=>Unit, program: Box[String],  ax: Box[String
           case SyntaxConfig.TripleVar(v1, v2, v3) =>
             List(("_" + v1.replaceAll("\"", ""), "_" + v2.replaceAll("\"", ""), Some("_" + v3.replaceAll("\"", ""))))
         }
+      case s if s.startsWith("histogram") =>
+        List(("time","count",None))
       case _ =>
          throw new Exception("Wrong graph type definition. Choose between scatter and scatter3d")
     }
