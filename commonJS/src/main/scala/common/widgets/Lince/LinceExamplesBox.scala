@@ -12,7 +12,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     -> "1000"
     -> "scatter"
     -> "0"
-    -> "p:=0; v:=0;\np'=v,v'=2  for 1;\np'=v,v'=-2  for 1;"
+    -> "p:=0; v:=0;\np'=v,v'=2  for 1;\np'=v,v'=-2 for 1;"
     -> "Very simple example composing two basic atomic elements."
 //////////////
     ,"Numerical derivative"
@@ -87,7 +87,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     -> "[x,v]" 
     -> "15" 
     -> "1000" 
-    -> "scatter" 
+    -> "scatter"
     -> "0" 
     -> """// Cruise control
           |x:=0; v:=2;
@@ -1226,7 +1226,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       -> "900"
       -> "scatter"
       -> "0"
-      -> "// Adaptive Cruise Control (ADD)\n// - stable leader\np :=0;  v :=0;  // follower  \npl:=50; vl:=10; // leader\nwhile true do {\n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-8)^2 + 4*(p-pl+v-9) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=0 for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=0 for 1;\n}"
+      -> "// Adaptive Cruise Control (ACC)\n// - stable leader\np :=0;  v :=0;  // follower  \npl:=50; vl:=10; // leader\nwhile true do {\n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-8)^2 + 4*(p-pl+v-9) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=0 for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=0 for 1;\n}"
       -> descr("Adaptive Cruise Control","Maintain the distance to the car in front. Simpler variation from another example in this list.")
     //////////////
     , "ACC: rnd leader"
@@ -1235,7 +1235,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       -> "900"
       -> "scatter"
       -> "0"
-      -> "// Adaptive Cruise Control (ADD)\n// - random leader\np :=0 ; v :=0;         // follower\npl:=50; vl:=10; al:=0; // leader\nwhile true do {\n  // random accelaration by the leader\n  al:=unif(1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-vl+3)^2 + 4*(p-pl+v-vl+3/2) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=al for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=al for 1;\n}"
+      -> "// Adaptive Cruise Control (ACC)\n// - random leader\np :=0 ; v :=0;         // follower\npl:=50; vl:=10; al:=0; // leader\nwhile true do {\n  // random accelaration by the leader\n  al:=unif(1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-vl+3)^2 + 4*(p-pl+v-vl+3/2) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=al for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=al for 1;\n}"
       -> descr("Adaptive Cruise Control","Maintain the distance to the car in front. Variation with a random accellaration from the leader at each round.")
     //////////////
     , "ACC: rnd leader (prob)"
@@ -1253,8 +1253,17 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
       -> "900"
       -> "scatter"
       -> "0"
-      -> "// Adaptive Cruise Control (ADD)\n// - random precision\np :=0;  v :=0; // follower\npl:=50; vl:=0; // leader\nx1:=0;  x2:=0; // precision\n\nwhile true do {\n  // random precision\n  x1:=unif(0,1); x2:=unif(0,1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-6)^2 + 4*(p+2*v-pl-16) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=0 for 1+x1;\n  else p'=v, v'=-2, pl'=vl, vl'=0 for 1+x2;\n}"
+      -> "// Adaptive Cruise Control (ACC)\n// - random precision\np :=0;  v :=0; // follower\npl:=50; vl:=10; // leader\nx1:=0;  x2:=0; // precision\n\nwhile true do {\n  // random precision\n  x1:=unif(0,1); x2:=unif(0,1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-6)^2 + 4*(p+2*v-pl-16) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=0 for 1+x1;\n  else p'=v, v'=-2, pl'=vl, vl'=0 for 1+x2;\n}"
       -> descr("Adaptive Cruise Control","Maintain the distance to the car in front. Variation with a random error in each measurement.")
+    //////////////
+    , "ACC: rnd leader (hist)"
+      -> ""
+      -> "20"
+      -> "900"
+      -> "histogram: pl-p<5"
+      -> "0"
+      -> "// Adaptive Cruise Control (ACC)\n// - random leader\np :=0 ; v :=0;         // follower\npl:=50; vl:=10; al:=0; // leader\nsim := [0..9]; // run 10 simulations;\nwhile true do {\n  // random accelaration by the leader\n  al:=unif(1); \n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-vl+3)^2 + 4*(p-pl+v-vl+3/2) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=al for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=al for 1;\n}"
+      -> descr("Adaptive Cruise Control", "Version with a graph-type \"histogram\", checking if \"pl-p<5\". You can also write in the graph-type expressions such as \"pl-p<5 @ 10 times\" or \"pl-p<5 @ every 2\". Maintain the distance to the car in front. Variation with a random accellaration from the leader at each round.")
     /////////////
     , "Seed experiment"
       -> ""
