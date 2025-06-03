@@ -1289,7 +1289,7 @@ class LinceExamplesBox(reload: => Unit, inputBox: Setable[String], descr: Setabl
     , "PPDL - Ex.2.5"
       -> "[p,v,x,y]" -> "10" -> "1000" -> "scatter" -> "0"
       -> "x:=expn(2); y:=expn(2);\np:=0; v:=0;\np'=v, v'=1  for sqrt (3) + x;\np'=v, v'=-1 for sqrt (3) + y;"
-      -> "Example 2.5 experimenting constructs with random values."
+      -> "Example 2.5 - Execution sample of a particle's position (p) and velocity (v)."
     , "PPDL - Ex.2.6a"
       -> "[p,v,pl,vl]" -> "20" -> "1000" -> "scatter" -> "0"
       -> "// Adaptive Cruise Control (ACC)\np:=0; v:=0;  // follower  \npl:=50; vl:=10; // leader\na:=0;\nwhile true {\n  // decide to speed up (acc=2) or brake (acc=-2)\n  if (v-8)^2 + 4*(p-pl+v-9) < 0\n  then p'=v, v'= 2, pl'=vl, vl'=a for 1;\n  else p'=v, v'=-2, pl'=vl, vl'=a for 1;\n}"
