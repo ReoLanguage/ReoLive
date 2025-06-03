@@ -4,9 +4,7 @@ import common.DomNode
 import common.widgets.Lince.{LinceBox, LinceExamplesBox}
 import common.widgets._
 import org.scalajs.dom.html
-import widgets.LocalGraphicBox
-import widgets.TestLocalGraphicBox
-import widgets.TestDanielGraphicBox
+import widgets.{LocalGraphicBox, RemoteProbBox, TestDanielGraphicBox, TestLocalGraphicBox}
 //import org.singlespaced.d3js.d3
 import widgets.{RemoteEvalBox, RemoteGraphicBox}
 
@@ -25,6 +23,7 @@ object RemoteLince {
     var testGraphicBox: TestDanielGraphicBox = _
     var testlocalGraphic: TestLocalGraphicBox = _
     var eval: RemoteEvalBox = _
+    var prob: RemoteProbBox = _
     var errors: OutputArea = _
     var descr: OutputArea = _
     var axis: InputBox = _    
@@ -92,6 +91,7 @@ object RemoteLince {
       testGraphicBox= new TestDanielGraphicBox(()=>prepareGraphics(),inputBox, axis, maxTime, maxIterations, graphType, perturbation, errors)
       testlocalGraphic= new TestLocalGraphicBox(()=>prepareGraphics(),inputBox, axis, maxTime, maxIterations, graphType, perturbation, errors)
       eval   = new RemoteEvalBox(inputBox, errors, bounds, "")
+      prob   = new RemoteProbBox(inputBox, errors, maxTime, maxIterations)
 
       inputBox.init(leftColumn, visible = true)
       errors.init(leftColumn)
@@ -109,6 +109,7 @@ object RemoteLince {
       testlocalGraphic.init(rightColumn, visible = true)
       testGraphicBox.init(rightColumn, visible = false)
       eval.init(rightColumn,visible = false)
+      prob.init(rightColumn,visible = false)
 
 
       // val moreInfo = rightColumn.append("div")
